@@ -45,13 +45,19 @@ Dy=blocks(Dy,Nx)
 
 kernelx1=np.zeros((Nx*Ny,1))
 kernelx1[0]=-2
-kernelx1[-Nx]=1
-
+kernelx1[-Ny]=1
 Dx1=circulant(kernelx1)[0:Ny]
+
 kernelx2=np.zeros((Nx*Ny,1))
-kernelx2[Nx]=1
+kernelx2[Ny]=1
 kernelx2[0]=-2
 Dx2=circulant(kernelx2)[-Ny:]
+
+kernelx3=np.zeros((Nx*Ny,1))
+kernelx3[0]=1
+kernelx3[Ny]=-2
+kernelx3[2*Ny]=1
+Dx3=circulant(kernelx3)[2*Ny:]
 
 
 print(q)
