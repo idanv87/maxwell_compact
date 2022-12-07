@@ -19,15 +19,22 @@ def blocks(A,n):
 # plt.show()
 # print(q)
 
-x=np.arange(0,6,1)
-y=np.arange(0,5,1)
+x=np.linspace(0,math.pi,10)
+y=np.linspace(0,math.pi,32)
+dx=x[1]-x[0]
+dy=y[1]-y[0]
+
 X, Y = np.meshgrid(x, y, indexing='ij')
-F=np.sin(X)
+B=np.cos(X)*np.cos(Y) # zero boundary conditions
+B[1:-1,1:-1]=0
+
+F=(np.cos(X)*np.cos(Y))[1:-1,1:-1]
+F_tag_y2=(-np.cos(X)*np.cos(Y))[1:-1,1:-1]
 Nx=F.shape[0]
 Ny=F.shape[1]
 
-B=np.random.random((Nx+2 ,Ny+2))
-B[1:-1,1:-1]=0
+# B=np.random.random((Nx+2 ,Ny+2)) #b.c matrix
+
 F=F.flatten()
 Bx=(np.delete(np.delete(B[:,1:-1],1,0),-2,0)).flatten()
 By=(np.delete(np.delete(B[1:-1,:],1,1),-2,1)).flatten()
@@ -41,7 +48,7 @@ kernely[1]=1
 Dy=circulant(kernely)
 Dy[-1,0]=0
 Dy[0,-1]=0
-Dy=blocks(Dy,Nx)
+Dy=blocks(Dy,Nx)/dy**2
 
 kernelx1=np.zeros((Nx*Ny,1))
 kernelx1[0]=-2
@@ -58,6 +65,9 @@ kernelx3[0]=1
 kernelx3[Ny]=-2
 kernelx3[2*Ny]=1
 Dx3=circulant(kernelx3)[2*Ny:]
+
+Dx=np.concatenate([Dx1,Dx3,Dx2])/dx**2
+print(max(abs(np.matmul(Dy, F) +By/dy**2- F_tag_y2.flatten())))
 
 
 print(q)
