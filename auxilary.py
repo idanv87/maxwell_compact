@@ -6,6 +6,7 @@ from scipy.linalg import block_diag
 from scipy.sparse.linalg import cg
 import pylops
 import timeit
+import scipy
 
 from scipy import signal
 import matplotlib.pyplot as plt
@@ -33,61 +34,37 @@ def create_A_2(n):
     A = circulant(kernely)
     A[0, -1] = 0
     A[-1, 0] = 0
-    A[0, 0] = 26;
-    A[0, 1] = -5;
-    A[0, 2] = 4;
+    A[0, 0] = 26
+    A[0, 1] = -5
+    A[0, 2] = 4
     A[0, 3] = -1
-    A[-1, -1] = 26;
-    A[-1, -2] = -5;
-    A[-1, -3] = 4;
+    A[-1, -1] = 26
+    A[-1, -2] = -5
+    A[-1, -3] = 4
     A[-1, -4] = -1
-    return A / 24
 
-
-def create_A(n):
-    kernely = np.zeros((n, 1))
-    kernely[-1] = 1
-    kernely[0] = 22
-    kernely[1] = 1
-    A = circulant(kernely)
-    A[0, -1] = 0
-    A[-1, 0] = 0
-    A[0, 0] = 24;
-    A[0, 1] = 0;
-    A[0, 2] = 0;
-    A[0, 3] = -0
-    A[-1, -1] = 0;
-    A[-1, -2] = 0;
-    A[-1, -3] = 0;
-    A[-1, -1] = 24
     return A / 24
 
 
 def E_step(dt, x, y, h, E, Hx, Hy):
     assert E.shape[0] == E.shape[1]
     # A = np.linalg.inv(create_A(E.shape[0]))
-    Uy = np.zeros((E.shape[0], E.shape[1]))  # dHy/dx
-    Uy[1:-1, :] = Hy[1:, :] - Hy[:-1, :]
+    # Uy = np.zeros((E.shape[0], E.shape[1]))  # dHy/dx
+    # Uy[1:-1, :] = Hy[1:, :] - Hy[:-1, :]
+    Uy = Hy[1:, 1:-1] - Hy[:-1, 1:-1]
+    Ux = Hx[1:-1, 1:] - Hx[1:-1, :-1]
     # Uy[0, :] = -31/8*Hy[0,:]+229/24*Hy[1,:]-75/8*Hy[2,:]+37/8*Hy[3,:]-11/12*Hy[4,:]
     # Uy[-1, :] = 31/8*Hy[-1,:]-229/24*Hy[-2,:]+75/8*Hy[-3,:]-37/8*Hy[-4,:]+11/12*Hy[-5,:]
-    dHy_dx = np.matmul(np.linalg.inv(create_A(E.shape[0])), Uy / h)
-    # Uy[0, :]=Uy[0, :]*0
-    # Uy[-1, :]=Uy[-1, :]*0
-    # dHy_dx, exit_code = cg(A, Uy/h, tol=1e-07)
+    dHy_dx = np.matmul(np.linalg.inv(create_A_2(Uy.shape[0])), Uy / h)
+    dHx_dy = np.transpose(np.matmul(np.linalg.inv(create_A_2(Ux.shape[1])), np.transpose(Ux) / h))
 
-    Ux = np.zeros((E.shape[0], E.shape[1]))  # dHx/dy
-    Ux[:, 1:-1] = Hx[:, 1:] - Hx[:, :-1]
-    # Ux[ :,0] = -31/8*Hx[:,0]+229/24*Hx[:,1]-75/8*Hx[:,2]+37/8*Hx[:,3]-11/12*Hx[:,4]
-    # Ux[ :,-1] = 31/8*Hx[:,-1]-229/24*Hx[:,-2]+75/8*Hx[:,-3]-37/8*Hx[:,-4]+11/12*Hx[:,-5]
+    dHy_dx_minus_dHx_dy = np.zeros((E.shape[0], E.shape[1]))  # dHx/dy
+    dHy_dx_minus_dHx_dy[1:-1, 1:-1] = dHy_dx - dHx_dy
 
     k = 24 / (dt ** 2)
 
-    dHx_dy = np.transpose(np.matmul(np.linalg.inv(create_A(E.shape[0])), np.transpose(Ux) / h))
-    # dHx_dy, exit_code = cg(A, np.transpose(Ux) / h, tol=1e-07)
-    # dHx_dy=np.transpose(dHx_dy)
-
     #
-    BF = k * (dHy_dx - dHx_dy)
+    BF = k * (dHy_dx_minus_dHx_dy)
     F = BF[1:-1, 1:-1].flatten()
     BE = np.zeros((E.shape[0], E.shape[1]))
 
@@ -95,7 +72,7 @@ def E_step(dt, x, y, h, E, Hx, Hy):
     return E + dt * E_next
 
 
-def Hy_step(dt, x, y, h, E, Hy):
+def Hy_step(dt, x, y, h, E, Hy, BHy=None):
     assert E.shape[0] == E.shape[1]
 
     # Your statements here
@@ -115,19 +92,14 @@ def Hy_step(dt, x, y, h, E, Hy):
     BF = k * dE_dx
     F = BF[1:-1, 1:-1].flatten()
 
-    # BHy= np.zeros((Hy.shape[0], Hy.shape[1]))
-    # BHy[0:]=dE_dx[0,:]
-    # BHy[-1:]=dE_dx[-1,:]
-
     # BHy = (E[1:, :] - E[:-1, :]) / h
-    BHy=dE_dx
-
+    BHy = dE_dx
     Hy_next = mod_helmholtz(x[1:], y, BHy.copy(), -F, -BF, k)
-    # Hy_next=BF
+
     return Hy + dt * Hy_next
 
 
-def Hx_step(dt, x, y, h, E, Hx):
+def Hx_step(dt, x, y, h, E, Hx, BHx=None):
     assert E.shape[0] == E.shape[1]
     # A = np.linalg.inv(create_A_2(Hx.shape[1]))
 
@@ -141,14 +113,11 @@ def Hx_step(dt, x, y, h, E, Hx):
     BF = -k * dE_dy
     F = BF[1:-1, 1:-1].flatten()
     # BHx = -(E[:, 1:] - E[:, :-1]) / h
-    BHx=-dE_dy
 
-    # BHx= np.zeros((Hx.shape[0], Hx.shape[1]))
-    # print(BHx.shape)
-    # BHx[:,0]=-dE_dy[:,0]
-    # BHx[:,-1]=-dE_dy[:,-1]
+    BHx = -dE_dy
+
     Hx_next = mod_helmholtz(x, y[1:], BHx.copy(), -F, -BF, k)
-    # Hx_next=BF
+
     return Hx + dt * Hx_next
 
 
@@ -203,12 +172,9 @@ def create_D(x, y, B):
 
 
 def mod_helmholtz(x, y, B, F, BF, k):
-
-
     # start = timeit.default_timer()
 
     # Your statements here
-
 
     assert k >= 0
     assert (x[1] - x[0]) == (y[1] - y[0])
