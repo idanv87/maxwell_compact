@@ -93,7 +93,17 @@ def Hy_step(dt, x, y, h, E, Hy, BHy=None):
     F = BF[1:-1, 1:-1].flatten()
 
     # BHy = (E[1:, :] - E[:-1, :]) / h
+    lapx1 = (dE_dx[0,2:]+dE_dx[0,0:-2]-2*dE_dx[0,1:-1])/h**2
+    lapx2 = (dE_dx[-1,2:] + dE_dx[-1,:-2] - 2 * dE_dx[-1,1:-1]) / h ** 2
+    lapy1=    (2*dE_dx[0,1:-1]-5*dE_dx[1,1:-1]+4*dE_dx[2,1:-1]-dE_dx[3,1:-1])/h**2
+    lapy2 = (2*dE_dx[-1,1:-1]-5*dE_dx[-2,1:-1]+4*dE_dx[-3,1:-1]-dE_dx[-4,1:-1])/h**2
+
     BHy = dE_dx
+    BHy[0,1:-1]+=(dt**2/24)*(lapx1+lapy1)
+    BHy[-1,1:-1] += (dt**2/24)*(lapx2 + lapy2)
+    BHy[:,0]=0
+    BHy[:,-1]=0
+
     Hy_next = mod_helmholtz(x[1:], y, BHy.copy(), -F, -BF, k)
 
     return Hy + dt * Hy_next
@@ -114,7 +124,21 @@ def Hx_step(dt, x, y, h, E, Hx, BHx=None):
     F = BF[1:-1, 1:-1].flatten()
     # BHx = -(E[:, 1:] - E[:, :-1]) / h
 
+    lapx1 = -(dE_dy[2:,0]+dE_dy[0:-2,0]-2*dE_dy[1:-1,0])/h**2
+    lapx2 = -(dE_dy[2:, -1] + dE_dy[:-2, -1] - 2 * dE_dy[1:-1, -1]) / h ** 2
+    lapy1=   -(2*dE_dy[1:-1,0]-5*dE_dy[1:-1,1]+4*dE_dy[1:-1,2]-dE_dy[1:-1,3])/h**2
+    lapy2 =-(2*dE_dy[1:-1,-1]-5*dE_dy[1:-1,-2]+4*dE_dy[1:-1,-3]-dE_dy[1:-1,-4])/h**2
+
+
     BHx = -dE_dy
+    BHx[1:-1,0]+=((dt**2)/24)*(lapx1+lapy1)
+    BHx[1:-1, -1] +=((dt**2)/24)*(lapx2 + lapy2)
+    BHx[0,:]=0
+    BHx[-1,:]=0
+
+
+
+
 
     Hx_next = mod_helmholtz(x, y[1:], BHx.copy(), -F, -BF, k)
 
@@ -177,6 +201,7 @@ def mod_helmholtz(x, y, B, F, BF, k):
     # Your statements here
 
     assert k >= 0
+
     assert (x[1] - x[0]) == (y[1] - y[0])
     h = x[1] - x[0]
 

@@ -119,12 +119,12 @@ def max_solver(dt, x, y, h, time_steps, E_a, Hx_a, Hy_a):
    errHx =np.array([np.mean(abs(Hx_tot[i][1:-1,:] - Hx_a[i][1:-1,:])) for i in range(len(Hx_tot))])
    errHy = np.array([np.mean(abs(Hy_tot[i][:,1:-1]- Hy_a[i][:,1:-1])) for i in range(len(Hy_tot))])
    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3)
-kx=3
-ky=4
+kx=4
+ky=3
 omega=math.pi*np.sqrt(kx**2+ky**2)
 
 err=[]
-ns=[ 22,32,42,52,62,72]
+ns=[ 20,25,30,35,40]
 
 # N=[21,41,81]
 for i,n in enumerate(ns):
@@ -132,8 +132,8 @@ for i,n in enumerate(ns):
    x = np.linspace(0, 1, n+1)
    y = np.linspace(0, 1, n+1)
    h = x[1]-x[0]
-   time_steps=3
-   T=0.001
+   time_steps=2*ns[i]+1
+   T=1
    dt =T/(time_steps-1)
 
 
