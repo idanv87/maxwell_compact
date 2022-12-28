@@ -1,21 +1,20 @@
+import multiprocessing
+import math
+import timeit
+import datetime
+
 import numpy as np
 import matplotlib.pyplot as plt
-import math
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 import scipy
 from scipy.sparse import csr_matrix
 from scipy.linalg import circulant
 from scipy.sparse import block_diag
 from scipy.sparse import vstack
-
 from scipy.sparse.linalg import cg
-import pylops
-import timeit
-
-import ray
-
 from scipy import signal
-import matplotlib.pyplot as plt
 
 
 def create_A_2(n):
@@ -210,44 +209,59 @@ def create_Ds(x, y):
 
     N = Nx * Ny
 
-    kernely = np.zeros((Ny, 1))
+    kernely = np.zeros((Ny, 1), dtype=np.int8)
     kernely[-1] = 1
     kernely[0] = -2
     kernely[1] = 1
 
     Dy = circulant(kernely)
-
-
-
     Dy[-1, 0] = 0
     Dy[0, -1] = 0
     Dy = blocks(csr_matrix(Dy), Nx) / (dy ** 2)
 
-
-
-
-    kernelx1 = np.zeros((Nx * Ny, 1))
+    kernelx1 = np.zeros((Nx * Ny, 1), dtype=np.int8)
     kernelx1[0] = -2
     kernelx1[-Ny] = 1
-    Dx1 = csr_matrix(circulant(kernelx1)[0:Ny])
 
-    kernelx2 = np.zeros((Nx * Ny, 1))
+    kernelx2 = np.zeros((Nx * Ny, 1), dtype=np.int8)
     kernelx2[Ny] = 1
     kernelx2[0] = -2
-    Dx2 = csr_matrix(circulant(kernelx2)[-Ny:])
 
-
-    kernelx3 = np.zeros((Nx * Ny, 1))
+    kernelx3 = np.zeros((Nx * Ny, 1), dtype=np.int8)
     kernelx3[0] = 1
     kernelx3[Ny] = -2
     kernelx3[2 * Ny] = 1
+
+    procs = multiprocessing.cpu_count()    
+    procs = 3
+    pool = multiprocessing.Pool(processes=procs)
+    params = [(kernelx1, 0, Ny), (kernelx2, -Ny, None), (kernelx3, 2 * Ny, None)]
+    
+    start_time = datetime.datetime.now()
+    matrices = pool.starmap(build_csr_matrix, params)
+    print(f"Took {datetime.datetime.now() - start_time} with MP" )
+    
+    start_time = datetime.datetime.now()
+    circs = []
+    for _ in tqdm(range(50)):
+        circs.append(circulant(kernelx1))
+    print(f"Took {datetime.datetime.now() - start_time} circ" )
+
+    start_time = datetime.datetime.now()
+    for l in  tqdm(range(50)):
+        csr_matrix(circs[l][0:Ny])
+    print(f"Took {datetime.datetime.now() - start_time} csr" )
+    
+    start_time = datetime.datetime.now()
+    Dx1 = csr_matrix(circulant(kernelx1)[0:Ny])
+    Dx2 = csr_matrix(circulant(kernelx2)[-Ny:])
     Dx3 = csr_matrix(circulant(kernelx3)[2 * Ny:])
-    # Dx = np.concatenate([Dx1, Dx3, Dx2]) / (dx ** 2)
+    print(f"Took {datetime.datetime.now() - start_time} without MP" )
+
     Dx = vstack([Dx1, Dx3, Dx2]) / (dx ** 2)
-
-
-
-
-
-
     return csr_matrix(Dx), csr_matrix(Dy)
+
+
+def build_csr_matrix(mat: np.array, index_start: int, index_end: int):
+    return circulant(mat)[index_start:index_end]
+    # return csr_matrix(circulant(mat)[index_start:index_end])
