@@ -1,0 +1,1242 @@
+\documentclass[12pt,reqno]{amsart}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{float}
+\usepackage{amsfonts,amssymb,amsmath,amsopn,amsthm,graphicx}
+\usepackage{amsxtra, mathrsfs}
+\usepackage{colordvi}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{amsfonts,amssymb,amsbsy,amsmath,amsthm,dsfont}
+%%%%%%%%%%%
+\usepackage{xspace}
+\usepackage{pgfplots}
+\usepackage{lipsum}
+\usepackage[many]{tcolorbox}
+\usetikzlibrary{decorations.pathreplacing}
+
+
+
+
+\linespread{1.1} \numberwithin{equation}{section}
+
+
+\newcommand\red[1]{\textcolor{red}{#1}}
+\newcommand{\Gluck}{Gl\H{u}ck\xspace}
+
+
+\newtcolorbox{leftbrace}{%
+	enhanced jigsaw, 
+	breakable, % allow page breaks
+	frame hidden, % hide the default frame
+	overlay={%
+		\draw [
+		decoration={brace,amplitude=0.5em},
+		decorate,
+		ultra thick,
+		]
+		% right line
+		(frame.south west)--(frame.north west);
+	},
+	% paragraph skips obeyed within tcolorbox
+	parbox=false,
+}
+
+
+%%%%%%%%%
+\usepackage{amssymb,amsmath,graphicx,amsthm,a4wide,wrapfig,caption,subcaption,epstopdf}
+%\usepackage{amsmath,amssymb,amsfonts,amscd,hyperref,color}
+\usepackage[latin1]{inputenc}
+%\usepackage[mtoscr]{mtpro2}
+\usepackage{enumitem}
+
+%\usepackage[abs]{overpic}
+%\usepackage{graphicx}
+%\usepackage{verbatim}
+%\usepackage{amscd}
+\usepackage{verbatim}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%labels%%%%%%%%
+%\usepackage[notref,notcite]{showkeys}
+%%%%%%%%%%%%%%%
+
+
+
+
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}} % inner command, used by \rch
+\usepackage{lineno}
+\usepackage{textcomp}
+\usepackage{mathtools,hyperref}
+\usepackage{cleveref}
+%\hyperref[label_name]{''link text''}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[english]{babel}
+\usepackage{setspace,esint}
+%\usepackage{graphicx}
+%\usepackage{mathtools}
+%\usepackage{caption}
+%\usepackage{subcaption}
+%\graphicspath{{photos/}}
+%\usepackage[usenames, dvipsnames]{color}
+%\usepackage{}
+%\usepackage{enumitem}
+%\newcommand\mysymbol[3]{\protected\gdef#1{#2}%	\item[$#2$]#3}
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%
+
+%\linespread{1.1} \numberwithin{equation}{section}
+%\setlength{\voffset}{-.7truein}
+%\setlength{\textheight}{8.8truein}
+%\setlength{\textwidth}{6.1truein}
+%\setlength{\hoffset}{-.7truein}
+
+
+%%%%%
+\newcommand\blue[1]{\textcolor{blue}{#1}}
+%%%%%%%%%%%%%%%%%
+
+\newcommand{\Hmm}[1]{\leavevmode{\marginpar{\tiny%
+			$\hbox to 0mm{\hspace*{-0.5mm}$\leftarrow$\hss}%
+			\vcenter{\vrule depth 0.1mm height 0.1mm width \the\marginparwidth}%
+			\hbox to
+			0mm{\hss$\rightarrow$\hspace*{-0.5mm}}$\\\relax\raggedright #1}}}
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\wc}{{\overline{\Omega}}}
+\newcommand{\bb}{{\mathbf{\bar {b}}}}
+\newcommand{\bt}{{\mathbf{\tilde{b}}}}
+\newcommand{\Gwb}{{\overline{\Omega}}}
+\newcommand{\Hd}{\,H^1_{\Pw_{\mathrm{Dir}}}(\Gw)}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\im}{\mbox{\upshape Im\ }}
+\newcommand{\re}{\mbox{\upshape Re\ }}
+\newcommand{\tr}{\mbox{\upshape Tr }}
+\newcommand{\Pw}{\partial \Omega}
+
+\newcommand{\A}{\mathbf{A}}
+\newcommand{\B}{\mathscr{B}}
+\newcommand{\ball}{B}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\cl}{\mathrm{cl}}
+\newcommand{\D}{{\rm D}}
+\newcommand{\rr}{{\rm R}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\pd}{\partial}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\h}{\mathcal{H}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\loc}{{\rm loc}}
+\newcommand{\mg}{\mathrm{mag}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\ope}{\mathrm{op}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\sph}{\mathcal{L}}
+\newcommand{\s}{\mathcal{S}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\W}{\mathscr{W}}
+\newcommand{\id}{\mathds{1}}
+\newcommand{\HD}{H^{1}_{\partial \Omega_{D}}(\Gw)}
+\newcommand{\curl}{{\bf curl}}
+
+\newcommand{\pwd}{\partial\Omega_{\mathrm{Dir}}}
+\newcommand{\pwr}{\partial\Omega_{\mathrm{Rob}}}
+\newcommand{\wb}{\overline{\Omega}\setminus \partial\Omega_{\mathrm{Dir}} }
+\newcommand{\Dir}{\mathrm{Dir}}
+
+\newcommand{\sign}{\mathrm{sign}\,}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{thm}[theorem]{Theorem}
+\newtheorem{lem}[theorem]{Lemma}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{example}[theorem]{Example}
+
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{defi}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newtheorem{rem}[theorem]{Remark}
+
+\newtheorem{remarks}[theorem]{Remarks}
+
+
+\theoremstyle{definition}
+
+%\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{assumptions}[theorem]{Assumptions}
+\newtheorem{defin}[theorem]{Definition}
+
+%%%%%%%%%%%%%%%%%%%%%
+\numberwithin{equation}{section}
+\newcommand{\diver}{\mathrm{div}\,}
+%\newcommand{\loc}{{\mathrm{loc}}}
+\newcommand{\RN}[1]{%
+	\textup{\uppercase\expandafter{\romannumeral#1}}%
+}
+\newcommand{\dx}{\,\mathrm{d}x}
+\newcommand{\dy}{\,\mathrm{d}y}
+\newcommand{\dz}{\,\mathrm{d}z}
+\newcommand{\dt}{\,\mathrm{d}t}
+\newcommand{\du}{\,\mathrm{d}u}
+\newcommand{\dv}{\,\mathrm{d}v}
+\newcommand{\dV}{\,\mathrm{d}V}
+\newcommand{\ds}{\,\mathrm{d}s}
+\newcommand{\dr}{\,\mathrm{d}r}
+\newcommand{\dS}{\,\mathrm{d}S}
+\newcommand{\dk}{\,\mathrm{d}k}
+\newcommand{\dphi}{\,\mathrm{d}\phi}
+\newcommand{\dtau}{\,\mathrm{d}\tau}
+\newcommand{\dxi}{\,\mathrm{d}\xi}
+\newcommand{\deta}{\,\mathrm{d}\eta}
+\newcommand{\dsigma}{\,\mathrm{d}\sigma}
+\newcommand{\dtheta}{\,\mathrm{d}\theta}
+\newcommand{\dnu}{\,\mathrm{d}\nu}
+\newcommand{\dmu}{\,\mathrm{d}\mu}
+\newcommand{\drho}{\,\mathrm{d}\rho}
+\newcommand{\dvrho}{\,\mathrm{d}\varrho}
+\newcommand{\dkappa}{\,\mathrm{d}\kappa}
+%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\core}{C_0^{\infty}(\Omega)}
+\newcommand{\coredir}{C_0^{\infty}(\overline{\Omega} \setminus \pwd)}
+\newcommand{\sob}{W^{1,p}(\Omega)}
+\newcommand{\sobloc}{W^{1,p}_{\mathrm{loc}}(\Omega)}
+\newcommand{\merhav}{{\mathcal D}^{1,p}}
+\newcommand{\be}{\begin{equation}}
+	\newcommand{\ee}{\end{equation}}
+%\newcommand{\mysection}[1]{\section{#1}\setcounter{equation}{0}}
+%%%%%%%%%%%%%%%
+\newcommand{\bea}{\begin{eqnarray}}
+	\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\bean}{\begin{eqnarray*}}
+	\newcommand{\eean}{\end{eqnarray*}}
+\newcommand{\thkl}{\rule[-.5mm]{.3mm}{3mm}}
+%%%%%%%%%%%%%%%%%
+\newcommand{\Rob}{\mathrm{Rob}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\Proof}{\mbox{\noindent {\bf Proof} \hspace{2mm}}}
+\newcommand{\mbinom}[2]{\left (\!\!{\renewcommand{\arraystretch}{0.5}
+		\mbox{$\begin{array}[c]{c}  #1\\ #2  \end{array}$}}\!\! \right )}
+\newcommand{\brang}[1]{\langle #1 \rangle}
+\newcommand{\vstrut}[1]{\rule{0mm}{#1mm}}
+\newcommand{\rec}[1]{\frac{1}{#1}}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\dist}[2]{\mbox{\rm dist}\,(#1,#2)}
+\newcommand{\opname}[1]{\mbox{\rm #1}\,}
+\newcommand{\supp}{\opname{supp}}
+\newcommand{\mb}[1]{\;\mbox{ #1 }\;}
+\newcommand{\undersym}[2]
+{{\renewcommand{\arraystretch}{0.5}  \mbox{$\begin{array}[t]{c}
+				#1\\ #2  \end{array}$}}}
+\newlength{\wex}  \newlength{\hex}
+\newcommand{\understack}[3]{%
+	\settowidth{\wex}{\mbox{$#3$}} \settoheight{\hex}{\mbox{$#1$}}
+	\hspace{\wex}  \raisebox{-1.2\hex}{\makebox[-\wex][c]{$#2$}}
+	\makebox[\wex][c]{$#1$}   }%
+%%Macros for changing font size in math.
+\newcommand{\smit}[1]{\mbox{\small \it #1}}% only for letters, numbers
+\newcommand{\lgit}[1]{\mbox{\large \it #1}}% only for letters, numbers
+\newcommand{\scts}[1]{\scriptstyle #1}
+\newcommand{\scss}[1]{\scriptscriptstyle #1}
+\newcommand{\txts}[1]{\textstyle #1}
+\newcommand{\dsps}[1]{\displaystyle #1}
+\newcommand{\ass}[1]{Let Assumptions~\ref{assump1} hold  in a bounded Lipschitz domain $\Gw$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Macros for Greek letters.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ga{\alpha}     \def\gb{\beta}       \def\gg{\gamma}
+\def\gc{\chi}       \def\gd{\delta}      \def\ge{\epsilon}
+\def \gth{\theta}                         \def\vge{\varepsilon}
+\def\gf{\phi}       \def\vgf{\varphi}    \def\gh{\eta}
+\def\gi{\iota}      \def\gk{\kappa}      \def\gl{\lambda}
+\def\gm{\mu}        \def\gn{\nu}         \def\gp{\pi}
+\def\vgp{\varpi}    \def\gr{\rho}        \def\vgr{\varrho}
+\def\gs{\sigma}     \def\vgs{\varsigma}  \def\gt{\tau}
+\def\gu{\upsilon}   \def\gv{\vartheta}   \def\gw{\omega}
+\def\gx{\xi}        \def\gy{\psi}        \def\gz{\zeta}
+\def\Gg{\Gamma}     \def\Gd{\Delta}      \def\Gf{\Phi}
+\def\Gth{\Theta}
+\def\Gl{\Lambda}    \def\Gs{\Sigma}      \def\Gp{\Pi}
+\def\Gw{\Omega}     \def\Gx{\Xi}         \def\Gy{\Psi}
+%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+	
+	
+	\title{Fourth Order Accurate in Space and Time Compact scheme for First Order Time Dependent Maxwell Equations}
+	
+	\author {I. Versano}
+	
+	\address {School of Mathematical Sciences, Tel-Aviv University, Tel-Aviv 6997801, Israel}
+	
+	\email {idanversano@tauex.tau.ac.il}
+	
+	\author {E. Turkel}
+	
+	\address {School of Mathematical Sciences, Tel-Aviv University, Tel-Aviv 6997801, Israel}
+	
+	\email {turkel@tauex.tau,ac.il}
+	
+	\author {S. Tsynkov }
+	
+	\address {North Carolina State University, Box 8205, Raleigh, NC 27695, USA.}
+	
+	\email {tsynkov@math.ncsu.edu}
+	%
+	%\author{
+		%	I. Versano {}\thanks{Corresponding author.
+			%		School of Mathematical Sciences, Tel-Aviv University, Tel-Aviv 6997801, Israel, E-mail: idanv@campus.technion.ac.il} \qquad
+		%	E. Turkel {}\thanks{
+			%		School of Mathematical Sciences, Tel-Aviv University, Tel-Aviv 6997801, Israel, E-mail: turkel@tauex.tau,ac.il} \qquad
+		%	S. Tsynkov {}\thanks{
+			%		Department of Mathematics,  North Carolina State University, Box 8205, Raleigh, NC 27695, USA.
+			%		tsynkov@math.ncsu.edu} 
+		%}
+	
+	
+	
+	
+	
+	%\fi
+	
+	%%%%%%%%%%%%%%
+	
+	
+	\maketitle
+	\begin{abstract}
+		
+		
+		\medskip
+		
+		\noindent  2000  \! {\em Mathematics  Subject  Classification.}
+		.\\[1mm]
+		\noindent {\em Keywords:} 
+	\end{abstract}
+	
+	\section{Introduction}
+	
+	\section{Maxwell equations}
+	The Maxwell equations (without polarization), in first order differential vector form, are given by
+	\begin{align}
+		\label{eq:maxwellv}
+		\frac{\partial \bf{D}}{\partial t} &= \nabla \!\times\! \bf{H} - \bf{J}  & \frac{\partial \bf{B}}{\partial t} &= - \nabla \!\times\! \bf{E} \notag \\
+		\nabla \!\cdot\! \bf{B} &= 0 & \nabla \!\cdot\! \bf{D} &= \rho \\
+		\bf{B} &= \mu \bf{H} & \bf{D} &= \epsilon \bf{E}. \notag
+	\end{align}
+	with initial conditions given for $\vec{D}$ and $\vec{E}$ at $t=0$.
+
+We assume the following:
+\begin{enumerate}
+	\item  The functions $\mu,\varepsilon$ are    positive constants satisfying $\frac{1}{\mu \varepsilon}=c^2$.
+	\item  $\Gw=[0,1]^3$, $\vec{\nu} \times {\bf E}=0$ on $\partial \Gw$ (\cite[Section 8]{rolf}).
+\end{enumerate}
+
+
+
+	%\begin{remark}
+	%	The invariance of the curl operator to rotations imply that
+	%our scheme  can be easily generalized to the  case where $\varepsilon$ and $\mu$ are  uniformly   positive definite matrix functions (cf. \cite[Section 8]{rolf}).
+	%\end{remark}
+	\section{discretization}
+	We assume for simplicity that $\Delta x=\Delta y=\Delta z=h$
+	and  use the usual notations  $x_i=ih, y_j=jh,z_k=kh$.
+	Moreover, we   introduce the following notation:
+	$$
+	[N]=\{0,1,..,N-1\},\quad N\in \N.
+	$$
+	To discretize the equations we introduce a staggered mesh in both space and time as in the Yee scheme \cite{yee}. 
+	$\bf{E},\bf{D}$  are evaluated at time $n$ while $\bf{B},\bf{H}$ and $\bf{J}$ are evaluated at time $n\!+\! \frac{1}{2}$.
+
+	
+	With this arrangement all space derivatives are spread over a single mesh width and the central time and space derivatives
+	are centered at the same point similar to that of the Yee scheme \cite{yee}. 
+	We define the following meshes:
+	\begin{align*}
+		&\Gw^{E_z}:=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [N]^2 \times[N-1]\} \\
+		& \Gw^{E_y}:=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [N]\times [N-1] \times[N] \}\\
+		& \Gw^{E_x}:=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [N-1]\times [N]^2 \} \\
+		&\Gw^{H_z}:=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [N-1]^2\times[N] \}\\
+		&\Gw^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\
+		& \Gw^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.
+	\end{align*}
+	We denote 
+	$$
+	\Gw^{{\bf E}}:=\Gw^{E_x}\times \Gw^{E_y}\times \Gw^{E_z}, \qquad 
+	\Gw^{\bf H}:=
+	\Gw^{H_x}\times \Gw^{H_y}\times \Gw^{H_z}.
+	$$
+	The equations all have the same form. So to discretize the equations to fourth order accuracy in both space and time
+	we need only consider the equation for $D_z$. All the others will follow the same pattern.
+	With this arrangement, the boundary condition 
+	$\vec{n}\times {\bf E}=0$ on $\partial \Gw^{{\bf E}}$ readily imply that 
+	$E_s=0$ on $\partial \Gw^{E_s}$ for $s=x,y,z$. That is, 
+	\begin{align*}
+		&
+		E_x(x_{i+\frac{1}{2}}0,z_j)=E_x(x_{i+\frac{1}{2}},N-1,z_j)=
+		E_x(x_{i+\frac{1}{2}},y_j,0)=E_x(x_{i+\frac{1}{2}},y_j, N-1)=0, \\&
+		E_y(0,y_{j+\frac{1}{2}},z_j)=E_y(N-1,y_{j+\frac{1}{2}},z_j)=
+		E_y(x_i,y_{j+\frac{1}{2}},0)=E_y(x_i, y_{j+\frac{1}{2}}, N-1)=0, \\&
+		E_z(0,y_j,z_{k+\frac{1}{2}})=E_x(N-1,y_j,z_{k+\frac{1}{2}})=
+		E_z(x_i,0,z_{k+\frac{1}{2}})=E_z(x_i,N-1,z_{k+\frac{1}{2}})=0. &
+	\end{align*} 
+\subsection{Modified Helmholtz equation}
+In the following sections we will exploit fourth order compact schemes for solving elliptic equations of the form $-\Delta \phi+k^2\phi=F$ in $\Gw^{E_s}$ or $\Gw^{H_s}$, $s=x,y,z$.
+We will use the following scheme:
+$$
+	\left (
+\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
++\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
++k^2\phi=F.
+$$
+The latter scheme requires boundary conditions for the inhomogeneous term and for $\phi$. We denote these boundary conditions as 
+$B_{NH}$ and $B_{C}$ respectively.
+
+	\subsection{Operators}
+	For $s=x,y,z$, let $a_s^{-1}$ be the fourth order first-order derivative  compact operator given by Appendix \ref{appendix}.
+	\begin{enumerate}
+		\item $\frac{\Delta \tau }{h}=r$
+		\item $\delta_x U(x_i,y_j,z_k):=a_x^{-1}\circ\frac{U(x_i+h/2,y_j,z_k)-U(x_i-h/2,y_j,z_k)}{h}$
+		\item $\delta_y U(x_i,y_j,z_k):=a_y^{-1}\circ\frac{U(x_i,y_j+h/2,z_k)-U(x_i,y_j-h/2,z_k)}{h}$
+		\item 	$\delta_z U(x_i,y_j,z_k):=a_z^{-1}\circ\frac{U(x_i,y_j,z_k+h/2)-U(x_i,y_j,z_k-h/2)}{h}$
+		\item $
+		L_{\tau}^h(\phi):=-
+		\left (
+		\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
+		+\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
+		+\frac{24}{\Delta \tau^2}\phi
+		$
+		\item
+		$D_{ss}\phi=\frac{\phi(s+h)-2\phi(s)+\phi(s-h)}{h^2}$ is standard symmetric second derivative operator for $s=x,y,z$.
+	\end{enumerate}
+	
+	Moreover, we define 
+	$$
+	P({\bf J}):=Z\frac{24}{\Delta \tau^2}\left ( -{\bf J}^{n+1/2}-\nabla div({\bf J}^{n+1/2})+\frac{\partial^2{\bf J}^{n+1/2}}{\partial t^2}\right ).
+	$$
+
+	\section{The scheme}
+	Let $\bf{E}^n, \bf{H}^{n+1/2}$ be given:\\[2mm]
+	{\bf step 1}:\\[2mm]
+	$$
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}=
+	\begin{pmatrix}
+		E_x^n+\Delta \tau E_x^{*}\\
+		E_y^n+\Delta \tau E_y^{*}\\
+		E_y^n+\Delta \tau E_y^{*}
+	\end{pmatrix}
+	$$
+	where 
+	$$
+	\begin{pmatrix}
+		L_{\tau}^{h} & 0&0 \\
+		0 & L_{\tau}^{h} &\\
+		0&0&L_{\tau}^{h} 
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{*}\\
+		E_y^{*} \\
+		E_z^{*}
+	\end{pmatrix}=Z\frac{24}{\Delta \tau^2}
+	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0
+	\end{pmatrix}
+	\begin{pmatrix}
+		H_x^{n+1/2}\\
+		H_y^{n+1/2}\\
+		H_z^{n+1/2}
+	\end{pmatrix}+P({\bf J})
+	$$
+	in $\Gw^{\bf{E}}$.
+	Furthermore,
+	$B_{C}=B_{NH}=0$ for $E_s^{*}$ $(s=x,y,z)$.
+
+	
+	{\bf step 2}:\\[2mm]
+	$$
+	\begin{pmatrix}
+		H_x^{n+3/2}\\
+		H_y^{n+3/2}\\
+		H_z^{n+3/2}
+	\end{pmatrix}=
+	\begin{pmatrix}
+		H_x^{n+1/2}+\Delta \tau H_x^{*}\\
+		H_y^{n+1/2}+\Delta \tau H_y^{*}\\
+		H_y^{n+1/2}+\Delta \tau H_y^{*}
+	\end{pmatrix}
+	$$
+	where 
+	$$
+	\begin{pmatrix}
+		L_{\tau}^{h} & 0&0 \\
+		0 & L_{\tau}^{h} &\\
+		0&0&L_{\tau}^{h} 
+	\end{pmatrix}
+	\begin{pmatrix}
+		H_x^{*}\\
+		H_y^{*} \\
+		H_z^{*}
+	\end{pmatrix}=-\frac{1}{Z}\frac{24}{\Delta \tau^2}
+	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}
+	$$
+	in $\Gw^{\bf{H}}$. Furthermore,
+	$B_{NH}$ equals to the non-homogeneous term which is defined on $\Gw^{\bf{H}}$ including the boundary.
+	For $B_{C}$ we use Taylor expansion
+	$$
+	\frac{\bf{H}^{n+3/2}-\bf{H}^{n+1/2}}{\Delta \tau}=
+	\frac{\partial \bf{H}}{\partial t}+O(\Delta \tau ^2)=
+	-\frac{1}{Z}	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}+O(\Delta \tau^2+h^4).
+	$$
+	Approximation of the boundary conditions to order $\Delta \tau ^4$ is also possible as depicted in the example in section \ref{sec:TE}.
+
+	\section{stability}
+	
+	
+	
+	
+	
+	
+	
+	\begin{rem}
+		All terms  	in equation \eqref{eq:system}  involving $\vec{J}$
+		and its derivatives
+		are known analytically, and therefore we choose to demonstrate our results by assuming without loss of generality  that $\vec{J}=0$.
+	\end{rem}
+	\subsection{The vaccum case}
+	For constant  $\mu,\varepsilon$ satisfying 
+	$1/(\mu \varepsilon)=c^2$ the scheme can be further simplified to
+	\begin{equation}\label{eq:mu_eps_constant_lap}
+		\delta_t D_z-\frac{c^2\Delta t^2}{24}\Delta ( \delta_t D_z)=
+		\left ( \frac{\partial H_y}{\partial x}-
+		\frac{\partial H_x}{\partial y}-J_z
+		\right)^{n+1/2}+\frac{c^2 \Delta t^2}{24}\left (
+		-
+		\frac{\partial div(\vec{J})}{\partial z}-\frac{\partial^2 J_z}{\partial t^2}
+		\right)^{n+1/2}.
+	\end{equation}
+	Let us define $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$,
+	$$L_{\tau}(u):=- \frac{\Delta \tau^2}{24}\Delta u+u,$$
+	and finally
+	$$
+	\delta_{\tau} \vec{E}=\frac{\vec{E}^{n+1}-\vec{E}^n}{\Delta \tau}, \qquad
+	\delta_{\tau} \vec{H}=\frac{\vec{H}^{n+1/2}-\vec{H}^{n+3/2}}{\Delta \tau}.
+	$$
+	The full scheme is then given by 
+	\begin{equation}\label{eq:system}
+		\begin{pmatrix}
+			\vec{L}_{\tau} & 0 \\
+			0 & \vec{L}_{\tau}
+		\end{pmatrix}
+		\begin{pmatrix}
+			\delta_{\tau} \vec{E} \\
+			\delta_{\tau} \vec{H}
+		\end{pmatrix}=
+		\begin{pmatrix}
+			\vec{Z}& 0 \\
+			0&	\frac{1}{\vec{Z}}
+		\end{pmatrix}
+		\begin{pmatrix}
+			\nabla \times \vec{H}^{n+1/2} -\vec{J}^{n+1/2}\\
+			-\nabla \times \vec{E}^{n+1}
+		\end{pmatrix}+
+		\frac{\Delta \tau ^2}{24}
+		\begin{pmatrix}
+			\left(-\nabla div(\vec{J})+
+			\frac{\partial^2 \vec{J}}{\partial t^2}\right)^{n+1/2} \\
+			0
+		\end{pmatrix}.
+	\end{equation}
+	The equations in \eqref{eq:system} can be solved in bounded domains to fourth order accuracy using the scheme  in \cite{singer_turkel}. It is important to notice that for bounded domains the boundary conditions for $\delta_t \vec{H}, \delta_t \vec{E}$ has to be approximated to fourth order.
+	
+	
+	%	+ \frac{\partial^2 {D_x \over \epsilon}}{\partial y \partial t} \right) + O(\Delta t)^4
+	%\end{align*}
+	%We then substitute the Maxwell equation for $\frac{\partial D}{\partial t}$ and get
+	%\begin{equation*}
+	%	\frac{\partial B_z}{\partial t} =
+	%	\delta_t B_z - \frac{\Delta t^2}{24} \frac{\partial}{\partial t} \left(\frac{\partial^2 {H_z \over \epsilon}}{\partial x^2}  + \frac{\partial^2 {H_z \over \epsilon}}{\partial y^2}
+	%	- \frac{\partial^2 {H_x \over \epsilon}}{\partial x \partial z} - \frac{\partial^2 {H_y \over \epsilon}}{\partial y \partial z} + \frac{\partial J_y}{\partial x} - \frac{\partial J_x}{\partial y}\right)
+	%	+ O(\Delta t)^4
+	%\end{equation*}
+	%We now add and subtract $\frac{\partial^2 {H_z \over \epsilon}}{\partial z^2}$ to the terms in the parenthesis and then replace $H$ by $\frac{B}{\mu}$ and then set $c^2 = \frac{1}{\mu \epsilon}$.
+	%We note that $c^2$ is constant even when $\epsilon$ and $\mu$ vary.
+	%This yields
+	%\begin{equation}
+	%	\frac{\partial B_z}{\partial t} = \delta_t B_z - \frac{\Delta t^2}{24} \frac{\partial}{\partial t} \left(c^2 \Delta B_z - c^2 \frac{\partial }{\partial z} div \vec{B}
+	%	+ \frac{\partial J_y}{\partial x} - \frac{\partial J_x}{\partial y} \right)
+	%	+ O(\Delta t)^4
+	%	\label{max10}
+	%\end{equation}
+	%%We further assume that the divergence of both $B$ and $D$ are zero.
+	%%If $div(D) = J \neq 0$ then we have an extra term
+	%%$\frac{\Delta t^2}{24 c^2} \frac{\partial^2 J}{\partial t \partial z}$,
+	%Then \eqref{max10} reduces to
+	%\begin{equation}
+	%	\frac{\partial B_z}{\partial t} = \delta_t B_z -  \frac{\Delta t^2}{24} \frac{\partial}{\partial t} \left(c^2 \Delta B_z + \frac{\partial J_y}{\partial x} - \frac{\partial J_x}{\partial y} \right)
+	%	+ O(\Delta t)^4
+	%	\label{max20}
+	%\end{equation}
+	%Finally, we replace $\frac{\partial \Delta B_z}{\partial t}$ by $\Delta \delta_t B_z +O(\Delta t)^2$.
+	%Since it is already multiplied by $(\Delta t)^2$ the total error is $(\Delta t)^4$.
+	%So we are left with
+	%\begin{equation}
+	%	\frac{\partial B_z}{\partial t} = \delta_t B_z - c^2 \frac{\Delta t^2}{24}  \left(\Delta \delta_t B_z + \frac{1}{c^2} \frac{\partial}{\partial t} (\frac{\partial J_y}{\partial x} - \frac{\partial J_x}{\partial y}) \right)
+	%	+  O(\Delta t)^4
+	%\end{equation}
+	% we get
+	%\begin{equation}
+	%	\label{finalBz}
+	%	\delta_t B_z - \frac{c^2 \Delta t^2 }{24}  \Delta (\delta_t B_z)  =
+	%	(-\frac{\partial E_y}{\partial x} + \frac{\partial E_x}{\partial y} )^{n+1/2}
+	%	+ \frac{\Delta t^2}{24} \frac{\partial}{\partial t} \left( \frac{\partial J_y}{\partial x} - \frac{\partial J_x}{\partial y} \right)
+	%	+  O(\Delta t)^4
+	%\end{equation}
+	%
+	\section{stability analysis}
+	%It seems that $CFL\leq \frac{1}{\sqrt{2}}$ as with Yee.
+	\subsection{The case $\mu, \varepsilon$ are constants and two dimensions}
+	We assume for simplicity that $Z=1$.
+	
+	Let us rewrite  the homogeneous part in   \eqref{eq:system} in two steps:
+	\begin{align*}
+		&
+		\begin{pmatrix}
+			L_{\tau} & 0&0 \\
+			0&L_{\tau} &0 \\
+			0&0&L_{\tau} 
+		\end{pmatrix}
+		\begin{pmatrix}
+			\delta_{\tau} E_x^{n+1} \\
+			\delta_{\tau} E_y^{n+1} \\
+			\delta_{\tau} E_z^{n+1} \\
+		\end{pmatrix}=
+		\frac{1}{h}
+		PD\vec{H}^{n+1/2}
+	\end{align*}
+	\begin{align*}
+		&
+		\begin{pmatrix}
+			L_{\tau} & 0&0 \\
+			0&L_{\tau} &0 \\
+			0&0&L_{\tau}   \\
+		\end{pmatrix}
+		\begin{pmatrix}
+			\delta_{\tau} H_x^{n+3/2} \\
+			\delta_{\tau} H_y^{n+3/2}\\
+			\delta_{\tau} H_z^{n+3/2}
+		\end{pmatrix}=
+		\frac{1}{h}
+		P D^t\vec{E}^{n+1}
+	\end{align*}
+	
+	%
+	%\begin{align*}
+	%	&
+	%	\begin{pmatrix}
+		%		L_{\tau} & 0&0&0&0&0 \\
+		%			0&L_{\tau} &0&0&0&0 \\
+		%				0&0&L_{\tau}  &0&0&0 \\
+		%					0&0&0&L_{\tau} &0&0 \\
+		%						0&0&0&0&L_{\tau} &0 \\
+		%							 0&0&0&0&0&L_{\tau}  \\
+		%	\end{pmatrix}
+	%	\begin{pmatrix}
+		%		\delta_{\tau} E_x^{n+1} \\
+		%			\delta_{\tau} E_y^{n+1} \\
+		%				\delta_{\tau} E_z^{n+1} \\
+		%		\delta_{\tau} H_x^{n+3/2} \\
+		%			\delta_{\tau} H_y^{n+3/2}\\
+		%				\delta_{\tau} H_z^{n+3/2}
+		%	\end{pmatrix}=
+	%\frac{1}{h}
+	%AD\phi
+	%\end{align*}
+	where 
+	$$P=
+	\begin{pmatrix}
+		0 & 1&1 \\
+		1&0 &1 \\
+		1&1&0 
+	\end{pmatrix}\otimes A^{-1}=
+	\begin{pmatrix}
+		0 & A^{-1}&A^{-1} \\
+		A^{-1}&0 &A^{-1} \\
+		A^{-1}&A^{-1}&0 
+	\end{pmatrix},\quad
+	D=
+	\begin{pmatrix}
+		0 & -D_z&D_y \\
+		D_z&0 &-D_x \\
+		-D_y&D_x&0  \\
+	\end{pmatrix}.
+	$$
+	The discretization for $$\Delta \phi -\frac{24}{\tau^2}\phi=\frac{24}{\Delta \tau ^2}F$$ is
+	given by the three-dimensional analog of \cite[(11)]{singer_turkel}
+	$$
+	\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
+	+\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}-\frac{24}{\Delta \tau^2}\phi
+	=\frac{24}{\Delta \tau ^2}F.
+	$$
+	We have the following:
+	\begin{enumerate}
+		\item  $|\lambda_{\max}(A^{-1})| \frac{24}{20}$.
+		\item  $|\lambda_{\max}(D)|\leq 2\sqrt{2}$
+	\end{enumerate}
+	
+	
+	The matrices $D_x,D_y,D_z$ are toplitz matrices with two dominant diagonals $1$ and $-1$, and $A^{-1}$ is the inverse of the Pad\'e operator for first derivative in Appendix \ref{appendix}.
+	
+	%Then,
+	%the discretization for $$\Delta \phi -\frac{24}{\tau^2}\phi=\frac{24}{\Delta \tau ^2}F$$ is
+	%given by the three-dimensional analog of \cite[(11)]{singer_turkel}
+	%$$
+	%\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
+	%+\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}-\frac{24}{\Delta \tau^2}\phi
+	%=\frac{24}{\Delta \tau ^2}F.
+	%$$
+	
+	
+	
+	
+	\section{Transverse magnetic waves  in $[0,1]^3$}\label{sec:TE}
+	Assuming that $E_x=E_y=H_z=\vec{J}=0$ we can reduce Maxwell equations to a two-dimensional problem for $E_z(t,x,y), H_x(t,x,y), H_y(t,x,y)$ where  $(x,y)\in[0,1]^2$, and
+	$x_0=y_0=0$, and $x_{N-1}=y_{N-1}=0$.
+	The rescaled equations are therefore 
+	
+	\begin{enumerate}
+		\item  $ \frac{\partial E_z}{\partial \tau }=Z\left (
+		\frac{\partial H_y}{\partial x}-\frac{\partial H_x}{\partial y}
+		\right)$
+		\item 	  $ \frac{\partial H_x}{\partial \tau }=-\frac{1}{Z}\frac{\partial E_z}{\partial y}$
+		\item 	  $ \frac{\partial H_y}{\partial \tau }=\frac{1}{Z}\frac{\partial E_z}{\partial x}$,
+		
+	\end{enumerate}
+	and the scheme \eqref{eq:system} reads as the following consecutive steps.
+	\begin{enumerate}
+		\item  $ E_z^{n+1}=E_z^n(i,j)+Z\Delta \tau \cdot L^{-1}_{\tau}\left (\frac{\partial H_y}{\partial x}-
+		\frac{\partial H_x}{\partial y}
+		\right)^{n+1/2}$\\[1mm]
+		\item $ H_x^{n+3/2}=H_x^{n+1/2}+\frac{\Delta \tau}{Z} \cdot  L^{-1}_{\tau}\left (-
+		\frac{\partial E_z}{\partial y}
+		\right)^{n+1} $\\[1mm]
+		\item $ H_y^{n+3/2}=H_y^{n+1/2}+\frac{\Delta \tau}{Z} \cdot  L_{\tau}^{-1}\left (
+		\frac{\partial E_z}{\partial x}
+		\right)^{n+1} $.
+	\end{enumerate}
+	\begin{figure}[!t]
+		\centering
+		\includegraphics[scale=0.7]{figures/Ez.eps}
+		\caption{
+			The numerical domain for step 1.
+			Squares denote boundary points. x denotes interior points of the numerical domain.  The points where $H_x$ and $H_y$ are evaluated (little blue and red dots resp.) are shown for reference.}
+		\label{fig:E}
+		
+	\end{figure}
+	
+	As mentioned before, these  elliptic equations  can be solved  to fourth order   if the boundary conditions of the solutions and of the non-homogeneous term are known to fourth order \cite{singer_turkel}.
+	Let us examine each step in the scheme separately:\\[1mm]
+	{\bf Step 1 } (See Figure \ref{fig:E}):  
+	The numerical domain: $\{(x_i,y_j)\}_{i,j\in [N]}$; boundary conditions :  the boundary values of $\delta_{\tau} E_z$ are given explicitly (=0) from the boundary conditions $\vec{\nu}\times \vec{E}=0$; non-homogeneous term:
+	$\left (\frac{\partial H_y}{\partial x}-\frac{\partial H_x}{\partial y}\right )^{n+1/2}$ can be estimated using Pad\'e approximation (see  Appendix \ref{appendix}) at all points 
+	$(x_i,y_j)$
+	which do not belong to $\partial [0,1]^2$.  However, at these boundary points, the equations readily imply that  
+	$\left (\frac{\partial H_y}{\partial x}-\frac{\partial H_x}{\partial y}\right )^{n+1/2}=0$ on $\partial [0,1]^2$.\\[1mm]
+	{\bf Step 2} (See Figure \ref{fig:Hx}): 
+	The numerical domain: $\{(x_i,y_{j+1/2})\}_{i\in [N],j\in [N-1]}$; 
+	non-homogeneous term:  
+	$\left (\frac{E_z}{\partial y}\right)^{n+1} $
+	can be approximated  using Pad\'e approximation  in Appendix \ref{appendix} at all discretization points;
+	boundary conditions:
+	we  estimate 
+	$\frac{H_x^{n+3/2}-H_x^{n+1/2}}{\Delta \tau}$ on the boundary as follows.
+	The equation  
+	$$
+	\frac{\partial H_x}{\partial \tau}=-\frac{1}{Z}\frac{\partial E_z}{\partial y}
+	$$
+	implies that $H_x(0,y)$ and $H_x(1,y)$ do not depend on $\tau$, that is 
+	$$\frac{H_x^{n+3/2}-H_x^{n+1/2}}{\Delta \tau}=0$$ if $x=0$ or $x=1$.
+	On the remaining part of the boundary ($y=0,1$)  we use Taylor series:
+	$$
+	\frac{	H_x^{n+3/2}-H_x^{n+1/2}}{\Delta \tau}=
+	\left(\frac{\partial H_x}{\partial \tau}\right)^{n+1}+
+	\frac{\Delta \tau^2}{24}\left(\frac{\partial^3 H_x}{\partial \tau^3}\right)^{n+1}+O(\Delta \tau^4).
+	$$
+	%$$
+	%=\left(\frac{\partial H_x}{\partial t}\right)^{n+1}\left(1+
+	%\frac{\Delta t^2}{24}\cdot 
+	%\left (\frac{\partial^2 H_x}{\partial t^2}\right)^{n+1}+
+	%O(\Delta t^4)
+	%\right)
+	%$$
+	Recall that
+	$\left(\frac{\partial H_x}{\partial \tau}\right)^{n+1}=-\frac{1}{Z}\left(\frac{\partial E_z}{\partial y}\right)^{n+1}$ has been already approximated to fourth order. 
+	If one uses just the approximation 
+	$$
+	\frac{	H_x^{n+3/2}-H_x^{n+1/2}}{\Delta \tau}=
+	\left(\frac{\partial H_x}{\partial \tau}\right)^{n+1}
+	$$
+	then the boundary conditions are of order $h^4+\Delta \tau^2$.
+	
+	The remaining term 
+	can be  approximated to order $\Delta \tau^2 h^2$ as follows.
+	The equations imply that   $\frac{\partial^2E_z}{\partial \tau^2}=\Delta E_z$, and therefore
+	$$
+	\frac{\partial^3 H_x}{\partial \tau^3}=
+	-\frac{1}{Z}\Delta \frac{\partial E_z }{\partial y}.
+	$$
+	The Laplacian of $\frac{\partial E_z }{\partial y}$ can be estimated at the boundary points  to order $h^2$ using central and one-sided schemes for second-order derivatives.
+	In such a case the boundary conditions are of order $h^4+\Delta \tau^2h^2.$
+	The numerical simulations   presented in  Table \ref{table:conv_rates} show the affect of the boundary conditions accuracy on the convergence rates.\\[1mm]
+	{\bf Step 3} : \\The numerical domain including the boundary: $\{(x_{i+1/2},y_{j})\}_{i\in [N-1],j\in [N]}$; the boundary terms and the boundary conditions are treated by a similar way to step 2.
+	
+	\begin{figure}[!t]
+		\centering
+		\begin{subfigure}[h]{0.4\textwidth}
+			\includegraphics[scale=0.45]{figures/Hx.eps}
+		\end{subfigure}
+		\begin{subfigure}[h]{0.4\textwidth}
+			\includegraphics[scale=0.45]{figures/Hy.eps}
+		\end{subfigure}
+		\caption{The numerical domains for steps 2,3.
+			Squares denote boundary points of the numerical domain. x denotes interior points. The points $(x_i,y_j)$ (little black dots) where we evaluate $E_z$ are shown for reference.}
+		\label{fig:Hx}
+		
+	\end{figure}
+	\subsection{Numerical simulations}
+	We test analytical solutions in the case $Z=1$,  
+	$(k_x,k_y)=(4,3)$ and $\omega:=\sqrt{k_x^2+k_y^2}$.
+	Namely, 
+	\begin{align*}
+		&
+		E_z=\cos(\omega \tau)
+		\sin{\left( \pi  k_x x\right) } \sin{\left( \pi  k_y y\right) }
+		\\ &
+		H_x=-\frac{\sin( \omega \tau)}{\omega}
+		\pi k_y \sin( \pi  k_x x)
+		\cos{\left( \pi  k_y y\right) } \\&
+		H_y=\frac{\sin\left( \omega \tau\right) }{\omega} \pi  k_x \cos{\left( \pi  k_x x\right) } \sin{\left( \pi  k_y y\right) }. \\&
+	\end{align*}
+	
+	
+	We use the mean absolute error 
+	$$
+	\frac{1}{N_{\tau}\cdot N^2}\sum_{i,j,n=0}^{N,N,N_{\tau}}\left | F^n_{\mathrm{numer.}}(i,j)-F_{\mathrm{true}}^n(i,j) \right|
+	$$
+	$(\vec{F}=(E_z,H_x,H_y))$ to calculate the (log-)convergence rates of our schemes.
+	%	\begin{table} [h!]
+		%	\centering
+		%	\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{2cm}|p{2cm}| p{2cm}|}
+			%		\hline
+			%$h$ & $\mathrm{CFL}$ &$\Delta \tau^2+h^4$&$\Delta \tau^2h^2+h^4$& analytic
+			%		\\ [0.5ex] 
+			%		\hline 
+			%$\frac{1}{20}$ & 0.5& & & \\
+			%$\frac{1}{25}$ & 0.5 &3.74 &5.51&5.27\\
+			%$\frac{1}{30}$ & 0.5 & 3.50 &5.55& 5.38 \\
+			%$\frac{1}{35}$ & 0.5 &3.38 & 5.57&5.30\\
+			%$\frac{1}{40}$ & 0.5& 3.31 &5.55 &5.22\\
+			%\hline 
+			%	\end{tabular}
+		%	\caption{ Converge rates with several types of boundary conditions for $\delta_\tau \vec{H}$ in steps 2 and 3:	 
+			%	Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{20},\frac{1}{25},\frac{1}{30},
+			%	\frac{1}{35}, \frac{1}{40}
+			%	$
+			%	and final time $T=1$.}
+		%	\label{table:conv_rates}
+		
+		
+		%\end{table}
+		\begin{table} [h!]
+			\centering
+			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{2cm}|p{2cm}|}
+				\hline
+				$h$ & $\mathrm{CFL}$ &$\Delta \tau^2+h^4$&$\Delta \tau^2h^2+h^4$
+				\\ [0.5ex] 
+				\hline 
+				$\frac{1}{16}$ & 0.5& &  \\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &3.70 &5.45\\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 3.21 &5.23 \\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &3.03 & 3.98\\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 2.99 &3.93 \\[0.5mm]
+				\hline 
+			\end{tabular}
+			\caption{ Converge rates with several types of boundary conditions for $\delta_\tau \vec{H}$ in steps 2 and 3:	 
+				Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{16},\frac{1}{32},\frac{1}{64},
+				\frac{1}{128}, \frac{1}{256}
+				$
+				and final time $T=1$.}
+			\label{table:conv_rates}
+			
+			
+		\end{table}
+		\begin{table} [h!]
+			\centering
+			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{2cm}| |p{4cm}|}
+				\hline
+				$h$ & $\mathrm{CFL}$ &error& convergence rate
+				\\ [0.5ex] 
+				\hline 
+				$\frac{1}{16}$ & 0.5& 2.9e-3&  \\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &6.7e-5 &5.45\\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 1.8e-6 &5.23 \\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &1.1e-7 & 3.98\\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 7.5e-9 &3.93 \\[0.5mm]
+				\hline \hline
+				$\frac{1}{16}$ & 0.5& 0.38&  \\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &0.22 &0.75\\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 5.2e-3 &5.4 \\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &2.2e-4 & 4.52\\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 1.6e-5 &3.822 \\[0.5mm]
+				\hline
+			\end{tabular}
+			\caption{ Converge rates with $k_x=4,k_y=3$ (upper table)
+				and  $k_x=17,k_y=18$.
+				Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{16},\frac{1}{32},\frac{1}{64},
+				\frac{1}{128}, \frac{1}{256}
+				$
+				and final time $T=1$.}
+			\label{table:conv_rates_2}
+			
+			
+		\end{table}
+		\subsection{Comparison with non-compact fourth order scheme and with data-driven scheme (AI(2,3)) trained on high wave-numbers}
+		\begin{table} [h!]
+			\centering
+			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{4cm}|p{4cm}|p{4cm}|}
+				\hline
+				$h$ & $\mathrm{CFL}$ &compact-4th& AI(2,3)&non-compact-4th
+				\\ [0.5ex] 
+				\hline 
+				$\frac{1}{16}$ & 0.5& 6.9e-5&  6e-5&8.7e-5 \\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &1.5e-6 &6.9e-6&1.18e-5 \\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 6.8e-8 &8.2e-7& 1.5e-6 \\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &4.9e-9 & 1e-7&1.9e-7 \\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 3.7e-10 &1.2e-8&2.4e-8 \\[0.5mm]
+				\hline \hline
+				$\frac{1}{16}$ & 0.5& 2.9e-3&  2.6e-4&8.1e-4 \\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &6.7e-5 &2.2e-5&1.1e-4 \\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 1.8e-6 &1.8e-6& 1.4e-5 \\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &1.1e-7 & 1.8e-7&1.8e-6 \\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 7.5e-9 &1.9e-8&2.2e-7 \\[0.5mm]
+				\hline \hline
+				$\frac{1}{16}$ & 0.5& 0.38& 3.4e-3 &4.4e-3\\[0.5mm]
+				$\frac{1}{32}$ & 0.5 &0.22 &2.9e-3&3.4e-3 \\[0.5mm]
+				$\frac{1}{64}$ & 0.5 & 5.2e-3 &1e-4& 1.7e-3\\[0.5mm]
+				$\frac{1}{128}$ & 0.5 &2.2e-4 & 2.84e-6&2.8e-4\\[0.5mm]
+				$\frac{1}{256}$ & 0.5& 1.6e-5 &1.02e-6& 3.5e-5\\[0.5mm]
+				\hline
+			\end{tabular}
+			\caption{ Errors for solutions  with wave-numbers $k_x=1,k_y=2$ (upper table), $k_x=4,k_y=3$ (middle table),
+				and  $k_x=17,k_y=18$.
+				Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{16},\frac{1}{32},\frac{1}{64},
+				\frac{1}{128}, \frac{1}{256}
+				$
+				and final time $T=1$.}
+			\label{table:conv_rates_3}
+		\end{table}
+		\newpage
+		%\section{Convergence rates with boundary conditions for $H$ of order 
+			%	$dt^2+h^4$}
+		%We test analytical solutions in the case $c=1$,  such that 
+		%$(k_x,k_y)=(4,3)$ and $\Omega=\sqrt{k_x^2+k_y^2}$.
+		%We take $dt=\frac{h}{2}$ where $h=\frac{1}{20},\frac{1}{25},\frac{1}{30},
+		%\frac{1}{35}, \frac{1}{40}$ from time 0 to time 1.
+		%We consider the mean absolute error, that is 
+		%$$
+		%\frac{1}{N_t\cdot N^2}\sum_{i,j,n=0}^{N,N,N_t}\left | F^n(i,j)-F_{\mathrm{true}}^n(i,j) \right|
+		%$$
+		%$(\vec{F}=(E_z,H_x,H_y))$
+		%to calculate the convergence rates as a function of $1/h$:
+		%$$
+		%(3.02, 3.15, 3.14,  3.15)
+		%$$
+		
+		%	\begin{table} [h!]
+			%	\centering
+			%	\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{0.7cm}| p{5cm}|p{5cm}|}
+				%		\hline
+				%		$N$& $N_t$ & $T$ &b.c for $H$: $O(dt^2+h^2)$& 
+				%		b.c for $H$: $O(dt^2+h^4)$\\
+				%		
+				%		
+				%
+				%		
+				%		
+				%		
+				%		\hline
+				%	\end{tabular}
+			%	\caption{Convergence rates
+				%	}
+			%	\label{table:tab3}
+			%\end{table}
+			\appendix
+			\section{}\label{appendix}
+			Assume that $f(x)$ is known at N points $x_0,x_1, ..,x_{N-1}$
+			and we want to estimate to fourth order $f'(x)$ at N-1 points
+			$x_{1/2},..,x_{N-3/2}$. This can be done  by solving the system of equations
+			\begin{equation}
+				\frac{1}{24}
+				\begin{pmatrix}
+					26     & -5     & 4      & -1     & 0      & \dots  & 0      \\
+					1      & 22     & 1      & 0      & 0      & \dots  & 0      \\
+					0      & 1      & 22     & 1      & 0      & \dots  & 0      \\
+					\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+					0      & 0      & \dots  & 1      & 22     & 1      & 0      \\
+					0      & 0      & \dots  & 0      & 1      & 22     & 1      \\
+					0      & 0      & \dots  & -1     & 4      & -5     & 26
+				\end{pmatrix}
+				\begin{pmatrix}
+					f'(x_{1/2}) \\
+					f'(x_{3/2}) \\
+					\cdots \\
+					\cdots\\
+					\cdots \\
+					\cdots \\
+					f'(x_{N-3/2})
+				\end{pmatrix}=
+				\frac{1}{\Delta x}
+				\begin{pmatrix}
+					f(x_{1})-f(x_0)  \\
+					\cdots \\
+					\cdots\\
+					\cdots \\
+					\cdots \\
+					\cdots \\
+					f(x_{N-1)}-f(x_{N-2})
+				\end{pmatrix}.
+			\end{equation}
+			%By Taylor approximation:
+			%$$
+			%\frac{f(x+h/2)-f(x-h/2)}{h}=f'(x)+\frac{f'''(x)h^2}{24}+O(h^4)
+			%$$
+			%$$=
+			%f'(x)+\frac{1}{24}(f'(x+h)-2f'(x+h)+f'(x-h))+O(h^4)
+			%$$
+			\section{}\label{appendxib}
+				We first achieve fourth order accuracy in time using a Taylor expansion:
+			\begin{align*}
+				\left (\frac{\partial D_z}{\partial t} \right)^{n+1/2} &= \frac{D_z^{n+1} - D_z^{n}}{\Delta t} - \frac{(\Delta t^2)}{24} \frac{\partial D^3_z}{\partial t^3} + O(\Delta t)^4 \\
+				&= \frac{D_z^{n+1} - D_z^{n}}{\Delta t} - \frac{(\Delta t^2)}{24} \partial_{tt} \left(\frac{\partial H_y}{\partial x}
+				- \frac{\partial H_x}{\partial y} -  J_z \right)
+				+ O(\Delta t)^4
+			\end{align*}
+			We now use the relation $H \!=\! \frac{1}{\mu} B$. For simplicity we define
+			\begin{equation}
+				\label{Dhat}
+				\delta_t D_z: = \frac{D_z^{n+1} - D_z^{n}}{\Delta t} .
+			\end{equation}
+			We then get
+			\begin{align*}
+				\left (\frac{\partial D_z}{\partial t} \right)^{n+1/2}  &= \delta_t D_z - \frac{\Delta t^2}{24} \partial_{tt} \left(\frac{\partial {B_y \over \mu}}{\partial x }
+				- \frac{\partial{B_x \over \mu}}{\partial y} - J_z \right) + O(\Delta t)^4 \\
+				&= \delta_t D_z - \frac{\Delta t^2}{24} \frac{\partial}{\partial t} \left(\frac{\partial^2 {B_y \over \mu}}{\partial x \partial t}
+				- \frac{\partial^2 {B_x \over \mu}}{\partial y \partial t} - \frac{\partial J_z}{\partial t} \right) + O(\Delta t)^4.
+			\end{align*}
+			Recall that 
+			
+			$$
+			\frac{\partial B_y}{\partial t}=\frac{\partial E_z}{\partial x}-\frac{\partial E_x}{\partial z},\qquad
+			\frac{\partial B_x}{\partial t}=\frac{\partial E_y}{\partial z}-\frac{\partial E_z}{\partial y}
+			$$
+			and since $\mu$ does not depend on $t$,
+			$$
+			\frac{\partial (B_y/\mu)}{\partial t}=
+			\frac{1}{\mu}\left (
+			\frac{\partial E_z}{\partial x}-\frac{\partial E_x}{\partial z}
+			\right), \qquad
+			\frac{\partial (B_x/\mu)}{\partial t}=
+			\frac{1}{\mu}\left (
+			\frac{\partial E_y}{\partial z}-\frac{\partial E_z}{\partial y}
+			\right) .
+			$$
+			
+			Hence
+			$$
+			\left(\frac{\partial^2 {B_y \over \mu}}{\partial x \partial t}
+			- \frac{\partial^2 {B_x \over \mu}}{\partial y \partial t}  \right)=
+			\left (
+			\frac{\partial}{\partial x} \frac{1}{\mu}\left (
+			\frac{\partial E_z}{\partial x}-\frac{\partial E_x}{\partial z}
+			\right)-\frac{\partial }{\partial y} \frac{1}{\mu}\left (
+			\frac{\partial E_y}{\partial z}-\frac{\partial E_z}{\partial y}
+			\right) 
+			\right)
+			$$
+			\begin{equation}\label{eq:mu_diff}
+				=\frac{1}{\mu}
+				\left(
+				\frac{\partial^2 E_z}{\partial x^2}
+				+\frac{\partial^2 E_z}{\partial y^2}
+				-\frac{\partial^2 E_x}{\partial x\partial z}
+				-\frac{\partial^2 E_y}{\partial y\partial z}
+				\right)+
+				\frac{\partial (1/\mu)}{\partial x}\left ( \frac{\partial E_z}{\partial x}-\frac{\partial E_x}{\partial z}\right)
+				-
+				\frac{\partial (1/\mu)}{\partial y}\left ( \frac{\partial E_y}{\partial z}-\frac{\partial E_z}{\partial y}\right).
+			\end{equation}
+			After adding and subtracting $\frac{\partial^2 E_z  }{\partial z^2}$
+			in the first parenthesis in \eqref{eq:mu_diff}, and adding and subtracting
+			$\frac{\partial (1/\mu)}{\partial z}\frac{\partial E_z}{\partial z}$
+			we obtain that  \eqref{eq:mu_diff} equals to
+			$$
+			div(\mu^{-1}\nabla E_z)-div(\mu^{-1}\frac{\partial \vec{E}}{\partial z}).
+			$$
+			This yields
+			\begin{align*}
+				&
+				\left ( \frac{\partial H_y}{\partial x}-
+				\frac{\partial H_x}{\partial y}-J_z
+				\right)^{n+1/2}=\\&
+				\frac{\partial D_z^{n+1/2}}{\partial t} =
+				\delta_t D_z - \frac{\Delta t^2}{24} \frac{\partial}{\partial t}
+				\left(
+				div(\mu^{-1}\nabla E_z)-div(\mu^{-1}\frac{\partial \vec{E}}{\partial z})
+				-\frac{\partial J_z}{\partial t}
+				\right)+O(\Delta t	)^4= \\&
+				\varepsilon \delta_t  E_z - \frac{\Delta t^2}{24}
+				\left(
+				div(\mu^{-1} \nabla \delta_t  E_z)
+				- div\left (\mu^{-1}\frac{\partial ^2\vec{E}}{\partial t \partial z}
+				\right)
+				-\frac{\partial^2 J_z}{\partial t^2}
+				\right)
+				+O(\Delta t	)^4.
+			\end{align*}
+			The term 
+			$$
+			\left ( \frac{\partial H_y}{\partial x}-
+			\frac{\partial H_x}{\partial y}-J_z
+			\right)^{n+1/2}
+			$$
+			can be approximated to fourth order using the Pade approximation given in Appendix \ref{appendix} \cite{yefet_turkel}(see Section \ref{sec:TE}). 
+			The term
+			$$
+			div\left(\mu^{-1}\frac{\partial^2\vec{E}}{\partial t \partial z}\right )^{n+1/2}
+			=div\left(
+			\mu^{-1}\frac{\partial }{ \partial z}\frac{1}{\varepsilon}(
+			\nabla \times \vec{H} -\vec{J}
+			)
+			\right)^{n+1/2}
+			$$
+			can be estimated from the previous
+			time  step to the second order  accuracy in $h$ since it is already multiplied by $\Delta t ^2$. 
+			In fact, since $div(\nabla\times H)=0$ we have to approximate to second order only first and second derivatives  of $\vec{H}$.
+			Hence,
+			$E_z^{n+1}=E^n+\Delta t\cdot \delta_t E_z$ where 
+			$\delta_t E_z$ solves the non-negative symmetric  elliptic equation
+			\begin{equation}\label{eq:elliptic_div}
+				\varepsilon \delta_t E_z-\frac{\Delta t^2}{24}div(\mu^{-1}\nabla \delta_t E_z)=F^{n+1/2},
+			\end{equation}
+			where 
+			$$
+			F^{n+1/2}=
+			\left ( \frac{\partial H_y}{\partial x}-
+			\frac{\partial H_x}{\partial y}-J_z
+			\right)^{n+1/2}+\frac{\Delta t^2}{24}\left (
+			div\left(
+			\mu^{-1}\frac{\partial }{ \partial z}\frac{1}{\varepsilon}(
+			\nabla \times \vec{H} -\vec{J}
+			)
+			\right )-\frac{\partial^2J_z}{\partial t^2}
+			\right)^{n+1/2}.
+			$$
+			For fourth order compact schemes for \eqref{eq:elliptic_div} see \cite{britt_tsy_tur}. 
+				\subsection{Boundary conditions for $\delta_t \vec{E}$ and  $\delta_t \vec{H}$}
+			In order to solve \eqref{eq:elliptic_div} to fourth order  one has to supply certain (Dirichlet) boundary conditions for $\delta_t \vec{E}$ and  $\delta_t \vec{H}$ to fourth order.
+			We will show the construction in the first  time step. The next steps  will then follow by the staggered structure.
+			We assume that $E^0$ and $H^{1/2}$ are given to fourth order.
+			For $H^{1/2}$ this can be done using  standard Taylor approximation.
+			Next,
+			$$
+			\frac{\vec{E}^{1}-\vec{E}^{0}}{\Delta t}=\frac{\partial \vec{E}^{1/2}}{\partial t}+
+			\Delta t^2\frac{\partial^3 \vec{E}^{1/2}}{\partial t^3}+O(\Delta t^4).
+			$$
+			The equation for $\vec{E}$ imply that 
+			$$
+			\frac{\partial \vec{E}^{1/2}}{\partial t}=\varepsilon^{-1}\cdot \nabla \times \vec{H}^{1/2}.
+			$$
+			The latter term is known to fourth order  and therefore can be approximated using Pad'e scheme in Appendix \ref{appendix} to fourth order. 
+			Next we consider the term 
+			\begin{align*}
+				&
+				\frac{\partial^3 \vec{E}^{1/2}}{\partial t^3} =
+				\varepsilon^{-1}\nabla \times  \frac{\partial^2 H^{1/2}}{\partial t^2}=
+				\\&
+				-\varepsilon^{-1}\nabla\times \mu^{-1}
+				\nabla \times \frac{\partial \vec{E}^{1/2}}{\partial t}=
+				-\varepsilon^{-1}\nabla\times \mu^{-1} \nabla \times
+				\varepsilon^{-1}\nabla\times \vec{H}^{1/2}.
+			\end{align*}
+			The term $ \nabla\times \vec{H}^{1/2}$ is known to fourth order and therefore it is sufficient to approximate its  second-derivatives to second order. Since 
+			$\frac{\partial^3 \vec{E}^{1/2}}{\partial t^3}$ is multiplied by $\Delta t^2$ we have accomplished our estimation to order $h^4+\Delta t^2h^2$.
+			We demonstrate the above construction   in the following section.
+			
+			
+			\begin{center}
+				{\bf Acknowledgments}
+			\end{center}
+			\begin{thebibliography}{99}
+				
+				
+				\bibitem{britt_tsy_tur}					
+				Britt, Steven, Semyon Tsynkov, and Eli Turkel. "Numerical simulation of time-harmonic waves in inhomogeneous media using compact high order schemes." Communications in Computational Physics 9.3 (2011): 520-541.					
+				\bibitem{rolf}
+				Leis, Rolf. Initial boundary value problems in mathematical physics. Courier Corporation, 2013.
+				\bibitem{sakka}
+				Sakkaplangkul, Puttha, and V. Bokil. "CONVERGENCE ANALYSIS OF YEE-FDTD SCHEMES FOR 3D MAXWELL?S EQUATIONS IN LINEAR DISPERSIVE MEDIA." International journal of numerical analysis and modeling 18.4 (2021).	
+				\bibitem{singer_turkel}
+				I. ~Singer, and E.~ Turkel. "High-order finite difference methods for the Helmholtz equation." Computer methods in applied mechanics and engineering 163.1-4 (1998): 343-358.					
+				\bibitem{yee}
+				K.~Yee, Numerical solution of initial boundary value problems involving Maxwell's equations in isotropic media, {\em IEEE Transactions on antennas and propagation} {\bf 14.3} (1966), 302-307.
+				\bibitem{yefet_turkel}
+				A.~Yefet and E.~Turkel,
+				Fourth Order Compact Implicit Method for the Maxwell Equations with Discontinuous Coefficients
+				{\em Applied Numerical Mathematics}  {\bf 33} (2000), 125--134.
+			\end{thebibliography}
+		\end{document}
