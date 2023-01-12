@@ -365,7 +365,7 @@ We assume the following:
 	and  use the usual notations  $x_i=ih, y_j=jh,z_k=kh$.
 	Moreover, we   introduce the following notation:
 	$$
-	[N]=\{0,1,..,N-1\},\quad N\in \N.
+	[N]=\{0,1,..,N\},\quad N\in \N.
 	$$
 	To discretize the equations we introduce a staggered mesh in both space and time as in the Yee scheme \cite{yee}. 
 	$\bf{E},\bf{D}$  are evaluated at time $n$ while $\bf{B},\bf{H}$ and $\bf{J}$ are evaluated at time $n\!+\! \frac{1}{2}$.
@@ -535,9 +535,41 @@ $B_{NH}$ and $B_{C}$ respectively.
 	$$
 	Approximation of the boundary conditions to order $\Delta \tau ^4$ is also possible as depicted in the example in section \ref{sec:TE}.
 
-	\section{stability}
-	
-	
+	\section{Energy estimates}
+
+Let $F,G$ defined in $\Gw^{\bf{E}}$ and $U,V$ defined in 
+$\Gw^{\bf{H}}$.
+We define the following inner products:
+$$
+(F,G)_{\bf{E}}:=
+h^3\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}\sum_{k=0}^{N-1}
+F_{x,i+1/2,j,k}G_{x,i+1/2,j,k}+
+F_{y,i,j+1/2,k}G_{y,i,j+1/2,k}+F_{z,i,j,k+1/2}G_{z,i,j,k+1/2}
+$$
+\begin{align*}
+	&
+	(U,V)_{\bf{H}}:=
+	h^3\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}\sum_{k=0}^{N-1}
+	F_{x,i,j+1/2,k+1/2}G_{x,i,j+1/2,k+1/2}+\\&
+	F_{y,i+1/2,j,k+1/2}G_{y,i+1/2,j,k+1/2}+F_{z,i+1/2,j+1/2,k}G_{z,i+1/2,j+1/2,k}
+\end{align*}
+We define the spaces 
+$$
+V^{\bf{E}}:=\{F \in \Gw^{\bf{E}}:\|F\|_{\bf{E}}<\infty\}, \qquad 
+V^{\bf{H}}:=\{G \in \Gw^{\bf{H}}:\|G\|_{\bf{H}}<\infty\}.
+$$
+We define 
+$$
+\mathbf{\curl}:V^{\bf{E}}\to V^{\bf{H}}, \quad 
+\mathbf{\curl'}:V^{\bf{H}}\to V^{\bf{E}}.
+$$
+\begin{lem}
+	For any $\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$ we have 
+	$$
+	(\mathbf{\curl}(\bf{E}_h),\bf{H}_h)_{\bf{H}}=
+		(\mathbf{\curl}'(\bf{H}_h),\bf{E}_h)_{\bf{E}}
+	$$
+\end{lem}
 	
 	
 	
