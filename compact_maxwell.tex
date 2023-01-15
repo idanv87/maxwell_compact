@@ -470,6 +470,61 @@ By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, the rescaled e
 \left(1+\frac{h^2}{12}D_{yy}\right)
 \left(1+\frac{h^2}{12}D_{zz}\right)F.
 \end{align*}
+This can be generalized to 
+\begin{align*}
+	&
+	\left (
+	D_{xx}+D_{yy}+D_{zz}+\frac{h^2}{6}(D_{zz}D_{xx}+D_{zz}D_{yy}+D_{xx}D_{zz})
+	+\gamma\frac{h^4}{48}D_{xx}D_{yy}D_{zz}
+	\right)\phi+\\&
+	k^2\left (
+     1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
+     +\delta\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
+     +\sigma\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
+	\right)\phi=\\&
+		\left (
+	1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
+	+\delta_2\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
+	+\sigma_2\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
+	\right)F
+\end{align*}
+If we set $\sigma=\sigma_2=\gamma=0$ 
+and define 
+$$
+\Delta_h:=D_{xx}+D_{yy}+D_{zz}, \quad \Delta^2_h:= D_{zz}D_{xx}+D_{zz}D_{yy}+D_{xx}D_{zz}
+$$
+then we have at interior points
+\begin{align*}
+	&
+	\left (
+	\Delta_h+\frac{h^2}{6}\Delta^2_h
+	\right)\phi+
+	k^2\left (
+	1+\frac{h^2}{12}\Delta_h
+	+\delta\frac{h^4}{144}\Delta^2_h
+	\right)\phi=
+	\left (
+	1+\frac{h^2}{12}\Delta_h
+	+\delta_2\frac{h^4}{144}\Delta^2_h
+	\right)F
+\end{align*}
+If  $k^2\phi=F$ on the boundary then the full scheme 
+reads as follows:
+\begin{align*}
+	&
+	\left (
+	\Delta_h+\frac{h^2}{6}\Delta^2_h
+	\right)\phi+
+	k^2\left (
+	1+\frac{h^2}{12}\Delta_h
+	+\delta\frac{h^4}{144}\Delta^2_h
+	\right)\phi=
+	\left (
+	1+\frac{h^2}{12}\Delta_h
+	+\delta_2\frac{h^4}{144}\Delta^2_h
+	\right)F
+\end{align*}
+
    The latter scheme requires boundary conditions for the inhomogeneous term $F$ and for $\phi$. We denote these boundary conditions as 
    $B_{NH}$ and $B_{C}$ respectively.
    
