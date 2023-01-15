@@ -720,7 +720,44 @@ h^3\sum\sum\sum E_{x,i+\frac{1}{2},j,k}
 	-\sum_{j=1}^{N-1}U_{i+\frac{1}{2},j}\delta_y W_{i+\frac{1}{2},j}
 	$$
 \end{lem}
-
+\begin{lem}
+	Let $E_z(i,j)$, $H_x(i,j+\frac{1}{2})$, $H_y(i+\frac{1}{2},j)$.
+Then
+	\begin{align*}
+		&
+\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}a_y^{-1}(i,j)\delta_yE_z(i,j+1/2)H_y(i,j+1/2)=
+\sum_{j=0}^{N-1}\delta_yE_z(i,j+1/2)H_y(i,j+1/2)\\&
+-\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}(\delta_{i,j}-a_y^{-1}(i,j))\delta_yE_z(i,j+1/2)H_y(i,j+1/2)
+	\end{align*}
+\end{lem}
+\begin{cor}
+	\begin{align*}
+		&
+		\left(
+		\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}, 
+\begin{pmatrix}
+	H_x^{n+1}\\
+	H_y^{n+1}\\
+	H_z^{n+1}
+	\end{pmatrix}
+\right)_{\bf{H}}=\\&
+(\mathbf{\curl}(\bf{E}_h),\bf{H}_h)_{\bf{H}}+\mathrm{E}^{1}
+	\end{align*}
+and $$|\mathrm{E}^{1}|\leq \|I-a^{-1}\|\cdot  \|  {\bf \curl (\bf{E}_h)}\|_{\bf{H}}  \cdot 
+\|H\|_{\bf{H}}\leq \frac{2\sqrt{3}}{h}
+\|I-a^{-1}\|\cdot  \|  {(\bf{E}_h)}\|_{\bf{E}}  \cdot 
+\|H\|_{\bf{H}}
+$$
+\end{cor}
 
 	We define the following (coercieve )energy function:
 $$
@@ -1414,6 +1451,9 @@ $$
 				\bibitem{Morton}
 				Morton,K.W.,Mayers,D.F.:NumericalSolutionofPartialDifferentialEquations,2ndedn.Cambridge
 				University Press, (2005)
+				\bibitem{chen}
+				Chen, Wenbin, Xingjie Li, and Dong Liang. "Energy-conserved splitting FDTD methods for Maxwell?s equations." Numerische Mathematik 108.3 (2008): 445-485.
+				
 				\bibitem{rolf}
 				Leis, Rolf. Initial boundary value problems in mathematical physics. Courier Corporation, 2013.
 				\bibitem{sakka}
