@@ -24,7 +24,7 @@
 
 \newcommand\red[1]{\textcolor{red}{#1}}
 \newcommand{\Gluck}{Gl\H{u}ck\xspace}
-
+\newcommand{\ra}{def}
 
 \newtcolorbox{leftbrace}{%
 	enhanced jigsaw, 
@@ -154,6 +154,8 @@
 \newcommand{\curl}{{\bf curl}}
 \newcommand{\e}{{\bf E}}
 \newcommand{\h}{{\bf H}}
+\newcommand{\J}{{\bf J}}
+\newcommand{\p}{{\bf P}}
 \newcommand{\pwd}{\partial\Omega_{\mathrm{Dir}}}
 \newcommand{\pwr}{\partial\Omega_{\mathrm{Rob}}}
 \newcommand{\wb}{\overline{\Omega}\setminus \partial\Omega_{\mathrm{Dir}} }
@@ -193,6 +195,8 @@
 \newcommand{\RN}[1]{%
 	\textup{\uppercase\expandafter{\romannumeral#1}}%
 }
+\newcommand{\interior}[1]{\accentset{\smash{\raisebox{-0.12ex}{$\scriptstyle\circ$}}}{#1}\rule{0pt}{2.3ex}}
+
 \newcommand{\dx}{\,\mathrm{d}x}
 \newcommand{\dy}{\,\mathrm{d}y}
 \newcommand{\dz}{\,\mathrm{d}z}
@@ -215,6 +219,8 @@
 \newcommand{\drho}{\,\mathrm{d}\rho}
 \newcommand{\dvrho}{\,\mathrm{d}\varrho}
 \newcommand{\dkappa}{\,\mathrm{d}\kappa}
+\newcommand{\intr}[1]{\mathrm{int}(#1)}
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\core}{C_0^{\infty}(\Omega)}
 \newcommand{\coredir}{C_0^{\infty}(\overline{\Omega} \setminus \pwd)}
@@ -263,6 +269,7 @@
 \newcommand{\txts}[1]{\textstyle #1}
 \newcommand{\dsps}[1]{\displaystyle #1}
 \newcommand{\ass}[1]{Let Assumptions~\ref{assump1} hold  in a bounded Lipschitz domain $\Gw$}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Macros for Greek letters.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -339,6 +346,12 @@
 	
 	\section{Introduction}
 	
+	\subsection{Novelties}
+
+	New compact fourth-order scheme for Maxwell-equations in $3D$ using equation-based method in staggered grid.
+	The staggered structure impose several difficulties in the analysis which enforce us to pick boundary conditions so that the energy estimates will hold.
+
+	
 	\section{Maxwell equations}
 	Let $\e,\h,\bf{D},\bf{B},\bf{J}$ be (real-valued) vector fields defined in  $[0,\infty)\times\Gw$ and take values in $\R^3$.
 	The Maxwell equations (without polarization), in first order differential vector form, are given by
@@ -360,14 +373,14 @@ By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a 
 %\frac{\partial {\bf E}}{\partial \tau }=Z(\nabla \times \bf{H}-{\bf J}), \quad 
 %\frac{\partial {\bf H}}{\partial \tau }=-\frac{1}{Z}\nabla \times {\bf E}.
 %$$
-	\begin{align*}
+	\begin{align}
 	\label{eq:maxwellv}
-	&
-\frac{\partial {\bf E}}{\partial \tau }=Z(\nabla \times \bf{H}-{\bf J}) \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&
- \frac{\partial {\bf H}}{\partial \tau }=-\frac{1}{Z}\nabla \times {\bf E} \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&
- \e(0,x,y,z)=\e_0 \\& \h(0,x,y,z)=\h_0,\\&
-	\nabla\cdot \h(t,x,y,z) = 0.
-\end{align*}
+	&\notag
+\frac{\partial {\bf E}}{\partial \tau }=Z(\nabla \times \bf{H}-{\bf J}) \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&\notag
+ \frac{\partial {\bf H}}{\partial \tau }=-\frac{1}{Z}\nabla \times {\bf E} \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&\notag
+ \e(0,x,y,z)=\e_0 \\& \h(0,x,y,z)=\h_0,\\&\notag
+	\nabla\cdot \h(t,x,y,z) = 0.\notag
+\end{align}
 
 
 
@@ -389,6 +402,7 @@ By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a 
 		\item $x_{i}=i h,y_{j}=j h,z_{k}=k h$ 
 		\item $x_{i+\frac{1}{2}}=\left (i+\frac{1}{2}\right ) h, y_{j+\frac{1}{2}}=\left (j+\frac{1}{2}\right ) h, z_{k+\frac{1}{2}}=\left (k+\frac{1}{2}\right ) h$ 
 		\item 	$[N]=\{0,1,..,N\},\quad N\in \N.$
+				\item 	$[k,m]=\{k,k+1,..m\},\quad k<m\in \N.$
 	\end{itemize}
 
 	To discretize the equations we introduce a staggered mesh in both space and time as in the Yee scheme \cite{yee}. 
@@ -406,13 +420,37 @@ By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a 
 		&\Gw^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\
 		& \Gw^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.
 	\end{align*}
+Furthermore,
+	\begin{align*}
+	&\mathrm{int}(\Gw^{E_z}):=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [1,N-1]^2 \times[1,N-2]\} \\
+	&\mathrm{int}( \Gw^{E_y}):=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [1,N-1]\times [1,N-2] \times[N] \}\\
+	& \mathrm{int}(\Gw^{E_x}):=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [1,N-2]\times [1,N-1]^2 \} \\
+	&\mathrm{int}(\Gw^{H_z}):=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [1,N-2]^2\times[1,N-1] \}\\
+	&\mathrm{int}(\Gw^{H_y}):=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [1,N-2]\times [1,N-1] \times [1,N-2] \}\\
+	& \mathrm{int}(\Gw^{H_x}):=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [1,N-1]\times [1,N-2]^2\}.
+\end{align*}
+By convection, $x_0=y_0=z_0=0$ and $x_N=y_N=z_N=1$.
 	We denote 
 $$
 \Gw^{{\bf E}}:=\Gw^{E_x}\times \Gw^{E_y}\times \Gw^{E_z}, \qquad 
 \Gw^{\bf H}:=
-\Gw^{H_x}\times \Gw^{H_y}\times \Gw^{H_z}.
+\Gw^{H_x}\times \Gw^{H_y}\times \Gw^{H_z},
 $$
-    The dicretized functions $\e_h, \h_h$ are then satisfy
+and 
+$$
+\mathrm{int}(\Gw^{{\e}}):=\mathrm{int}(\Gw^{E_x})\times \mathrm{int}(\Gw^{E_y})\times \mathrm{int}(\Gw^{E_z}),
+\quad \partial \Gw^\e:=\Gw^\e\setminus  \mathrm{int}(\Gw^{\e})
+$$
+$$
+\mathrm{int}(\Gw^{\h}):=
+\mathrm{int}(\Gw^{H_x})\times \mathrm{int}(\Gw^{H_y})\times \mathrm{int}(\Gw^{H_z}),
+\quad \partial \Gw^\h:=\Gw^\h\setminus  \mathrm{int}(\Gw^{\h}).
+$$
+{\bf We emphasize that $\partial(\Gw^\h)$ include points which are not interior points
+	 in the physical domain $\Gw$	 (in the usual topology on $\R^3$). }
+
+
+    The dicretized functions $\e_h, \h_h$ are then defined as follows:
     $$
     \e_h^n:=\e(n\Delta \tau,\Gw^\e),\quad  \h_h^{n+\frac{1}{2}}:=\h\left ((n+\frac{1}{2})\Delta \tau,\Gw^\h)\right).
     $$
@@ -422,7 +460,7 @@ $$
 	$E_s=0$ on $\partial \Gw^{E_s}$ for $s=x,y,z$. That is, 
 	\begin{align*}
 		&
-		E_x(x_{i+\frac{1}{2}}0,z_j)=E_x(x_{i+\frac{1}{2}},N,z_j)=
+		E_x(x_{i+\frac{1}{2}},0,z_j)=E_x(x_{i+\frac{1}{2}},N,z_j)=
 		E_x(x_{i+\frac{1}{2}},y_j,0)=E_x(x_{i+\frac{1}{2}},y_j, N)=0, \\&
 		E_y(0,y_{j+\frac{1}{2}},z_j)=E_y(N,y_{j+\frac{1}{2}},z_j)=
 		E_y(x_i,y_{j+\frac{1}{2}},0)=E_y(x_i, y_{j+\frac{1}{2}}, N)=0, \\&
@@ -431,82 +469,47 @@ $$
 	\end{align*} 
 	We define the following operators for subsequent use.
 	
+	Next, we consider fourth-order approximation for first derivatives:
+	Assume that $f(x)$ is known at N points $x_0,x_1, ..,x_{N-1}$. Then,  one can  estimate  $f'(x+h/2)$ at the $N-1$ points 	$x_{\frac{1}{2}},..,x_{N-3/2}$ to fourth order.
+   That is, there exists operators $a$ satisfying $a^{-1}D_xf(x)=f'(x+h/2)+O(h^4)$
+   (see Appendix \ref{appendix}). For partial derivatives with respect to $s$ we write $a_s$ as the corresponding operator for evaluating $f_s$. 
+   The operator $a$ can be modified to a symmetric operator such that fourth-order accuracy is preserved except at the points $x_{\frac{1}{2}}, x_{\frac{N-3}{2}}$.
+   In such a case $a$ will be replaced by $a^{\mathrm{sym}}$ (see \eqref{eq:lhs2}).
 	\begin{itemize}
+		\item ${\bf x'}=(x_i',y_j',z_k')\in \Gw^\e\cup\Gw^\h$
 		\item $\delta_{\tau} U^{n+\frac{1}{2}}:=\frac{U^{n+1}-U^{n}}{\Delta \tau}$
-				\item $D_x U(x_i',y_j',z_k'):=\frac{U(x_i'+h/2,y_j',z_k')-U(x_i'-h/2,y_j',z_k')}{h}$
-	\item $D_y U(x_i',y_j',z_k'):=\frac{U(x_i',y_j'+h/2,z_k')-U(x_i'-h/2,y_j',z_k')}{h}$
-		\item $D_z U(x_i',y_j',z_k'):=\frac{U(x_i',y_j',z_k'+h/2)-U(x_i'-h/2,y_j',z_k')}{h}$
-        \item $a_x(U(x_i',y_j',z_k')):=\frac{U(x_i'-h/2,y_j',z_k')+22\times U(x_i',y_j',z_k')+U(x_i'+h/2,y_j',z_k')}{24}$.
-                \item $a_y(U(x_i',y_j',z_k')):=\frac{U(x_i',y_j'-h/2,z_k')+22\times U(x_i',y_j',z_k')+U(x_i',y_j'+h/2,z_k')}{24}$.
-                        \item $a_z(U(x_i',y_j',z_k')):=\frac{U(x_i',y_j',z_k'-h/2)+22\times U(x_i',y_j',z_k')+U(x_i',y_j',z_k'+h/2)}{24}$.
-		\item $\delta_x U:=a_x^{-1}\circ D_x$
+				\item $D_x U({\bf x'}):=\frac{U(x_i'+h/2,y_j',z_k')-U(x_i'-h/2,y_j',z_k')}{h}$
+	\item $D_y U({\bf x'}):=\frac{U(x_i',y_j'+h/2,z_k')-U(x_i'-h/2,y_j',z_k')}{h}$
+		\item $D_z U({\bf x'}):=\frac{U(x_i',y_j',z_k'+h/2)-U(x_i'-h/2,y_j',z_k')}{h}$
+%        \item $a_xU({\bf x'}):=\frac{U(x_i'-h/2,y_j',z_k')+22\cdot	 U(x_i',y_j',z_k')+U(x_i'+h/2,y_j',z_k')}{24}$.
+%                \item $a_yU({\bf x'}):=\frac{U(x_i',y_j'-h/2,z_k')+22\cdot U(x_i',y_j',z_k')+U(x_i',y_j'+h/2,z_k')}{24}$.
+%                        \item $a_zU({\bf x'}):=\frac{U(x_i',y_j',z_k'-h/2)+22\cdot U(x_i',y_j',z_k')+U(x_i',y_j',z_k'+h/2)}{24}$.
+		\item $\delta_x U({\bf x' }):=a_x^{-1}\circ D_xU({\bf x}')$
 		\item $\delta_y U:=a_y^{-1}\circ D_y$
 		\item 	$\delta_z U:=a_z^{-1}\circ D_z$
-		\item $
-		L_{\tau}^h(U):=-
-		\left (
-		\frac{D_{xx}}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}}{1+\frac{h^2}{12}D_{yy}}
-		+\frac{D_{zz}}{1+\frac{h^2}{12}D_{zz}}\right)U
-		+\frac{24}{\Delta \tau^2}U
-		$
-		\item
-		$D_{ss}\phi=\frac{\phi(s+h)-2\phi(s)+\phi(s-h)}{h^2}$ is standard symmetric second derivative operator for $s=x,y,z$ with Dirichlet boundary conditions.
+%		\item $
+%		L_{\tau}^h(U):=-
+%		\left (
+%		\frac{D_{xx}}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}}{1+\frac{h^2}{12}D_{yy}}
+%		+\frac{D_{zz}}{1+\frac{h^2}{12}D_{zz}}\right)U
+%		+\frac{24}{\Delta \tau^2}U
+%		$
+%		\item
+%		$D_{ss}\phi=\frac{\phi(s+h)-2\phi(s)+\phi(s-h)}{h^2}$ is standard symmetric second derivative operator for $s=x,y,z$ with Dirichlet boundary conditions.
 	\end{itemize}
+
 	
-	Moreover, we define 
+	Finally, we define 
 	$$
-	P({\bf J}):=Z\frac{24}{\Delta \tau^2}\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla div({\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial t^2}\right ).
+	P({\bf J^{n+\frac{1}{2}}}):=Z\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla div({\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial t^2}\right ).
 	$$
    \subsection{Modified Helmholtz equation}
-   In the following sections we will exploit fourth order compact schemes for solving elliptic equations of the form $-\Delta \phi+k^2\phi=F$ in $\Gw^{E_s}$ or $\Gw^{H_s}$, $s=x,y,z$ \cite{singer_turkel}.
-   We will use the following scheme:
-   $$
--   \left (
-   \frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
-   +\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
-   +k^2\phi=F.
-   $$
-   Equivalently,
-   \begin{align*}
-&
--\left(1+\frac{h^2}{12}D_{yy}\right)
-\left(1+\frac{h^2}{12}D_{zz}\right)D_{xx}\phi-
-\left(1+\frac{h^2}{12}D_{xx}\right)
-\left(1+\frac{h^2}{12}D_{zz}\right)D_{yy}\phi\\&
--\left(1+\frac{h^2}{12}D_{xx}\right)
-\left(1+\frac{h^2}{12}D_{yy}\right)D_{zz}\phi+
-\left(1+\frac{h^2}{12}D_{xx}\right)
-\left(1+\frac{h^2}{12}D_{yy}\right)
-\left(1+\frac{h^2}{12}D_{zz}\right)k^2\phi
-=\\&
-\left(1+\frac{h^2}{12}D_{xx}\right)
-\left(1+\frac{h^2}{12}D_{yy}\right)
-\left(1+\frac{h^2}{12}D_{zz}\right)F.
-\end{align*}
-This can be generalized to 
-\begin{align*}
-	&
-	\left (
-	D_{xx}+D_{yy}+D_{zz}+\frac{h^2}{6}(D_{zz}D_{xx}+D_{zz}D_{yy}+D_{xx}D_{zz})
-	+\gamma\frac{h^4}{48}D_{xx}D_{yy}D_{zz}
-	\right)\phi+\\&
-	k^2\left (
-     1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
-     +\delta\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
-     +\sigma\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
-	\right)\phi=\\&
-		\left (
-	1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
-	+\delta_2\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
-	+\sigma_2\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
-	\right)F
-\end{align*}
-If we set $\sigma=\sigma_2=\gamma=0$ 
-and define 
+   In the following sections we will exploit fourth-order compact schemes for solving elliptic equations of the form $-\Delta \phi+k^2\phi=F$,$k>0$.
+Let 
 $$
-\Delta_h:=D_{xx}+D_{yy}+D_{zz}, \quad \Delta^2_h:= D_{zz}D_{xx}+D_{yy}D_{zz}+D_{xx}D_{zz}
+\Delta_h:=D_{xx}+D_{yy}+D_{zz}, \quad \Delta^2_h:= D_{zz}D_{xx}+D_{yy}D_{zz}+D_{xx}D_{zz}.
 $$
-then we have at interior points
+then 
 \begin{align*}
 	&
 	-\left (
@@ -514,43 +517,129 @@ then we have at interior points
 	\right)\phi+
 	k^2\left (
 	1+\frac{h^2}{12}\Delta_h
-	+\delta\frac{h^4}{144}\Delta^2_h
 	\right)\phi=
-	\left (
+	k^2\left (
 	1+\frac{h^2}{12}\Delta_h
-	+\delta_2\frac{h^4}{144}\Delta^2_h
 	\right)F
 \end{align*}
-If  $k^2\phi=F$ on the boundary then the added boundary terms  
-reads as follows:
-\begin{align*}
-	&\phi_B
-\end{align*}
+The latter scheme requires boundary operators for the inhomogeneous term $F$ and for $\phi$. We denote these boundary operators as 
+$B_{F}$ and $B_{\phi}$ respectively.
+The resulting scheme can be written as follows:
+$$
+P_1\phi+P_1B_\phi=P_2\phi+P_2B_{F}
+$$
+where $P_1,P_2$ are symmetric operators.
+If further $B_{\phi}=B_{F}=B$, then 
+$$
+\left (\frac{P_1}{P_2}\right)\phi+\left (\frac{P_1-P_2}{P_2}\right)B=F.
+$$
+In the following sections we will use the demand $B_{\phi}=B_{F}$ in our scheme and show how it simplifies the energy estimates. Moreover, this requirement is also consistent with Taylor expansion of the equations. 
+%\begin{proposition}
+%	Let 
+%	$$
+%	P_1:=	\Delta_h+\frac{h^2}{6}\Delta^2_h
+%	+
+%	k^2\left (
+%	1+\frac{h^2}{12}\Delta_h
+%	+\delta\frac{h^4}{144}\Delta^2_h
+%	\right)
+%	$$
+%	$$
+%	P_2:=1+\frac{h^2}{12}\Delta_h
+%	+\delta\frac{h^4}{144}\Delta^2_h.
+%	$$
+%\end{proposition}
+   
+%   $$
+%-   \left (
+%   \frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
+%   +\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
+%   +k^2\phi=F
+%   $$
+%    \cite{singer_turkel}.
+%   Equivalently,
+%   \begin{align*}
+%&
+%-\left(1+\frac{h^2}{12}D_{yy}\right)
+%\left(1+\frac{h^2}{12}D_{zz}\right)D_{xx}\phi-
+%\left(1+\frac{h^2}{12}D_{xx}\right)
+%\left(1+\frac{h^2}{12}D_{zz}\right)D_{yy}\phi\\&
+%-\left(1+\frac{h^2}{12}D_{xx}\right)
+%\left(1+\frac{h^2}{12}D_{yy}\right)D_{zz}\phi+
+%\left(1+\frac{h^2}{12}D_{xx}\right)
+%\left(1+\frac{h^2}{12}D_{yy}\right)
+%\left(1+\frac{h^2}{12}D_{zz}\right)k^2\phi
+%=\\&
+%\left(1+\frac{h^2}{12}D_{xx}\right)
+%\left(1+\frac{h^2}{12}D_{yy}\right)
+%\left(1+\frac{h^2}{12}D_{zz}\right)F.
+%\end{align*}
+%This can be generalized to 
+%\begin{align*}
+%	&
+%	\left (
+%	D_{xx}+D_{yy}+D_{zz}+\frac{h^2}{6}(D_{zz}D_{xx}+D_{zz}D_{yy}+D_{xx}D_{zz})
+%	+\gamma\frac{h^4}{48}D_{xx}D_{yy}D_{zz}
+%	\right)\phi+\\&
+%	k^2\left (
+%     1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
+%     +\delta\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
+%     +\sigma\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
+%	\right)\phi=\\&
+%		\left (
+%	1+\frac{h^2}{12}(D_{xx}+D_{yy}+D_{zz})	
+%	+\delta_2\frac{h^4}{144}(D_{xx}D_{yy}+D_{yy}D_{zz}+D_{xx}D_{zz})	
+%	+\sigma_2\frac{h^6}{1728}D_{xx}D_{yy}D_{zz}
+%	\right)F
+%\end{align*}
+%If we set $\sigma=\sigma_2=\gamma=\delta=0$ 
 
-   The latter scheme requires boundary conditions for the inhomogeneous term $F$ and for $\phi$. We denote these boundary conditions as 
-   $B_{NH}$ and $B_{C}$ respectively.
+%If  $k^2\phi=F$ on the boundary then the added boundary terms  
+%reads as follows:
+%\begin{align*}
+%	&\phi_B
+%\end{align*}
+
+
    
 	\section{The scheme}
-	Using  Taylor series and the Maxwell equations to derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
+	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} we derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
 $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
-	:
 	$$
-	-\Delta\delta_{\tau} \bf{E}^{n+\frac{1}{2}}+\frac{24}{\Delta \tau^2}\delta_{\tau}\bf{E}^{n+\frac{1}{2}}=
-	Z\frac{24}{\Delta \tau^2}\nabla\times \bf{H}^{n+\frac{1}{2}}+P(J)^{n+\frac{1}{2}}+
-	\mathrm{O(\Delta \tau^4+h^4)},
+	-\Delta\delta_{\tau} \e^{n+\frac{1}{2}}+\frac{24}{\Delta \tau^2}\delta_{\tau}\e^{n+\frac{1}{2}}=
+	Z\frac{24}{\Delta \tau^2}\nabla\times \h^{n+\frac{1}{2}}+P(\J)^{n+\frac{1}{2}}+
+	\mathrm{O(\Delta \tau^4+h^4)} \quad {\mathrm in} \quad (0,1)^3,
 	$$
 		$$
-	-\Delta \delta_{\tau}\bf{H}^{n+1}+\frac{24}{\Delta \tau^2}\delta_{\tau}\bf{H}^{n+1}=
-	-\frac{1}{Z}\frac{24}{\Delta \tau^2}\nabla\times {\bf E}^{n+1}+
-	\mathrm{O(\Delta \tau^4+h^4)}.
+	-\Delta \delta_{\tau}\h^{n+1}+\frac{24}{\Delta \tau^2}\delta_{\tau}\h^{n+1}=
+	-\frac{1}{Z}\frac{24}{\Delta \tau^2}\nabla\times \e^{n+1}+
+	\mathrm{O(\Delta \tau^4+h^4)} \quad {\mathrm in} \quad (0,1)^3.
 	$$
-	\begin{rem}
+	\begin{defi}
+		For any $s=x,y,z$ and $I= H_s, E_s,$
+		let $$P_1^{I}, P_2^{I}:\intr\Gw^{I}\to \intr\Gw^{I}$$ defined as 
+		$$
+		P_1^{I}:=-\left (\Delta_h+\frac{h^2}{6}\Delta_h^2\right)+\frac{24}{\Delta \tau^2}\left (
+		 1+\frac{h^2}{12}\Delta_h^2,
+		\right)
+		$$
+		$$
+			P_2^{I}:=\frac{24}{\Delta \tau^2}\left (
+		1+\frac{h^2}{12}\Delta_h^2.
+		\right)
+		$$	
+		let $B^I$ be $I$ evaluated in $\partial \Gw^{I}$.
+		Let $$L^I:=
+		\left (\frac{P_1^{I}}{P_2^I}\right)\phi+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
+		$$
+		
+	\end{defi}
+	\begin{rem}		
 		 Appendix \ref{appendxib} also shows how our scheme can be extended to the cases $\varepsilon$ and $\mu$ are positive scalar functions which do not depend on $t$.
 	\end{rem}
-	The resulting scheme reads as follows.
-	
-	Let $\bf{E}^n_h, \bf{H}^{n+\frac{1}{2}}_h$ (where $h$ denotes discretized function) be given:\\[2mm]
-	{\bf step 1}: update $\bf{E}^{n+1}_h$: \\[2mm]
+	The resulting scheme reads as follows.\\[1mm]
+	Let $\bf{E}^n_h, \bf{H}^{n+\frac{1}{2}}_h$  be given at $\Gw^{\e}$ and $\Gw^{\h}$ respectively. \\[2mm]
+	{\bf step 1}: solve  $\e^{n+1}_h$ in $\intr\Gw^{\e}$: \\[2mm]
 	$$
 	\begin{pmatrix}
 		E_x^{n+1}\\
@@ -566,15 +655,15 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 	where 
 	$$
 	\begin{pmatrix}
-		L_{\tau}^{h} & 0&0 \\
-		0 & L_{\tau}^{h} &\\
-		0&0&L_{\tau}^{h} 
+		L^{E_x} & 0&0 \\
+		0 & L^{E_y} &\\
+		0&0&L^{E_z} 
 	\end{pmatrix}
 	\begin{pmatrix}
 		E_x^{*}\\
 		E_y^{*} \\
 		E_z^{*}
-	\end{pmatrix}=Z\frac{24}{\Delta \tau^2}
+	\end{pmatrix}=Z
 	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -584,14 +673,11 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		H_x^{n+\frac{1}{2}}\\
 		H_y^{n+\frac{1}{2}}\\
 		H_z^{n+\frac{1}{2}}
-	\end{pmatrix}+P({\bf J})
+	\end{pmatrix}+P({\bf J}).
 	$$
-	in $\Gw^{\bf{E}}$.
-	Furthermore,
-	$B_{C}=B_{NH}=0$ for $E_s^{*}$ $(s=x,y,z)$.
-
-	
-	{\bf step 2}: update $\bf{H}^{n+3/2}_h$: \\[2mm]
+	Notice that ,
+	$B^I=0$ for $E_s^{*}$ $(s=x,y,z)$.\\[1mm]
+	{\bf step 2}: solve $\bf{H}^{n+3/2}_h$ in $\intr\Gw^\h$: \\[2mm]
 	$$
 	\begin{pmatrix}
 		H_x^{n+3/2}\\
@@ -607,15 +693,15 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 	where 
 	$$
 	\begin{pmatrix}
-		L_{\tau}^{h} & 0&0 \\
-		0 & L_{\tau}^{h} &\\
-		0&0&L_{\tau}^{h} 
+		L^{H_x}  & 0&0 \\
+		0 & 	L^{H_y}  &\\
+		0&0&	L^{H_z} 
 	\end{pmatrix}
 	\begin{pmatrix}
 		H_x^{*}\\
 		H_y^{*} \\
 		H_z^{*}
-	\end{pmatrix}=-\frac{1}{Z}\frac{24}{\Delta \tau^2}
+	\end{pmatrix}=-\frac{1}{Z}
 	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -627,12 +713,12 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		E_z^{n+1}
 	\end{pmatrix}
 	$$
-	in $\Gw^{\bf{H}}$. Furthermore,
-	$B_{NH}$ equals to the non-homogeneous term which has calculated at the previous step in $\Gw^{\bf{H}}$ including the boundary.
-	For $B_{C}$ we use Taylor expansion
+%	in $\Gw^{\bf{H}}$. Furthermore,
+%	$B_{NH}$ equals to the non-homogeneous term which has calculated at the previous step in $\Gw^{\bf{H}}$ including the boundary.
+Consider the equation based  Taylor expansion
 	$$
-	\frac{\bf{H}^{n+3/2}-\bf{H}^{n+\frac{1}{2}}}{\Delta \tau}=
-	\frac{\partial \bf{H}}{\partial t}+O(\Delta \tau ^2)=
+	\frac{\h^{n+3/2}-\h^{n+\frac{1}{2} } }{\Delta \tau}=
+	\frac{\partial \h}{\partial t}+O(\Delta \tau ^2)=
 	-\frac{1}{Z}	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -644,8 +730,12 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		E_z^{n+1}
 	\end{pmatrix}+O(\Delta \tau^2+h^4).
 	$$
-	Hence 
-	$$B_C=
+	Hence our choice for boundary conditions is indeed consistent with the condition 
+	$B_\phi=B_F$. Therefore,
+	$$\begin{pmatrix}
+			B^{H_x}\\ B^{H_y}\\ B^{H_z}
+	\end{pmatrix}
+=
 		-\frac{1}{Z}	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -655,11 +745,20 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		E_x^{n+1}\\
 		E_y^{n+1}\\
 		E_z^{n+1}
-	\end{pmatrix}.
+	\end{pmatrix}
 	$$
+	evaluated in $\partial\Gw^{\h}$. This boundary condition is of order $\Delta \tau^2$.
 	
-	Approximation of the boundary conditions to order $\Delta \tau ^4$ is also possible as depicted in the example in section \ref{sec:TE}.
+	\begin{cor}
+		For all points in $\intr \Gw^{\e}\times\intr\Gw^\h$ the scheme is of order $\Delta \tau^4+h^4$.
+	\end{cor}
+   
+	\begin{rem}
+	Approximation of the boundary conditions to order $\Delta \tau ^4$ is also possible as depicted in the example in section \ref{sec:TE}. However, we choose the boundary conditions to fit the stability analysis in the subsequent sections.
+	\end{rem}
+
 	
+
 
 	
 
@@ -684,97 +783,167 @@ Let $F,G$ defined in $\Gw^{\bf{E}}$ and $U,V$ defined in
 $\Gw^{\bf{H}}$.
 We define the following inner products:
 $$
-(F,G)_{\bf{E}}:=
+(F,G)_{\Gw^\e}:=
 h^3\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}\sum_{k=0}^{N-1}
 F_{x,i+\frac{1}{2},j,k}G_{x,i+\frac{1}{2},j,k}+
 F_{y,i,j+\frac{1}{2},k}G_{y,i,j+\frac{1}{2},k}+F_{z,i,j,k+\frac{1}{2}}G_{z,i,j,k+\frac{1}{2}}
 $$
 \begin{align*}
 	&
-	(U,V)_{\bf{H}}:=
+	(U,V)_{\Gw^h}:=
 	h^3\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}\sum_{k=0}^{N-1}
 	F_{x,i,j+\frac{1}{2},k+\frac{1}{2}}G_{x,i,j+\frac{1}{2},k+\frac{1}{2}}+\\&
 	F_{y,i+\frac{1}{2},j,k+\frac{1}{2}}G_{y,i+\frac{1}{2},j,k+\frac{1}{2}}+F_{z,i+\frac{1}{2},j+\frac{1}{2},k}G_{z,i+\frac{1}{2},j+\frac{1}{2},k}
 \end{align*}
-We define the spaces 
+The induced norms will be denoted by $\|\cdot \|_{\e},\|\cdot \|_{\h}$.
+
+Consider  the spaces 
 $$
 V^{\bf{E}}:=\{F \in \Gw^{\bf{E}}:\|F\|_{\bf{E}}<\infty\}, \qquad 
 V^{\bf{H}}:=\{G \in \Gw^{\bf{H}}:\|G\|_{\bf{H}}<\infty\}.
 $$
-
 We define 
 $$
-\mathbf{\curl}:V^{\bf{E}}\to V^{\bf{H}}, \quad 
-\mathbf{\curl'}:V^{\bf{H}}\to V^{\bf{E}},
+\mathbf{\curl_h}:V^{\bf{E}}\to V^{\bf{H}}, \quad 
+\mathbf{\curl_h'}:V^{\bf{H}}\to V^{\bf{E}},
 $$
 by
 $$
-\mathbf{\curl}( resp. \mathbf{\curl}')=
+\mathbf{\curl_h}( resp. \mathbf{\curl_h}')=
 \begin{pmatrix}
-	0& -D_z & D _y\\
-	D_z&0&-D_x\\
-	-D_y&D_x&0\\
+	0& -\delta_z & \delta _y\\
+	\delta_z&0&-\delta_x\\
+	-\delta_y&\delta_x&0\\
 \end{pmatrix}.
 $$
-\begin{cor}
-	For any $\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$ we have 
+\begin{corollary}(cf. \cite[(37)]{sakka} for the case $a=1$)\label{lem:sym}
+	Assume that $a=a^{\mathrm{sym}}$. Then
+	for any $\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$ we have 
 	$$
-	(\mathbf{\curl}(\bf{E}_h),\bf{H}_h)_{\bf{H}}=
-		(\mathbf{\curl}'(\bf{H}_h),\bf{E}_h)_{\bf{E}}.
+	(\mathbf{\curl_h}(\bf{E}_h),\bf{H}_h)_{\Gw^\h}=
+		(\mathbf{\curl}'(\bf{H}_h),\bf{E}_h)_{\Gw^\e}.
 	$$
-\end{cor}
-Let $P$ be the operator
-$$
-	P(\phi):=
-		-	\left (
-	\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
-	+\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
-	+\frac{24}{\Delta \tau^2}\phi.
-	$$
-	We define 
-	$$
-	{\bf P}:V^{\bf{E}}\to V^{\bf{E}}
-	$$
-	as $$\bf{P}:=
-	\begin{pmatrix}
-		P & 0&0 \\
-		0&P& 0 \\
-		0&0 &P
-	\end{pmatrix}.
-	$$
+\end{corollary}
+%Let $P$ be the operator
+%$$
+%	P(\phi):=
+%		-	\left (
+%	\frac{D_{xx}\phi}{1+\frac{h^2}{12}D_{xx}}+\frac{D_{yy}\phi}{1+\frac{h^2}{12}D_{yy}}
+%	+\frac{D_{zz}\phi}{1+\frac{h^2}{12}D_{zz}}\right)
+%	+\frac{24}{\Delta \tau^2}\phi.
+%	$$
+%	We define  the non-negattive operator
+%	$$
+%	\p:V^{\bf{E}}\to V^{\bf{E}}
+%	$$
+%	as $$\p:=
+%	\frac{\Delta \tau^2}{24}
+%	\begin{pmatrix}
+%		P & 0&0 \\
+%		0&P& 0 \\
+%		0&0 &P
+%	\end{pmatrix}.
+%	$$
+%    
+%	Then for all $f,g\in \Gw^{\bf{E}}$:
+%	\begin{enumerate}
+%		\item $(\p g,f)_{\bf{E}}=(\bf{P},g)_{\bf{E}}$.
+%		\item $({\bf P}f,f)\geq 0$. 
+%	\end{enumerate}
+%By a similar way we can define  
+%	$$
+%\bf{P}':V^{\bf{H}}\to V^{\bf{H}}.
+%$$
+%\begin{defi}
+%	For all $\e^n,\e^m\in V^{\e}$ and $\h^n,\h^m\in V^{\h}$  we define 
+%	$$
+%	\langle
+%\e^n,\e^m
+%\rangle_\p	:=(\p\e^n,\e^m), \quad 
+%	\langle
+%\h^n,\h^m
+%\rangle_{\p'}	:=(\p'\h^n,\h^m)_\h.
+%	$$
+%	The induced norms are denoted as $\|\cdot \|_{\p}$ and $\|\cdot\|_{\p'}$.
+%\end{defi}
 
-	Then for all $f,g\in \Gw^{\bf{E}}$:
-	\begin{enumerate}
-		\item $(\bf{P}g,f)_{\bf{E}}=(\bf{P},g)_{\bf{E}}$.
-		\item $({\bf P}f,f)\geq 0$. 
-	\end{enumerate}
-By a similar way we can define  a symmetric coercieve operator
-(which is strictly positive for "good" cfl numbers)
-	$$
-\bf{P}':V^{\bf{H}}\to V^{\bf{H}}
-$$
-by
-
-
-\begin{lem}
-	Assume that $U,V$ satisfy the boundary conditions 
-	$U_{i+\frac{1}{2},0}=U_{i+\frac{1}{2},N}=V(0,j+\frac{1}{2})=V(N,j+\frac{1}{2})=0$.
-	Then
-	$$
-	\sum_{j=0}^{N-1}W_{i+\frac{1}{2},j+\frac{1}{2}}\delta_yU_{i+\frac{1}{2},j+\frac{1}{2}}=
-	-\sum_{j=1}^{N-1}U_{i+\frac{1}{2},j}\delta_y W_{i+\frac{1}{2},j}
-	$$
-\end{lem}
-\begin{lem}
-	Let $E_z(i,j)$, $H_x(i,j+\frac{1}{2})$, $H_y(i+\frac{1}{2},j)$.
-Then
+\begin{lemma}
+	Assume for simplicity that $\J=0$ and $Z=1$.
+	Assume that $a_s=a_s^{\mathrm{sym}}$ for all $s=x,y,z$.
+	and let
 	\begin{align*}
-		&
-\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}a_y^{-1}(i,j)\delta_yE_z(i,j+1/2)H_y(i,j+1/2)=
-\sum_{j=0}^{N-1}\delta_yE_z(i,j+1/2)H_y(i,j+1/2)\\&
--\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}(\delta_{i,j}-a_y^{-1}(i,j))\delta_yE_z(i,j+1/2)H_y(i,j+1/2)
-	\end{align*}
+	{\mathcal E}^{n}:=\|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}
+	+\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}.
+\end{align*}
+If 	$$\frac{\Delta \tau}{h}\leq \frac{5}{6\sqrt{3}}$$
+Then for all $n$
+$$
+	0\leq {\mathcal E}^{n+1}=	{\mathcal E}^{n}.
+$$
+\end{lemma}
+\begin{proof}
+	Clearly,
+\begin{align*}
+	&
+	(\p(\e_h^{n+1}-\e_h^n),\e_h^{n+1}+\e_h^n)_\e=
+	\Delta \tau (\curl_h \h^{n+1/2},\e^{n+1}+\e_h^n)_{\e}, \\&
+		(\p'(\h_h^{n+3/2}-\h_h^{n+1/2}),\h_h^{n+3/2}+\h_h^{n+1/2})_\h=-
+	\Delta \tau (\curl_h' \e_h^{n+1},\h_h^{n+3/2}+\h_h^{n+1/2})_{\h}.
+\end{align*}
+Lemma \ref{lem:sym} and summation imply that 
+$$
+{\mathcal E}^{n+1}=	{\mathcal E}^{n}.
+$$
+Moreover, 
+$$
+\|\curl _h\e_h\|_{\h}\leq \frac{2\sqrt{3}}{h}, \quad \|a_s\|\geq \frac{5}{6}.
+$$
+  (cf. \cite[Theorem 4.1]{sakka}). By Young's inequality, 
+ $$
+ {\mathcal E}^{n}\geq 
+ \|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}-
+\frac{6\sqrt{3}\Delta \tau}{5h}\left ( \|\e_h^{n}\|_{\e}^2+\|\h_h^{n+1/2}\|_{\h}^2 \right).
+ $$
+Since $\frac{\Delta \tau^2}{24}\sigma_{\min}(P)\geq 1$ we are done.
+ \end{proof}
+
+\begin{lem}
+	Assume for simplicity that $\J=0$ and $Z=1$. Moreover, assume that 
+	$n\Delta \tau\leq T$.
+	\textcolor{red}{}
 \end{lem}
+%\begin{proof}
+%	\begin{align*}
+%		&
+%			(\p(\e_h^{n+1}-\e_h^n),\e_h^{n+1}+\e_h^n)_\e=
+%		\Delta \tau (\curl_h \h^{n+1/2},\e^{n+1}+\e_h^n)_{\e}, \\&
+%		(\p'(\h_h^{n+3/2}-\h_h^{n+1/2}),\h_h^{n+3/2}+\h_h^{n+1/2})_\h=
+%		-\Delta \tau (\curl_h' \e_h^{n+1},\h_h^{n+3/2}+\h_h^{n+1/2})_{\h}.
+%	\end{align*}
+%Therefore, 
+%$$
+% \|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}=
+% $$
+%\end{proof}
+%\begin{lem}
+%	Assume that $U,V$ satisfy the boundary conditions 
+%	$U_{i+\frac{1}{2},0}=U_{i+\frac{1}{2},N}=V(0,j+\frac{1}{2})=V(N,j+\frac{1}{2})=0$.
+%	Then
+%	$$
+%	\sum_{j=0}^{N-1}W_{i+\frac{1}{2},j+\frac{1}{2}}\delta_yU_{i+\frac{1}{2},j+\frac{1}{2}}=
+%	-\sum_{j=1}^{N-1}U_{i+\frac{1}{2},j}\delta_y W_{i+\frac{1}{2},j}
+%	$$
+%\end{lem}
+%\begin{lem}
+%	Let $E_z(i,j)$, $H_x(i,j+\frac{1}{2})$, $H_y(i+\frac{1}{2},j)$.
+%Then
+%	\begin{align*}
+%		&
+%\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}a_y^{-1}(i,j)\delta_yE_z(i,j+1/2)H_y(i,j+1/2)=
+%\sum_{j=0}^{N-1}\delta_yE_z(i,j+1/2)H_y(i,j+1/2)\\&
+%-\sum_{i=0}^{N-1}	\sum_{j=0}^{N-1}(\delta_{i,j}-a_y^{-1}(i,j))\delta_yE_z(i,j+1/2)H_y(i,j+1/2)
+%	\end{align*}
+%\end{lem}
 %\begin{cor}
 %	\begin{align*}
 %		&
@@ -812,54 +981,54 @@ Then
 %-(\Theta_1 \e^{n+1},\h^{n+1/2})_\h \right\|\leq 
 %$$
 %\end{lem}
-\begin{lemma}
-	If one consider anti- symmetric finite-difference operator for first derivative  then the following term is a discrete energy provided that 
-	$$\frac{\Delta \tau}{h}\leq \frac{1}{\sqrt{3}\|A^{-1}\| }$$.
-	\begin{align*}
-		{\mathcal E}^{n}:=\|\e^{n}\|^{2}_{\e}+\|\h^{n+1/2}\|^{2}_{\h}
-		-\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}
-		-\Delta \tau (\Theta_1\e^{n},\h^{n+1/2})_\h.
-	\end{align*}
-	That is, ${\mathcal E}^{n}$  is coercieve and 
-	$$
-		{\mathcal E}^{n+1}\leq 	{\mathcal E}^{n}.
-	$$
-\end{lemma}
-\begin{proof}
-	{\em monotonicity:}
-\begin{align*}
-	&
-	\frac{1}{\Delta \tau}\left [	\|\e_h^{n+1}\|^2-\|\e_h^{n}\|^2+
-		\|\h_h^{n+3/2}\|^2-\|\h_h^{n+1/2}\|^2\right ]=\\&
-		-\left ( \curl_h \e_h^{n+1},\h_h^{n+3/2}\right )
-		+\left ( \curl_h \h_h^{n+1/2},\e_h^{n}\right )+\\&
-		+(\Theta_1 \h^{n+1/2},\e^{n+1})_\e+(\Theta_1\h^{n+1/2},\e^n)_\e\\&
-		-(\Theta_1 \e^{n+1},\h^{n+1/2})_\h-(\Theta_1\e^{n+1},\h^{n+3/2})_\h=\\&
-			-\left ( \curl_h \e_h^{n+1},\h_h^{n+3/2}\right )
-		+\left ( \curl_h \h_h^{n+1/2},\e_h^{n}\right )+\\&
-		(\Theta_1\h^{n+1/2},\e^n)_\e
--(\Theta_1\e^{n+1},\h^{n+3/2})_\h.
-\end{align*}
-	{\em coercivity:}
-	
-	\begin{align*}
-		&
-	|	\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}|\leq 
-	\Delta \tau 
-    \|\curl\|\|\e_h^n\|\|\h^{n+1/2}\|\leq
-    \\&
-     \Delta \tau \|A^{-1}\|\frac{2\sqrt{3}}{h}\|\e_h^n\| \| \h_h^{n+1/2}\|\leq
-	    \Delta \tau \|A^{-1}\|\frac{\sqrt{3}}{h}
-	    (\|\e_h^n\|_{\e}^2+ \| \h_h^{n+1/2}\|_{\h}^2).
-	\end{align*}
-\end{proof}
-\begin{rem}
-	When $A$ is not symmetric the stability condition is 
-	\begin{align*}
-	{\mathcal E}^{n}:=\|\e^{n}\|^{2}_{\e}+\|\h^{n+1/2}\|^{2}_{\h}
-	-\Delta \tau \left (\tilde{ \curl}_h \e_h^{n},\h^{n+1/2}\right )_{\h}
-\end{align*}
-\end{rem}
+%\begin{lemma}
+%	If one consider anti- symmetric finite-difference operator for first derivative  then the following term is a discrete energy provided that 
+%	$$\frac{\Delta \tau}{h}\leq \frac{1}{\sqrt{3}\|A^{-1}\| }$$.
+%	\begin{align*}
+%		{\mathcal E}^{n}:=\|\e^{n}\|^{2}_{\e}+\|\h^{n+1/2}\|^{2}_{\h}
+%		-\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}
+%		-\Delta \tau (\Theta_1\e^{n},\h^{n+1/2})_\h.
+%	\end{align*}
+%	That is, ${\mathcal E}^{n}$  is coercieve and 
+%	$$
+%		{\mathcal E}^{n+1}\leq 	{\mathcal E}^{n}.
+%	$$
+%\end{lemma}
+%\begin{proof}
+%	{\em monotonicity:}
+%\begin{align*}
+%	&
+%	\frac{1}{\Delta \tau}\left [	\|\e_h^{n+1}\|^2-\|\e_h^{n}\|^2+
+%		\|\h_h^{n+3/2}\|^2-\|\h_h^{n+1/2}\|^2\right ]=\\&
+%		-\left ( \curl_h \e_h^{n+1},\h_h^{n+3/2}\right )
+%		+\left ( \curl_h \h_h^{n+1/2},\e_h^{n}\right )+\\&
+%		+(\Theta_1 \h^{n+1/2},\e^{n+1})_\e+(\Theta_1\h^{n+1/2},\e^n)_\e\\&
+%		-(\Theta_1 \e^{n+1},\h^{n+1/2})_\h-(\Theta_1\e^{n+1},\h^{n+3/2})_\h=\\&
+%			-\left ( \curl_h \e_h^{n+1},\h_h^{n+3/2}\right )
+%		+\left ( \curl_h \h_h^{n+1/2},\e_h^{n}\right )+\\&
+%		(\Theta_1\h^{n+1/2},\e^n)_\e
+%-(\Theta_1\e^{n+1},\h^{n+3/2})_\h.
+%\end{align*}
+%	{\em coercivity:}
+%	
+%	\begin{align*}
+%		&
+%	|	\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}|\leq 
+%	\Delta \tau 
+%    \|\curl\|\|\e_h^n\|\|\h^{n+1/2}\|\leq
+%    \\&
+%     \Delta \tau \|A^{-1}\|\frac{2\sqrt{3}}{h}\|\e_h^n\| \| \h_h^{n+1/2}\|\leq
+%	    \Delta \tau \|A^{-1}\|\frac{\sqrt{3}}{h}
+%	    (\|\e_h^n\|_{\e}^2+ \| \h_h^{n+1/2}\|_{\h}^2).
+%	\end{align*}
+%\end{proof}
+%\begin{rem}
+%	When $A$ is not symmetric the stability condition is 
+%	\begin{align*}
+%	{\mathcal E}^{n}:=\|\e^{n}\|^{2}_{\e}+\|\h^{n+1/2}\|^{2}_{\h}
+%	-\Delta \tau \left (\tilde{ \curl}_h \e_h^{n},\h^{n+1/2}\right )_{\h}
+%\end{align*}
+%\end{rem}
 
 
 
@@ -1370,8 +1539,40 @@ Then
 					f(x_{N-1)}-f(x_{N-2})
 				\end{pmatrix}.
 			\end{equation}
-		If one wants a symmetric operator, then one can replace the first and the last row with $24$ in the first and last place of the matrix, implying second order for the first.
-	
+		The matrix operator in the left hand side of \eqref{eq:lhs} will be denoted by $a$.
+		If one wants a symmetric operator, then one can redefine the system with compromising the accuracy on the boundary points.
+		\begin{equation}\label{eq:lhs2}
+			\frac{1}{24}
+			\begin{pmatrix}
+				24    & 0    & 0      & 0     & 0      & \dots  & 0      \\
+				1      & 22     & 1      & 0      & 0      & \dots  & 0      \\
+				0      & 1      & 22     & 1      & 0      & \dots  & 0      \\
+				\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+				0      & 0      & \dots  & 1      & 22     & 1      & 0      \\
+				0      & 0      & \dots  & 0      & 1      & 22     & 1      \\
+				0      & 0      & \dots  & 0     & 0      & 0     & 24
+			\end{pmatrix}
+			\begin{pmatrix}
+				f'(x_{\frac{1}{2}}) \\
+				f'(x_{3/2}) \\
+				\cdots \\
+				\cdots\\
+				\cdots \\
+				\cdots \\
+				f'(x_{N-3/2})
+			\end{pmatrix}=
+			\frac{1}{\Delta x}
+			\begin{pmatrix}
+				f(x_{1})-f(x_0)  \\
+				\cdots \\
+				\cdots\\
+				\cdots \\
+				\cdots \\
+				\cdots \\
+				f(x_{N-1)}-f(x_{N-2})
+			\end{pmatrix}.
+		\end{equation}
+			The matrix operator in the left hand side of \eqref{eq:lhs2} will be denoted by $a^{\mathrm{sym}}$.
 			%By Taylor approximation:
 			%$$
 			%\frac{f(x+h/2)-f(x-h/2)}{h}=f'(x)+\frac{f'''(x)h^2}{24}+O(h^4)
