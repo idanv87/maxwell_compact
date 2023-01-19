@@ -352,13 +352,13 @@
 	The staggered structure impose several difficulties in the analysis which enforce us to pick boundary conditions so that the energy estimates will hold.
 
 	
-	\section{Maxwell equations}
+	\subsection{Maxwell equations}
 	Let $\e,\h,\bf{D},\bf{B},\bf{J}$ be (real-valued) vector fields defined in  $[0,\infty)\times\Gw$ and take values in $\R^3$.
 	The Maxwell equations (without polarization), in first order differential vector form, are given by
 	\begin{align*}
 		\frac{\partial \bf{D}}{\partial t} &= \nabla \!\times\! \bf{H} - \bf{J} &
 		\frac{\partial B}{\partial t}=-\nabla\times \e &\\
-		\bf{B} &= \mu \bf{H} & \bf{D} &= \epsilon \bf{E}.
+		\bf{B} &= \mu \bf{H} & \bf{D} = \epsilon \bf{E},
 	\end{align*}
 	with initial conditions given for $\bf{D}$ and $\bf{E}$ at $t=0$.
 
@@ -368,7 +368,7 @@ We assume the following:
 	\item  $\Gw=[0,1]^3$, $\vec{n} \times {\bf E}=0$ on $\partial \Gw$ (\cite[Section 8]{rolf}).
 \end{enumerate}
 In fact, the identity $\nabla\cdot (\nabla\times)=0$ implies that one can look for solutions  satisfying $\nabla\cdot \h=0$.
-By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a numerical scheme for the following problem.
+By letting  $ \tau=ct$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a numerical scheme for the following problem.
 %$$
 %\frac{\partial {\bf E}}{\partial \tau }=Z(\nabla \times \bf{H}-{\bf J}), \quad 
 %\frac{\partial {\bf H}}{\partial \tau }=-\frac{1}{Z}\nabla \times {\bf E}.
@@ -379,7 +379,7 @@ By letting  $\Delta \tau=c\Delta t$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a 
 \frac{\partial {\bf E}}{\partial \tau }=Z(\nabla \times \bf{H}-{\bf J}) \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&\notag
  \frac{\partial {\bf H}}{\partial \tau }=-\frac{1}{Z}\nabla \times {\bf E} \quad \mathrm{in} \quad  (0,\infty)\times \Gw,\\&\notag
  \e(0,x,y,z)=\e_0 \\& \h(0,x,y,z)=\h_0,\\&\notag
-	\nabla\cdot \h(t,x,y,z) = 0.\notag
+	\nabla\cdot \h(\tau,x,y,z) = 0.\notag
 \end{align}
 
 
@@ -530,9 +530,9 @@ P_1\phi+P_1B_\phi=P_2\phi+P_2B_{F}
 $$
 where $P_1,P_2$ are symmetric operators.
 If further $B_{\phi}=B_{F}=B$, then 
-$$
+\begin{equation}\label{eq:explain}
 \left (\frac{P_1}{P_2}\right)\phi+\left (\frac{P_1-P_2}{P_2}\right)B=F.
-$$
+\end{equation}
 In the following sections we will use the demand $B_{\phi}=B_{F}$ in our scheme and show how it simplifies the energy estimates. Moreover, this requirement is also consistent with Taylor expansion of the equations. 
 %\begin{proposition}
 %	Let 
@@ -630,40 +630,52 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		$$	
 		let $B^I$ be $I$ evaluated in $\partial \Gw^{I}$.
 		Let $$L^I:=
-		\left (\frac{P_1^{I}}{P_2^I}\right)\phi+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
+		\left (\frac{P_1^{I}}{P_2^I}\right)+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
 		$$
 		
 	\end{defi}
+\begin{lem}\label{lem:bottom_spectrum}
+The bottom of the spectrum of $	\frac{P_1^{I}}{P_2^I} $
+is greater than $1$, and the top is less then $1+\frac{r^2}{6}+O(h^2)$.The top of the spectrum of 
+$\frac{P_1^I-P_2^I}{P_2^I}$ is less then  $\frac{\Delta \tau^2}{24}\sigma_{\max} (-\Delta_h$).
+\end{lem}
 	\begin{rem}		
 		 Appendix \ref{appendxib} also shows how our scheme can be extended to the cases $\varepsilon$ and $\mu$ are positive scalar functions which do not depend on $t$.
 	\end{rem}
 	The resulting scheme reads as follows.\\[1mm]
 	Let $\bf{E}^n_h, \bf{H}^{n+\frac{1}{2}}_h$  be given at $\Gw^{\e}$ and $\Gw^{\h}$ respectively. \\[2mm]
-	{\bf step 1}: solve  $\e^{n+1}_h$ in $\intr\Gw^{\e}$: \\[2mm]
+$$	\left.{\frac{x}{\frac{a+b}{c}}}\right|_{\;0}^{\;} $$
+	{\bf step 1}: solve the following equations in $\intr{\Gw^{\e}}$ with
+	 $B^{E_s^*}=0$ for $s=x,y,z$: \\[2mm]
 	$$
+	\left.
 	\begin{pmatrix}
 		E_x^{n+1}\\
 		E_y^{n+1}\\
 		E_z^{n+1}
-	\end{pmatrix}=
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\e}}}^{\;}=
+\left.
 	\begin{pmatrix}
 		E_x^n+\Delta \tau E_x^{*}\\
 		E_y^n+\Delta \tau E_y^{*}\\
 		E_y^n+\Delta \tau E_y^{*}
-	\end{pmatrix}
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\e}}}^{\;}
 	$$
 	where 
 	$$
+	\underbrace{t
 	\begin{pmatrix}
 		L^{E_x} & 0&0 \\
 		0 & L^{E_y} &\\
 		0&0&L^{E_z} 
 	\end{pmatrix}
+}_{:=L^\e}
 	\begin{pmatrix}
 		E_x^{*}\\
 		E_y^{*} \\
 		E_z^{*}
 	\end{pmatrix}=Z
+\left [ \left.
 	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -673,35 +685,65 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		H_x^{n+\frac{1}{2}}\\
 		H_y^{n+\frac{1}{2}}\\
 		H_z^{n+\frac{1}{2}}
-	\end{pmatrix}+P({\bf J}).
+	\end{pmatrix}+P({\bf J})\right]\right|_{\; \intr{\Gw^{\h}}}^{\;}.
 	$$
-	Notice that ,
-	$B^I=0$ for $E_s^{*}$ $(s=x,y,z)$.\\[1mm]
+	Extend $$	\left.\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\e}}}^{\;}$$
+to $\Gw^\e$ using the boundary conditions $B^{\e}=0$ and derive 
+$\e_h^{n+1}$ in $\Gw^\e$.
+	\\[1mm]
 	{\bf step 2}: solve $\bf{H}^{n+3/2}_h$ in $\intr\Gw^\h$: \\[2mm]
+	Consider the boundary conditions
+	\begin{equation}\label{eq:BH}
+	\begin{pmatrix}
+		B^{H_x}\\ B^{H_y}\\ B^{H_z}
+	\end{pmatrix}
+	=
+	-\frac{1}{Z}\left[ \left.	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}\right]\right|_{\; \partial{\Gw^{\h}}}^{\;}
+	\end{equation}
+	(see Remark \ref{rem:expB}).
+Solve
 	$$
+	\left.
 	\begin{pmatrix}
 		H_x^{n+3/2}\\
 		H_y^{n+3/2}\\
 		H_z^{n+3/2}
-	\end{pmatrix}=
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\h}}}^{\;}=
+\left.
 	\begin{pmatrix}
 		H_x^{n+\frac{1}{2}}+\Delta \tau H_x^{*}\\
 		H_y^{n+\frac{1}{2}}+\Delta \tau H_y^{*}\\
 		H_y^{n+\frac{1}{2}}+\Delta \tau H_y^{*}
-	\end{pmatrix}
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\h}}}^{\;}
 	$$
 	where 
 	$$
+	\underbrace{
 	\begin{pmatrix}
 		L^{H_x}  & 0&0 \\
 		0 & 	L^{H_y}  &\\
 		0&0&	L^{H_z} 
 	\end{pmatrix}
+}_{:=L^\h}
 	\begin{pmatrix}
 		H_x^{*}\\
 		H_y^{*} \\
 		H_z^{*}
 	\end{pmatrix}=-\frac{1}{Z}
+\left[ \left.
 	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -711,10 +753,19 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 		E_x^{n+1}\\
 		E_y^{n+1}\\
 		E_z^{n+1}
-	\end{pmatrix}
+	\end{pmatrix}\right]\right|_{\; \intr{\Gw^{\h}}}^{\;}.
 	$$
+		Extend $$	\left.\begin{pmatrix}
+		H_x^{n+3/2}\\
+		H_y^{n+3/2}\\
+		J_z^{n+3/2}
+	\end{pmatrix}\right|_{\; \intr{\Gw^{\e}}}^{\;}$$
+	to $\Gw^\h$ using the boundary conditions. 
 %	in $\Gw^{\bf{H}}$. Furthermore,
 %	$B_{NH}$ equals to the non-homogeneous term which has calculated at the previous step in $\Gw^{\bf{H}}$ including the boundary.
+\begin{rem}\label{rem:expB}
+
+
 Consider the equation based  Taylor expansion
 	$$
 	\frac{\h^{n+3/2}-\h^{n+\frac{1}{2} } }{\Delta \tau}=
@@ -730,25 +781,11 @@ Consider the equation based  Taylor expansion
 		E_z^{n+1}
 	\end{pmatrix}+O(\Delta \tau^2+h^4).
 	$$
-	Hence our choice for boundary conditions is indeed consistent with the condition 
-	$B_\phi=B_F$. Therefore,
-	$$\begin{pmatrix}
-			B^{H_x}\\ B^{H_y}\\ B^{H_z}
-	\end{pmatrix}
-=
-		-\frac{1}{Z}	\begin{pmatrix}
-		0& -\delta_z & \delta _y\\
-		\delta_z&0&-\delta_x\\
-		-\delta_y&\delta_x&0\\
-	\end{pmatrix}
-	\begin{pmatrix}
-		E_x^{n+1}\\
-		E_y^{n+1}\\
-		E_z^{n+1}
-	\end{pmatrix}
-	$$
-	evaluated in $\partial\Gw^{\h}$. This boundary condition is of order $\Delta \tau^2$.
-	
+	Hence the  boundary conditions \eqref{eq:BH} are 
+ indeed consistent with the condition 
+	$B_\phi=B_F$ (cf. \eqref{eq:explain}).
+ This boundary condition is of order $\Delta \tau^2$.
+\end{rem}
 	\begin{cor}
 		For all points in $\intr \Gw^{\e}\times\intr\Gw^\h$ the scheme is of order $\Delta \tau^4+h^4$.
 	\end{cor}
@@ -771,16 +808,16 @@ Consider the equation based  Taylor expansion
 		where 
 		$B_k:=\sum_{i=1}^{k}b_i$.
 	\end{lem}
-\begin{lem}[\cite{Morton}]
+\begin{cor}[\cite{Morton}]
 Let $\{a_k\}_{k=1}^{p}$,$\{b_k\}_{k=0}^{p}$ be two sequences. Then
 $$
 \sum_{k=1}^{p}a_k(b_k-b_{k-1})=a_pb_p-a_1b_0-\sum_{k=1}^{p-1}(a_{k+1}-a_k)b_k.
 $$
-\end{lem}
+\end{cor}
 
 
 Let $F,G$ defined in $\Gw^{\bf{E}}$ and $U,V$ defined in 
-$\Gw^{\bf{H}}$.
+$\Gw^{\bf{H}}$. Assume that either $F$ or $G$ vanish on $\partial \Gw^\e$.
 We define the following inner products:
 $$
 (F,G)_{\Gw^\e}:=
@@ -790,12 +827,14 @@ F_{y,i,j+\frac{1}{2},k}G_{y,i,j+\frac{1}{2},k}+F_{z,i,j,k+\frac{1}{2}}G_{z,i,j,k
 $$
 \begin{align*}
 	&
-	(U,V)_{\Gw^h}:=
+	(U,V)_{\Gw^\h}:=
 	h^3\sum_{i=0}^{N-1}\sum_{j=0}^{N-1}\sum_{k=0}^{N-1}
 	F_{x,i,j+\frac{1}{2},k+\frac{1}{2}}G_{x,i,j+\frac{1}{2},k+\frac{1}{2}}+\\&
-	F_{y,i+\frac{1}{2},j,k+\frac{1}{2}}G_{y,i+\frac{1}{2},j,k+\frac{1}{2}}+F_{z,i+\frac{1}{2},j+\frac{1}{2},k}G_{z,i+\frac{1}{2},j+\frac{1}{2},k}
+	F_{y,i+\frac{1}{2},j,k+\frac{1}{2}}G_{y,i+\frac{1}{2},j,k+\frac{1}{2}}+F_{z,i+\frac{1}{2},j+\frac{1}{2},k}G_{z,i+\frac{1}{2},j+\frac{1}{2},k}.
 \end{align*}
-The induced norms will be denoted by $\|\cdot \|_{\e},\|\cdot \|_{\h}$.
+Since either $F$ or $G$ vanish on $\partial \Gw^\e$, this inner products are the standard inner products defined by elementwise  multiplications in $\Gw^\e, \Gw^\h$.
+Similarly, we define the inner products on $\partial \Gw^\e, \partial \Gw^\h$
+and $\intr{\Gw^\e},\intr{\Gw^\h}$.
 
 Consider  the spaces 
 $$
@@ -816,14 +855,23 @@ $$
 	-\delta_y&\delta_x&0\\
 \end{pmatrix}.
 $$
-\begin{corollary}(cf. \cite[(37)]{sakka} for the case $a=1$)\label{lem:sym}
-	Assume that $a=a^{\mathrm{sym}}$. Then
-	for any $\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$ we have 
-	$$
-	(\mathbf{\curl_h}(\bf{E}_h),\bf{H}_h)_{\Gw^\h}=
+\begin{lemma}(cf. \cite[(37)]{sakka} for the case $a=1$)\label{lem:sym}
+	Assume that $a=a^{\mathrm{sym}}$, $\e_h\in \Gw^\e$ and $\h_h\in \Gw^\h$,
+	$\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$.
+	\begin{itemize}
+		\item  
+		$
+		(\mathbf{\curl_h}(\bf{E}_h),\bf{H}_h)_{\Gw^\h}=
 		(\mathbf{\curl}'(\bf{H}_h),\bf{E}_h)_{\Gw^\e}.
-	$$
-\end{corollary}
+		$\\[1mm]
+		\item $\|a_s\|\geq \frac{5}{6}$\\[1mm]
+		\item $(\curl _h\e_h,\h_h)_{\Gw^\h}\leq\|a_s^{-1}\|\cdot  \frac{2\sqrt{3}}{h}\|\e_h\|_{\Gw^\e}
+		\|\h_h\|_{\Gw^\h}
+		$.
+
+	\end{itemize}
+
+\end{lemma}
 %Let $P$ be the operator
 %$$
 %	P(\phi):=
@@ -866,52 +914,142 @@ $$
 %	$$
 %	The induced norms are denoted as $\|\cdot \|_{\p}$ and $\|\cdot\|_{\p'}$.
 %\end{defi}
-
-\begin{lemma}
+\begin{defi}
+	We define the following quantity:
+	\begin{align*}
+	&
+	\mathcal{E}^{n}:=
+	(\frac{P_1}{P_2}\e_h^{n},\e_h^{n})_{\intr{\Gw^\e}}
+	-\Delta \tau (\curl_h\h_h^{n+1/2},\e_h^n)+\\&
+	(\frac{P_1}{P_2}\h_h^{n+1/2},\h_h^{n+1/2})_{\intr{\Gw^\h}}+
+	(\h_h^{n+1/2},\h_h^{n+1/2})_{\partial \Gw^{\h}}.
+\end{align*}
+\end{defi}
+\begin{lemma}\label{lem:coer}
 	Assume for simplicity that $\J=0$ and $Z=1$.
 	Assume that $a_s=a_s^{\mathrm{sym}}$ for all $s=x,y,z$.
-	and let
-	\begin{align*}
-	{\mathcal E}^{n}:=\|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}
-	+\Delta \tau \left ( \curl_h \e_h^{n},\h^{n+1/2}\right )_{\h}.
-\end{align*}
-If 	$$\frac{\Delta \tau}{h}\leq \frac{5}{6\sqrt{3}}$$
-Then for all $n$
-$$
-	0\leq {\mathcal E}^{n+1}=	{\mathcal E}^{n}.
-$$
+%If 	$$\frac{\Delta \tau}{h}\leq \frac{5}{6\sqrt{3}}$$
+Then 
+\begin{itemize}
+		\item $ {\mathcal E}^{n}\geq 
+	\|\e_h^{n}\|^{2}_{\Gw^\h}+\|\h_h^{n+1/2}\|^{2}_{\Gw^\h}-
+	\frac{6\sqrt{3}r}{5}\left ( \|\e_h^{n}\|_{\Gw^\e}^2+\|\h_h^{n+1/2}\|_{\Gw^\h}^2 \right).$
+	
+			\item $ {\mathcal E}^{n}\leq 
+	\|\e_h^{n}\|^{2}_{\Gw^\h}+\|\h_h^{n+1/2}\|^{2}_{\Gw^\h}-
+	\frac{6\sqrt{3}r}{5}\left ( \|\e_h^{n}\|_{\Gw^\e}^2+\|\h_h^{n+1/2}\|_{\Gw^\h}^2 \right).$
+	
+	\item $	{\mathcal E}^{n+1}=	{\mathcal E}^{n}-
+	(\frac{P_1-P_2}{P_2}B(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}.$
+
+\end{itemize}
+
 \end{lemma}
 \begin{proof}
-	Clearly,
+	The first assertion follows immediately by Lemma \ref{lem:sym} Young's inequality and \cite[Theorem 4.1]{sakka}.
+	
+	Next, we take inner products of the scheme with averaged values
 \begin{align*}
 	&
-	(\p(\e_h^{n+1}-\e_h^n),\e_h^{n+1}+\e_h^n)_\e=
-	\Delta \tau (\curl_h \h^{n+1/2},\e^{n+1}+\e_h^n)_{\e}, \\&
-		(\p'(\h_h^{n+3/2}-\h_h^{n+1/2}),\h_h^{n+3/2}+\h_h^{n+1/2})_\h=-
-	\Delta \tau (\curl_h' \e_h^{n+1},\h_h^{n+3/2}+\h_h^{n+1/2})_{\h}.
+	(\frac{P_1}{P_2}(\e^{n+1}_h-\e^{n}_h),\e^{n+1}_h-\e^{n}_h)_{\intr{\Gw^\e}}+
+	(\e^{n+1}_h-\e^{n}_h,\e^{n+1}_h-\e^{n}_h)_{\partial{\Gw^\e}}
+	\\&
+	=
+	\Delta \tau(\curl_h\h_h^{n+1/2},
+	\e^{n+1}_h-\e^{n}_h)_{\intr{\Gw^\e}}+
+		\Delta \tau(\curl_h\h_h^{n+1/2},
+	\e^{n+1}_h-\e^{n}_h)_{\partial{\Gw^\e}}=\\&
+		\Delta \tau(\curl_h\h_h^{n+1/2},
+	\e^{n+1}_h-\e^{n}_h)_{{\Gw^\e}}.
 \end{align*}
-Lemma \ref{lem:sym} and summation imply that 
-$$
-{\mathcal E}^{n+1}=	{\mathcal E}^{n}.
-$$
-Moreover, 
-$$
-\|\curl _h\e_h\|_{\h}\leq \frac{2\sqrt{3}}{h}, \quad \|a_s\|\geq \frac{5}{6}.
-$$
-  (cf. \cite[Theorem 4.1]{sakka}). By Young's inequality, 
- $$
- {\mathcal E}^{n}\geq 
- \|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}-
-\frac{6\sqrt{3}\Delta \tau}{5h}\left ( \|\e_h^{n}\|_{\e}^2+\|\h_h^{n+1/2}\|_{\h}^2 \right).
- $$
-Since $\frac{\Delta \tau^2}{24}\sigma_{\min}(P)\geq 1$ we are done.
- \end{proof}
+Moreover,
 
+\begin{align*}
+	&
+		(\frac{P_1}{P_2}(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}+\\&
+	(\frac{P_1-P_2}{P_2}B(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}
+	+
+	(\h^{n+3/2}_h-\h^{n+1/2}_h,\h^{n+3/2}_h+\h^{n+1/2}_h)_{\partial{\Gw^\h}}
+	\\&= 
+		-\Delta \tau(\curl_h\e_h^{n+1},
+	\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{{\Gw^\h}}}+
+	(\h^{n+3/2}_h-\h^{n+1/2}_h,\h^{n+3/2}_h+\h^{n+1/2}_h)_{\partial{\Gw^\h}}=\\&
+	-\Delta \tau(\curl_h\e_h^{n+1},
+	\h^{n+3/2}_h+\h^{n+1/2}_h)_{{{\Gw^\h}}},
+\end{align*}
+where the last inequality follows by Remark \ref{rem:expB}.
+Lemma \ref{lem:sym} and summation imply 
+\begin{align*}
+	&
+	{\mathcal E}^{n+1}=	{\mathcal E}^{n}-
+	(\frac{P_1-P_2}{P_2}B(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}.
+\end{align*}
+\end{proof}
 \begin{lem}
-	Assume for simplicity that $\J=0$ and $Z=1$. Moreover, assume that 
-	$n\Delta \tau\leq T$.
-	\textcolor{red}{}
+	$$
+	\xi^{n}:=
+\left | (\frac{P_1-P_2}{P_2}B(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}\right|\ \leq ..
+$$
 \end{lem}
+\begin{proof}
+	$\h^{n+3/2}-\h^{n+1/2}=-\Delta \tau \curl_h\e^{n+1}$. By Lemma \ref{lem:sym} and CS inequality,
+	\begin{align*}
+	\xi^n\leq \Delta \tau \left \| \frac{P_1-P_2}{P_2}\right\|\cdot  \frac{2\sqrt{3}}{h}
+\|\e_h^{n+1}\|_{\Gw^\e}\cdot \|\h_h^{n+3/2}+\h_h^{n+1/2}\|_{\Gw^\h}.
+	\end{align*}
+By Young's inequality
+\begin{align*}
+\|\e_h^{n+1}\|_{\Gw^\e}\cdot \|\h_h^{n+3/2}+\h_h^{n+1/2}\|_{\Gw^\h}\leq 
+\frac{\|\e_h^{n+1}\|^2}{2}+
+\|\h_h^{n+3/2}\|^2+
+\|\h_h^{n+1/2}\|^2.
+\end{align*}
+Recall that 
+$$
+\left \| \frac{P_1-P_2}{P_2}\right\|\leq \frac{4\Delta\tau^2}{24h^2}=\frac{\Delta \tau^2}{6h^2}=\frac{r^2}{6}.
+$$
+
+Therefore
+$$
+\mathcal{E}^{n+1}-\frac{2r^3\sqrt{3}}{6}\left ( \frac{\|\e_h^{n+1}\|^2}{2}+
+\|\h_h^{n+3/2}\|^2  \right)\leq 
+\mathcal{E}^{n}+\frac{2r^3\sqrt{3}}{6}\|\h_h^{n+1/2}\|^2 .
+$$
+By Lemma \ref{lem:coer},
+\begin{align*}
+	&
+(\|\e_h^{n+1}\|^2+\|\h_h^{n+3/2}\|^2)
+\left (1-\frac{6\sqrt{3}r}{5}-\frac{2r^3\sqrt{3}}{6} \right)\leq \\&
+(\|\e_h^{n}\|^2+\|\h_h^{n+1/2}\|^2)
+\end{align*}
+
+\end{proof}
+%Lemma \ref{lem:sym} and summation imply that 
+%\begin{align*}
+%	&
+%	{\mathcal E}^{n+1}=	{\mathcal E}^{n}-
+%	(\frac{P_1-P_2}{P_2}B(\h^{n+3/2}_h-\h^{n+1/2}_h),\h^{n+3/2}_h+\h^{n+1/2}_h)_{\intr{\Gw^\h}}.
+%\end{align*}
+
+%The positivity of the energy follows from   \cite[Theorem 4.1]{sakka} and Lemma \ref{lem:sym}:
+%$$
+%\|\curl _h\e_h\|_{\h}\leq \frac{2\sqrt{3}}{h}, \quad \|a_s\|\geq \frac{5}{6}.
+%$$
+%  (cf. \cite[Theorem 4.1]{sakka}). By Young's inequality, 
+% $$
+% {\mathcal E}^{n}\geq 
+% \|\e_h^{n}\|^{2}_{\p}+\|\h_h^{n+1/2}\|^{2}_{\p'}-
+%\frac{6\sqrt{3}\Delta \tau}{5h}\left ( \|\e_h^{n}\|_{\e}^2+\|\h_h^{n+1/2}\|_{\h}^2 \right).
+% $$
+%Since $\frac{\Delta \tau^2}{24}\sigma_{\min}(P)\geq 1$ we are done.
+%
+%
+%\begin{lem}
+%	Assume for simplicity that $\J=0$ and $Z=1$. Moreover, assume that 
+%	$n\Delta \tau\leq T$.
+%	\textcolor{red}{Then we can show stability for certain cfl.. ..???}
+%	that is $$\mathcal{E}^{n+1}\leq CT\mathcal{E}^{n}$$.
+%\end{lem}
 %\begin{proof}
 %	\begin{align*}
 %		&
