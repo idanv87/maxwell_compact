@@ -289,6 +289,8 @@
 \def\Gl{\Lambda}    \def\Gs{\Sigma}      \def\Gp{\Pi}
 \def\Gw{\Omega}     \def\Gx{\Xi}         \def\Gy{\Psi}
 \def\Gwh{\Omega_h}  
+\def\lc{\lambda_\mathrm{crit}}
+
 %%%%%%%%%%%%%
 
 
@@ -736,12 +738,12 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$.
 	\end{defi}
 \begin{rem}\label{lem:bottom_spectrum}
 	There exists $\lambda_{\mathrm{crit}}$ such that for all $r<\lambda_{\mathrm{crit}}$
- $P_1$ is positive definite, $P_2$ is non-singular.
+ $P_1$ is positive definite, $-P_2$ is non-singular and positive definite.
 Moreover, there exists positive  constants depending on $r$,(and  do not depend on $h$), $C_1,C_2, C_3$, such that
 if $r<\lambda_{\mathrm{crit}}$, then
 $C_3\leq \frac{\Delta \tau^2 }{24}\|P_2\|\leq C_1$.
 and 
-$\frac{\Delta \tau^2 }{24}\|P_1\|\geq C_2$.
+$\frac{\Delta \tau^2 }{24}\|P_1\|\geq C_2>1$.
 \end{rem}
 %	\begin{rem}		
 %		 Appendix \ref{appendxib} also shows how our scheme can be extended to the cases $\varepsilon$ and $\mu$ are positive scalar functions which do not depend on $t$.
@@ -876,12 +878,11 @@ Solve
 		E_z^{n+1}
 	\end{pmatrix}\right]\right|_{\; \intr{\Gw^{\h}}}^{\;},
 	$$
-
 		Extend $\widetilde{\h}_h^{n+3/2}$
-	to $\Gw^\h$ by
+	to $\Gw^\h$ by defining it to be 
 	$$
 		-\frac{1}{Z}
-	\left[ \left.	
+	\left[ 
 	\begin{pmatrix}
 		0& -\delta_z & \delta _y\\
 		\delta_z&0&-\delta_x\\
@@ -891,9 +892,11 @@ Solve
 		E_x^{n+1}\\
 		E_y^{n+1}\\
 		E_z^{n+1}
-	\end{pmatrix}\right]\right|_{\; \partial{\Gw^{\h}}}^{\;}
+	\end{pmatrix}\right]
 	$$
+	in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$)
 	and derive $\h_h^{n+3/2}$.
+	
 	
 %	in $\Gw^{\bf{H}}$. Furthermore,
 %	$B_{NH}$ equals to the non-homogeneous term which has calculated at the previous step in $\Gw^{\bf{H}}$ including the boundary.
@@ -1036,7 +1039,112 @@ The following Lemma estimate the anti-symmetric part of the operator $a_s^{-1}$.
 	\mathrm{rank}(A^{-1}-A^{-t})\leq 	\mathrm{rank}(A-A^t).
 	$$
 \end{proof}
+\subsection{First version}
+		We extend the operator $P_2$ and $P_1$ symmetrically  to $\Gw^{\e}$ and 
+$\Gw^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
+\begin{defi}
 
+	We define the following quantities.
+	\begin{align*}
+		&
+		\mathcal{E}_1^{n}:=
+		(P_1\widetilde{\e}_h^{n},\widetilde{\e}_h^{n})_{\intr{\Gw^\e}}+
+		%	-\Delta \tau\frac{1}{2} (P_2<a^{-1}+a^{-t},\curl_h>\h_h^{n+1/2},\e_h^n)+\\&
+		(P_1\widetilde{\h}_h^{n+1/2},\widetilde{\h}_h^{n+1/2})_{\intr{\intr{\Gw^\h}}}, \\&
+		\mathcal{E}_2^{n}:=-\frac{\Delta \tau}{2}(P_{2,ext}<a^{-1}+a^{-t}>\curl_h \e^{n},\h^{n+1/2})_{\Gw^\h}\\&
+		\mathcal{E}_3^{n}:=(P_{2}\h^{n+1/2},\h^{n+1/2})_{\partial \Gw^\h\cup \partial \intr{\intr{\Gw^\h}}}\\&
+		\mathcal{E}_4^{n}:=\mathcal{E}^n_1+\mathcal{E}^n_2-\mathcal{E}^n_3.
+	\end{align*}
+\end{defi}
+\begin{lem}
+	There exists $\lc$ such that for any $r<\lc$, 
+	$\mathcal{E}_4^n\geq C(\|\e^n\|^2+\|\h^n\|^2) $
+\end{lem}
+\begin{proof}
+Let $r$ be sufficiently small such that $\frac{24}{\Delta \tau^2}\|P_1\|>\frac{1}{r^2}$
+and $\frac{24}{\Delta \tau^2}\|-P_2\|>1$.
+Then $$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
+\frac{24}{\Delta \tau^2r^2}\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
+By Young's inequality there exists $C>0$ such that 
+$$
+\mathcal{E}_2^n\leq C\frac{24}{\Delta \tau^2}r\frac{3}{r^2}(\|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}).
+$$
+Therefore for $r$ small enough $\mathcal{E}_4^n\geq (1-Cr)\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$.
+\end{proof}
+\begin{lem} We have
+	$$\mathcal{E}_4^n-
+\mathcal{E}_4^{n+1}=
+\mathbf{term}
+$$
+where 
+$$
+\mathbf{term}\leq C \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n}).
+$$
+and $C$ does not depend on $h$.
+\end{lem}
+\begin{proof}
+	
+	We write the following scheme equalities in the space $\intr{\intr\Gwh}$.
+	
+	\begin{align}
+		P_1(\widetilde{\e}_h^{n+1} -\widetilde{\e}^{n})=
+		\Delta \tau P_2 \acurl \h_h^{n+1/2} \quad \mathrm{in} \  \intr{\Gw^\e}
+	\end{align}
+	\begin{align}
+		P_1(\widetilde{\h}_h^{n+3/2} -\widetilde{\h}^{n+1/2})+
+		B^{n+3/2}(\h_h^{n+3/2} -\h^{n+1/2})
+		=
+		-\Delta \tau P_2 \acurl \e_h^{n+1}  \quad \mathrm{in} \  \intr{\Gw^\h}.
+	\end{align}
+	
+
+	
+	Next, we take inner products of the scheme with $\widetilde{\e}_h^{n+1}+\widetilde{\e}_h^n$,
+	and with 
+	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ such that 
+	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ is orthogonal to the boundary term.
+	 Therefore
+	\begin{align*}
+		&
+		(P_1(\widetilde{\e}^{n+1}_h-\widetilde{\e}^{n}_h),\widetilde{\e}^{n+1}_h+\widetilde{\e}^{n}_h)_{\intr{\Gw^\e}}+
+		(P_1(\widetilde{\h}^{n+3/2}_h-\widetilde{\h}^{n+1/2}_h),\widetilde{\h}^{n+3/2}_h+\widetilde{\h}^{n+1/2}_h)_{\intr{\intr{\Gw^\h}}}=\\&
+		=\mathcal{E}_1^{n+1}-\mathcal{E}_1^{n}.
+	\end{align*}
+	Next we estimate
+	\begin{align*}
+		&
+		(\frac{1}{2}\Delta \tau P_2<a^{-1}+a^{-t},\curl_h>\h^{n+1/2},\widetilde{\e}^{n+1}+\widetilde{\e}^{n})_{ \intr{\Gw^\e}}=\\&
+		(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>(\e^{n+1}+\e^{n}),\h^{n+1/2})_{ {\Gw^\e}}
+	\end{align*}
+	Similarly,
+	\begin{align*}
+		&
+		(\frac{1}{2}\Delta \tau P_2<a^{-1}+a^{-t},\curl_h>\e^{n+1},\widetilde{\h}^{h+3/2}+\widetilde{\h}^{n+1/2})_{\intr{\intr{\Gw^\h}}}=\\&
+		(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{h+3/2}+\h^{n+1/2})_{{\Gw^\h}}
+		\\&
+		-(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{h+3/2}+\h^{n+1/2})_{\partial{\Gw^\h}\cup \partial \intr{\Gwh^\h}}=\\&
+		(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>(\h^{h+3/2}+\h^{n+1/2}),\e^{n+1})_{{{\Gw^\e}}}
+		\\&
+		-(\frac{1}{2}\Delta \tau P_{2}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gw^\h}\cup \partial \intr{\Gwh^\h}}.
+	\end{align*}
+	Recall that we chose our boundary conditions such that 
+	the last term equals $$\mathcal{E}_3^{n+1}-\mathcal{E}_3^{n}+
+	\mathbf{term}$$ where $\mathbf{term}$ include the anti-symmetric part.
+	Together with Lemma \ref{lem:antiestimates} we have the following:
+
+		$$\mathcal{E}_4^n-
+	\mathcal{E}_4^{n+1}=
+	\mathbf{term}
+		$$
+		where 
+		$$
+		\mathbf{term}\leq C \Delta \tau( \sum_{i=1}^3\mathcal{E}_i^n+
+		\sum_{i=1}^3\mathcal{E}_i^{n+1}).
+		$$
+\end{proof}
+	
+\newpage
+\subsection{second}
 \begin{defi}
 	We define the following quantities.
 	\begin{align*}
@@ -1146,7 +1254,7 @@ $$
 (\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gw^\h}}
 $$	
 and we have stability.
-	
+\end{proof}
 %\begin{align*}
 %	&
 %	(P_1(\e^{n+1}_h-\e^{n}_h),\e^{n+1}_h+\e^{n}_h)_{\intr{\Gw^\e}}
@@ -1164,7 +1272,7 @@ and we have stability.
 %\end{align*}
 %Since $P_1$ is symmetric we have 
 
-\end{proof}
+
 
 %\begin{cor}
 %	There exists 
