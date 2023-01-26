@@ -417,12 +417,12 @@ By letting  $ \tau=ct$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a numerical sch
 	are centered at the same point similar to that of the Yee scheme \cite{yee}. 
 	We define the following meshes:
 	\begin{align*}
-		&\Gw^{E_z}:=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [N]^2 \times[N-1]\} \\
-		& \Gw^{E_y}:=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [N]\times [N-1] \times[N] \}\\
-		& \Gw^{E_x}:=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [N-1]\times [N]^2 \} \\
-		&\Gw^{H_z}:=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [N-1]^2\times[N] \}\\
-		&\Gw^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\
-		& \Gw^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.
+		&\Gwh^{E_z}:=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [N]^2 \times[N-1]\} \\
+		& \Gwh^{E_y}:=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [N]\times [N-1] \times[N] \}\\
+		& \Gwh^{E_x}:=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [N-1]\times [N]^2 \} \\
+		&\Gwh^{H_z}:=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [N-1]^2\times[N] \}\\
+		&\Gwh^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\
+		& \Gwh^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.
 	\end{align*}
 Furthermore,
 	\begin{align*}
@@ -482,9 +482,9 @@ $\Gw^{E_z}, \Gw^{H_x},\Gw^{H_y}$ projected on the $x,y$ plane.
    We denote by $\frac{a_s+a_s^t}{2}$ and $\frac{a_s-a_s^t}{2}$ the symmetric and the anti-symmetric decomposition of $a_s$.
    Formally, let $a_{ij}^{-1}$ be the entries of $a$ and let $U(i,j,k)$ be grid function.
    Then 
- $$h[a_x^{-1}\circ D_xU(i,j,k)]:=\sum_{l} a_{il}^{-1}(U(l+n/2,j,k)-U(l-n/2,j,k)),$$
-  $$h[a_y^{-1}\circ D_yU(i,j,k)]:=\sum_{l} a_{jl}^{-1}(U(i,l+n/2,k)-U(i,l-n/2,k)),$$
-   $$h[a_z^{-1}\circ D_zU(i,j,k)]:=\sum_{l} a_{kl}^{-1}(U(i,j,l+n/2)-U(i,j,l-n/2)).$$
+ $$h\cdot [a_x^{-1}\circ D_xU(i,j,k)]:=\sum_{l} a_{il}^{-1}(U(l+n/2,j,k)-U(l-n/2,j,k)),$$
+  $$h\cdot [a_y^{-1}\circ D_yU(i,j,k)]:=\sum_{l} a_{jl}^{-1}(U(i,l+n/2,k)-U(i,l-n/2,k)),$$
+   $$h\cdot [a_z^{-1}\circ D_zU(i,j,k)]:=\sum_{l} a_{kl}^{-1}(U(i,j,l+n/2)-U(i,j,l-n/2)).$$
  
    
    We introduce the following notations:
@@ -608,28 +608,70 @@ $\Gw^{E_z}, \Gw^{H_x},\Gw^{H_y}$ projected on the $x,y$ plane.
 	P({\bf J^{n+\frac{1}{2}}}):=Z\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla div({\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial t^2}\right ).
 	$$
    \subsection{Modified Helmholtz equation}
-   In the following sections we will exploit fourth-order compact schemes for solving elliptic equations of the form $-\Delta \phi+k^2\phi=k^2F$,$k>0$ \cite{singer_turkel}.
+   In the following sections we will exploit fourth-order compact schemes for solving elliptic equations of the form $$-\Delta \phi+k^2\phi=k^2F, \ k>0$$ \cite{singer_turkel}.
 %   $-\Delta (\phi-F)+k^2(\phi-F)=\Delta F $.
 Let 
 $$
-\Delta_h:=D_{xx}+D_{yy}+D_{zz}, \quad \Delta^2_h:= D_{zz}D_{xx}+D_{yy}D_{zz}+D_{xx}D_{zz}.
+\Delta_h:=D_{xx}+D_{yy}+D_{zz}, \quad \Delta^2_h:= D_{zz}D_{xx}+D_{yy}D_{zz}+D_{xx}D_{yy}.
 $$
-then 
+then the scheme reads as follows.
 \begin{align*}
 	&
 	-\left (
 	\Delta_h+\frac{h^2}{6}\Delta^2_h
-	\right)\phi+
+	\right)\phi_h+
 	k^2\left (
 	1+\frac{k^2h^2}{12}
-	\right)\phi=
+	\right)\phi_h=
 	k^2\left (
 	-1-\frac{k^2h^2}{12}
 	-\frac{h^2}{12}\Delta_h
-	\right)F.
+	\right)F_h.
 \end{align*}
-The latter scheme requires boundary operators for the inhomogeneous term $F$ and for $\phi$. We denote these boundary operators as 
-$B_{F}$ and $B_{\phi}$ respectively.
+The latter scheme requires boundary operators for the inhomogeneous term $F$ and for $\phi$. 
+
+Next we introduce the following definition.
+	\begin{defi}
+	For any $s=x,y,z$ and $I= H_s, E_s,$
+	let $$P_{1,h}^{I}, P_{2,h}^{I}:\intr\Gwh^{I}\to \intr\Gwh^{I}$$ be the symmetric operators defined by
+	$$
+	P_{1,h}^{I}:=-\left (\Delta_h+\frac{h^2}{6}\Delta_h^2\right)+\frac{24}{\Delta \tau^2}\left (
+	1+\frac{2}{r^2},
+	\right)
+	$$
+	$$
+	P_{2,h}^{I}:=\frac{24}{\Delta \tau^2}\left (
+	-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
+	\right).
+	$$	
+	
+	%		Let $$L^I:=
+	%		\left (\frac{P_1^{I}}{P_2^I}\right)+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
+	%		$$
+	
+\end{defi}
+We recall the following facts ($\sigma$ refers to spectrum):
+\begin{align}
+	\label{eq:spectrumP}
+	\begin{split}
+		\sigma(\frac{\Delta \tau^2}{24} P_1)\in [1+\frac{2}{r^2}-4,1+\frac{2}{r^2}+12r] ,
+		\\
+		\sigma(-\frac{\Delta \tau^2}{24} P_2)\in [1+\frac{2}{r^2}-12r, 1+\frac{2}{r^2}].
+	\end{split}
+\end{align}
+By \eqref{eq:spectrumP}, if $r<\frac{1}{\sqrt[3]{6}}$
+then $-P_2, P_1$ are positive definite, and
+$$
+1<1+\frac{2}{r^2}-12r\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},
+$$
+and 
+$$
+1<1+\frac{2}{r^2}-4\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+12r.
+$$
+
+
+
+
 
 %with homogeneous  boundary conditions for $v$.
 %In the following sections we will use the demand $B_{\phi}=B_{F}$ in our scheme and show how it simplifies the energy estimates. Moreover, this requirement is also consistent with Taylor expansion of the equations. 
@@ -703,7 +745,9 @@ $B_{F}$ and $B_{\phi}$ respectively.
    
 	\section{The scheme}
 	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} we derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
-$	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$(see Appendix \ref{appendxib}).
+$	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$
+at each time step
+(see Appendix \ref{appendxib}).
 	$$
 	-\Delta\delta_{\tau} \e^{n+\frac{1}{2}}+\frac{24}{\Delta \tau^2}\delta_{\tau}\e^{n+\frac{1}{2}}=
 	Z\frac{24}{\Delta \tau^2}\nabla\times \h^{n+\frac{1}{2}}+P(\J)^{n+\frac{1}{2}}+
@@ -714,37 +758,8 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$(see Appendix \ref{appendxib}
 	-\frac{1}{Z}\frac{24}{\Delta \tau^2}\nabla\times \e^{n+1}+
 	\mathrm{O(\Delta \tau^4+h^4)} \quad {\mathrm in} \quad (0,1)^3.
 	$$
-	\begin{defi}
-		For any $s=x,y,z$ and $I= H_s, E_s,$
-		let $$P_{1,h}^{I}, P_{2,h}^{I}:\intr\Gwh^{I}\to \intr\Gwh^{I}$$ be the symmetric operators defined by
-		$$
-		P_{1,h}^{I}:=-\left (\Delta_h+\frac{h^2}{6}\Delta_h^2\right)+\frac{24}{\Delta \tau^2}\left (
-		 1+\frac{2}{r^2},
-		\right)
-		$$
-		$$
-			P_{2,h}^{I}:=\frac{24}{\Delta \tau^2}\left (
-		-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
-		\right).
-		$$	
-		
-%		Let $$L^I:=
-%		\left (\frac{P_1^{I}}{P_2^I}\right)+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
-%		$$
-		
-	\end{defi}
-%\begin{rem}\label{lem:bottom_spectrum}
-%	There exists $\lambda_{\mathrm{crit}}$ such that for all $r<\lambda_{\mathrm{crit}}$
-% $P_1$ is positive definite, $-P_2$ is non-singular and positive definite.
-%Moreover, there exists positive  constants depending on $r$,(and  do not depend on $h$), $C_1,C_2, C_3$, such that
-%if $r<\lambda_{\mathrm{crit}}$, then
-%$C_3\leq \frac{\Delta \tau^2 }{24}\|P_2\|\leq C_1$.
-%and 
-%$\frac{\Delta \tau^2 }{24}\|P_1\|\geq C_2>1$.
-%\end{rem}
-%	\begin{rem}		
-%		 Appendix \ref{appendxib} also shows how our scheme can be extended to the cases $\varepsilon$ and $\mu$ are positive scalar functions which do not depend on $t$.
-%	\end{rem}
+
+
 	The resulting scheme reads as follows.\\[1mm]
 	Let $\bf{E}^n_h, \bf{H}^{n+\frac{1}{2}}_h$  be given at $\Gw^{\e}$ and $\Gw^{\h}$ respectively. \\[2mm]
 	{\bf Step 1}: solve the following equations in $\intr{\Gw^{\e}}$ with
@@ -800,13 +815,9 @@ $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$(see Appendix \ref{appendxib}
 	Extend $\widetilde{\e}_h^{n+1}$
 to $\Gw^\e$ using the boundary conditions $B^{n+1}=0$ and derive 
 $\e_h^{n+1}$ in $\Gw^\e$. 
-We denote this extension as $\e_h^{n+1}=(0,\widetilde{\e_h^{n+1}})\in 
-\intr{\Gw^\e}\times \partial \Gw^{\e}.
-$ 
-	\\[1mm]
+	\\[2mm]
 	{\bf Step 2}: solve $\bf{H}^{n+3/2}_h$ in $\intr\Gw^\h$: \\[2mm]
 	Consider some  boundary conditions $B^{n+3/2}$.
-	One option is to set 
 	\begin{equation}\label{eq:BH}
 	\begin{pmatrix}
 		B^{H_x}\\ B^{H_y}\\ B^{H_z}
@@ -826,7 +837,7 @@ $
 	\end{pmatrix}\right]\right|_{\; \partial{\Gw^{\h}}}^{\;}
 	\end{equation}
 	(see Remark \ref{rem:expB}).
-Solve
+define
 	$$
 	\widetilde{\h}_h^{n+3/2}:=
 	\left.
@@ -931,18 +942,21 @@ Consider the equation based  Taylor expansion
 	\section{Energy estimates}
 	The goal of the the current section is proving the following stability result.
 	\begin{lemma}\label{lem:coer}
-		For any $Z$ and smooth function $\J$ in $[0,1]^3\times [0,\infty)$, there exists 
-		$\lambda_{\mathrm{crit}}$ such that if $r\leq \lambda_{\mathrm{crit}}$ then
- the scheme is stable.
+		For any $Z$ and smooth function $\J$ in $[0,1]^3\times [0,\infty)$, 
+		$$
+		r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2\cdot\min\{Z,Z^{-1}\}}
+		{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
+	$$
+	implies stability.
  		\end{lemma}
  
  We assume during this section without loss of generality that $Z=1$ and $J=0$.
-We use energy estimates in order to prove Lemma \ref{lem:coer}. We follows \cite[chapter 11]{GKO}.
+We use energy estimates in order to prove Lemma \ref{lem:coer}.
 
 There are two main non-trivial difficulties we have to surpass:
  The first is the fact that the operators $a_s$ are not symmetric. We surpass this difficulty by showing that its corresponding  anti-symmetric parts are "small" enough (Lemma \ref{lem:antiestimates});
  the second difficulty comes from the boundary equations we have to impose for the elliptic equations   we solve for $\h$.
-  We will show how the fact that  we impose specific boundary conditions  in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$) enables  us to progress.  
+  We will show how the fact that  we impose specific boundary conditions  in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$) enables  us to accomplish our estimates.  
  
 
 %	\begin{lem}[Abel transformation]
@@ -962,7 +976,7 @@ $$
 
 
 
-\begin{lemma}(cf. \cite[(37)]{sakka} for the case $a=1$)\label{lem:sym}
+\begin{lemma}(cf. \cite[(37)]{sakka} )\label{lem:sym}
 	Assume that $\e_h\in \Gw^\e$ and $\h_h\in \Gw^\h$, and
 	$\bf{E}_h$ vanishing on $\partial \Gw^{\bf{E}}$. Then,
 	\begin{itemize}
@@ -1021,20 +1035,36 @@ $$
 %	$$
 %	The induced norms are denoted as $\|\cdot \|_{\p}$ and $\|\cdot\|_{\p'}$.
 %\end{defi}
-The following Lemma estimate the anti-symmetric part of the operator $a_s^{-1}$.
+In the following Lemma we estimate the anti-symmetric part of the operator $a_s^{-1}$, where $s=x,y,z$.
 \begin{lem}\label{lem:antiestimates}
-	There exists $C>0$ not depending on $h$ such that $$\|a_s^{-1}-a_s^{-t}\|\leq Ch$$.
+	There exists $C>0$, not depending on $h$, such that $$\|<a_s^{-1}-a_s^{-t}>\curl_h\|\leq C$$.
 \end{lem}
 \begin{proof}
-	Recall that the matrix  $a_s $ in Appendix \ref{appendix} are not-singular,  $a_s^{-1}-a_s^{-t}$ is anti-symmetric, and $\|a_s\|$ is bounded from above and below for all $s=x,y,z$ uniformly for $h$. Therefore it is enough to show that $a_s^{-1}-a_s^{-t}$ is of constant rank which do not depend on $h$. This follows  by the observation that 
-	$\mathrm{rank}(a-a^t)\leq 8$ and for any non-singular matrix and $v\in \mathrm{ker}(A-A^t)$,
+	Recall that the matrix  $a_s $ in Appendix \ref{appendix} is non-singular,  $a_s^{-1}-a_s^{-t}$ is anti-symmetric, and $\|a_s\|$  is bounded from above and below for all $s=x,y,z$ uniformly in $h$. Therefore it is enough to show that $a_s^{-1}-a_s^{-t}$ is of constant rank which do not depend on $h$. This follows  first by the following  observations: 
+	$\mathrm{rank}(a_s-a_s^t)\leq 8$ (for all $N$); For any non-singular matrix $A$ and any $v\in \mathrm{ker}(A-A^t)$
 	$$
 	Av=A^tv \Rightarrow v=A^{-1}A^{t}v=A^{-t}A^{t}v\Rightarrow
 	\mathrm{rank}(A^{-1}-A^{-t})\leq 	\mathrm{rank}(A-A^t).
 	$$
+	Assume for the moment that $a_s=a_x$, and let $\sigma_1,..\sigma_8$ the first singular values of $a_x^{-1}-a_x^{-t}$. In particular, 
+	$
+	\|a_x^{-1}-a_x^{-t}\|\leq \sum_{i_1}^8\sigma_i.
+	$
+	Consider  two grid functions $U_{i,j,k}, V_{i,j,k}$
+	such that for any $j,k$ $V_{,j,k}$ and $U_{+1/2,j,k},U_{-1/2,j,k}$ are orthonormal eigenvectors corresponding to eigenvalue $\lambda_{} $ and of unit norm with respect to $x$ coordinate. Then  
+	\begin{align*}
+		& (<a_x^{-1}-a_x^{-t}>D_x U,V)_{\Gwh^\e}
+\leq \\&
+	h^2\sum_k\sum_j\sum_i \sum_{l} (a_{il}^{-1}-a_{il}^{-t})\frac{U(l+n/2,j,k)-U(l-n/2,j,k)}{h}V_{i,j,k}\\&
+		=
+	h^2\sum_j\sum_k\lambda^{i,j} \leq \|a^{-1}-a^{-t}\|=\\&
+	\|a^{-1}-a^{-t}\|\sum_{i,j,k}(U(l+n/2,j,k)-U(l-n/2,j,k))V_{i,j,k}\leq 
+		2\|a^{-1}-a^{-t}\|\|U\| \|V\|.
+	 	\end{align*}
+ Since $\mathrm{rank}$ of $a^{-1}-a^{-t}$ is constant, $C$, the general case we will get that $$(<a_x^{-1}-a_x^{-t}>D_x U,V)_{\Gwh^\e}\leq2 C\|a^{-1}-a^{-t}\|\|U\|\|V\|.$$
 \end{proof}
-\subsection{First version}
-		We extend the operator $P_2$ and $P_1$ symmetrically  to $\Gw^{\e}$ and 
+
+		Next, we extend the operator $P_2$ and $P_1$ symmetrically  to $\Gw^{\e}$ and 
 $\Gw^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 \begin{defi}
 
@@ -1050,22 +1080,34 @@ $\Gw^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 		\mathcal{E}_4^{n}:=\mathcal{E}^n_1+\mathcal{E}^n_2-\mathcal{E}^n_3.
 	\end{align*}
 \end{defi}
-\begin{lem}
-	There exists $\lc$ such that for any $r<\lc$, 
-	$\mathcal{E}_4^n\geq C(\|\e^n\|^2+\|\h^n\|^2) $
+\begin{lem}\label{lem:first}
+	Assume that 
+	$$
+	r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
+	$$
+	There there exists $C>0$ such that  
+	$\mathcal{E}_4^n\geq C(\|\e^n\|^2+\|\h^n\|^2) $.
 \end{lem}
 \begin{proof}
-Let $r$ be sufficiently small such that $\frac{24}{\Delta \tau^2}\|P_1\|>\frac{1}{r^2}$
-and $\frac{24}{\Delta \tau^2}\|-P_2\|>1$.
+Let $r<\frac{1}{\sqrt[3]{6}}$.
 Then $$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
-\frac{24}{\Delta \tau^2r^2}\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
-By Young's inequality there exists $C>0$ such that 
+\frac{24}{\Delta \tau^2}\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
+By Young's inequality,
 $$
-\mathcal{E}_2^n\leq C\frac{24}{\Delta \tau^2}r\frac{3}{r^2}(\|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}).
+\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}).
 $$
-Therefore for $r$ small enough $\mathcal{E}_4^n\geq (1-Cr)\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$.
+Therefore for $r$ small enough
+ $\mathcal{E}_4^n\geq\frac{24}{\Delta \tau^2} (1-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2})\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$.
 \end{proof}
-\begin{lem} We have
+\begin{remark}
+	If $a$ is the identity operator, then 
+	$\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}=
+	\frac{1}{\sqrt{3}},
+	$
+	which is the stability condition for the classical Yee scheme.
+\end{remark}
+\begin{lem}\label{lem:sec} 
+	We have
 	$$\mathcal{E}_4^n-
 \mathcal{E}_4^{n+1}=
 \mathbf{term}
@@ -1137,6 +1179,12 @@ We have
 		\sum_{i=1}^3\mathcal{E}_i^{n+1}).
 		$$
 \end{proof}
+Lemmas \ref{lem:first}, \ref{sec:TE} imply that if $\Delta \tau n\leq T$
+then 
+$$
+\mathcal{E}_4^{n}\leq C \mathrm{e}^{T}\mathcal{E}_4^{0},
+$$
+and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
 %	
 %\newpage
 %\subsection{second}
