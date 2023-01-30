@@ -401,12 +401,12 @@ By letting  $ \tau=ct$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a numerical sch
 	 We consider $\Delta \tau $ as the time-step.
 	Moreover, we   introduce the following notations:
 	\begin{itemize}
-		\item $\e=(E_x,E_y,E_z)$, $\h=(H_x,H_y,H_z)$
-		\item $\e^n$  (resp. $\e^{n+1/2}$) denotes $\e(t=n\Delta \tau)$ (resp. $\e^{(n+1/2)(\Delta \tau}$).
-		\item $x_{i}=i h,y_{j}=j h,z_{k}=k h$ 
-		\item $x_{i+\frac{1}{2}}=\left (i+\frac{1}{2}\right ) h, y_{j+\frac{1}{2}}=\left (j+\frac{1}{2}\right ) h, z_{k+\frac{1}{2}}=\left (k+\frac{1}{2}\right ) h$ 
-		\item 	$[N]=\{0,1,..,N\},\quad N\in \N.$
-				\item 	$[k,m]=\{k,k+1,..m\},\quad k<m\in \N.$
+		\item $\e=(E_x,E_y,E_z)$, $\h=(H_x,H_y,H_z)$\\[1mm]
+		\item $\e^n$  (resp. $\h^{n+1/2}$) denotes $\e(t=n\Delta \tau)$ (resp. $\h^{(n+1/2)(\Delta \tau}$).\\[1mm]
+		\item $x_{i}=i h,y_{j}=j h,z_{k}=k h$ \\[1mm]
+		\item $x_{i+\frac{1}{2}}=\left (i+\frac{1}{2}\right ) h, y_{j+\frac{1}{2}}=\left (j+\frac{1}{2}\right ) h, z_{k+\frac{1}{2}}=\left (k+\frac{1}{2}\right ) h$ \\[1mm]
+		\item 	$[N]=\{0,1,..,N\},\quad N\in \N.$\\[1mm]
+				\item 	$[k,m]=\{k,k+1,..m\},\quad k<m\in \N.$\\[1mm]
 	\end{itemize}
 
 	To discretize the equations we introduce a staggered mesh in both space and time as in the Yee scheme \cite{yee}. 
@@ -1110,7 +1110,7 @@ Therefore for $r$ small enough
 $$
 where 
 $$
-\mathbf{term}\leq C \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n}).
+|\mathbf{term}|\leq C \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n})
 $$
 and $C$ does not depend on $h$.
 \end{lem}
@@ -1182,6 +1182,7 @@ $$
 and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
 	
 	
+
 	
 	\section{Example: Transverse magnetic waves  in $[0,1]^3$}\label{sec:TE}
 	\textcolor{red}{This section is not completed yet}
@@ -1336,27 +1337,47 @@ and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
 		%\end{table}
 		\begin{table} [h!]
 			\centering
-			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{2cm}|p{2cm}|}
+			\begin{tabular}{|p{2cm}|p{0.7cm}|p{0.7cm}|p{2cm}|p{2cm}|}
 				\hline
-				$h$ & $\mathrm{CFL}$ &$\Delta \tau^2+h^4$&$\Delta \tau^2h^2+h^4$
+			$T=\Delta \tau N_t$&	$h$ & $\mathrm{CFL}$ &$\Delta \tau^2+h^4$&$\Delta \tau^2h^2+h^4$
 				\\ [0.5ex] 
 				\hline 
-				$\frac{1}{16}$ & 0.5& &  \\[0.5mm]
-				$\frac{1}{32}$ & 0.5 &3.70 &5.45\\[0.5mm]
-				$\frac{1}{64}$ & 0.5 & 3.21 &5.23 \\[0.5mm]
-				$\frac{1}{128}$ & 0.5 &3.03 & 3.98\\[0.5mm]
-				$\frac{1}{256}$ & 0.5& 2.99 &3.93 \\[0.5mm]
-				\hline 
+				1&$\frac{1}{16}$ & 0.5& &  \\[0.5mm]
+				1&$\frac{1}{32}$ & 0.5 &3.00 &5.52\\[0.5mm]
+				1&$\frac{1}{64}$ & 0.5 & 2.96 &4.5 \\[0.5mm]
+				1&$\frac{1}{128}$ & 0.5 &2.97 & 3.89\\[0.5mm]
+				1&$\frac{1}{256}$ & 0.5& 2.98 &4.00 \\[0.5mm]
+				1&	$\frac{1}{512}$ & 0.5& 2.99 &3.89 \\[0.5mm]
+				\hline
 			\end{tabular}
 			\caption{ Converge rates with several types of boundary conditions for $\delta_\tau \vec{H}$ in steps 2 and 3:	 
-				Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{16},\frac{1}{32},\frac{1}{64},
-				\frac{1}{128}, \frac{1}{256}
-				$
-				and final time $T=1$.}
+				Here $\Delta \tau=\frac{h}{2}$, $k_x=2$, $k_y=1$
+				and final time $T=\Delta \tau N_t=1$. }
 			\label{table:conv_rates}
 			
 			
 		\end{table}
+		\begin{table} [h!]
+		\centering
+		\begin{tabular}{|p{2cm}|p{0.7cm}|p{0.7cm}|p{2cm}|p{2cm}|}
+			\hline
+			$T=\Delta \tau N_t$ &$h$& $\mathrm{CFL}$ &$\Delta \tau^2+h^4$&$\Delta \tau^2h^2+h^4$
+			\\ [0.5ex]
+\hline 
+						$1$ &$\frac{1}{32}$& 0.5&5.42e-5 &1.51e-6  \\[0.5mm]
+			$2$ &$\frac{1}{32}$& 0.5 &9.32e-5&1.61e-6\\[0.5mm]
+			$3$ &$\frac{1}{32}$& 0.5 & 1.34e-4 &1.75e-6 \\[0.5mm]
+			$3$ &$\frac{1}{32}$& 0.5 &1.76e-4 & 1.90e-6\\[0.5mm]
+			$4$ &$\frac{1}{32}$& 0.5& 2.20e-4 &2.08e-6 \\[0.5mm]
+			\hline
+		\end{tabular}
+		\caption{ Mean errors for two types of boundary conditions for $\delta_\tau \vec{H}$ in steps 2 and 3 when the stability conditions $N_t\Delta \tau\leq T$ is not satisfied.	 
+			Here $\Delta \tau=\frac{h}{2}$, $k_x=2$, $k_y=1$, $h=1/32$
+			and final time $T=\Delta \tau N_t=1,2,3,4,5$. }
+		\label{table:conv_rates4}
+		
+		
+	\end{table}
 		\begin{table} [h!]
 			\centering
 			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{2cm}| |p{4cm}|}
@@ -1369,25 +1390,86 @@ and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
 				$\frac{1}{64}$ & 0.5 & 1.8e-6 &5.23 \\[0.5mm]
 				$\frac{1}{128}$ & 0.5 &1.1e-7 & 3.98\\[0.5mm]
 				$\frac{1}{256}$ & 0.5& 7.5e-9 &3.93 \\[0.5mm]
+					$\frac{1}{512}$ & &  & \\[0.5mm]
 				\hline \hline
 				$\frac{1}{16}$ & 0.5& 0.38&  \\[0.5mm]
 				$\frac{1}{32}$ & 0.5 &0.22 &0.75\\[0.5mm]
 				$\frac{1}{64}$ & 0.5 & 5.2e-3 &5.4 \\[0.5mm]
 				$\frac{1}{128}$ & 0.5 &2.2e-4 & 4.52\\[0.5mm]
 				$\frac{1}{256}$ & 0.5& 1.6e-5 &3.822 \\[0.5mm]
+					$\frac{1}{512}$ & &  & \\[0.5mm]
 				\hline
 			\end{tabular}
-			\caption{ Converge rates with $k_x=4,k_y=3$ (upper table)
+			\caption{ Converge rates with $k_x=2,k_y=1$ (upper table)
 				and  $k_x=17,k_y=18$.
 				Here $\Delta \tau=\frac{h}{2}$ where $h=\frac{1}{16},\frac{1}{32},\frac{1}{64},
 				\frac{1}{128}, \frac{1}{256}
 				$
-				and final time $T=1$.}
+				and final time $T=1$. Boundary conditions for $\delta_{\tau}\h$ are of order $\Delta \tau^2+h^4$.}
 			\label{table:conv_rates_2}
 			
 			
 		\end{table}
+	\newpage
 		\subsection{Comparison with non-compact fourth order scheme and with data-driven scheme (AI(2,3)) trained on high wave-numbers}
+		We compare our scheme with the following schemes which are of second-order in time. To decrease the effect of temporal accuracy, we consider $\Delta \tau << h$.
+		These schemes have the updating rules (in 2D):
+		\begin{align*}
+			&
+E_z^{n+1}=E_z^n+\Delta \tau (D_x H_y^{n+1/2}-D_yH_x^{n+1/2})\\ &
+H_x^{n+3/2}=H_x^{n+1/2}-\Delta \tau D_y E_z^{n+1} \\&
+H_y^{n+3/2}=H_y^{n+1/2}+\Delta \tau D_x E_z^{n+1},
+    \end{align*}
+where $D_x$ and $D_y$ are calculated as follows.
+       For derivatives in $x$ direction,  we consider the following stencil 
+        				$$
+        				S:=
+        \frac{1}{\Delta x}
+        \begin{pmatrix}
+        	-b & -a & a & b \\
+        	-d & -c& c &d \\
+        	-b & -a & a & b
+        \end{pmatrix},
+        $$
+        where for derivatives in $y$ direction we consider $S^t$.
+        By Taylor expansion, one can obtain second order accuracy by the demand
+        $$c+3d+2a+6b=1$$
+        and fourth order accuracy with the additional requirements 
+        \begin{align}
+        	& c+27d+2a+54b=0 \\&
+        	a+3b=0.
+        \end{align}
+We define the following stencils:
+    $$
+    K_2=
+    \frac{1}{\Delta x}
+    \begin{pmatrix}
+    	-b & -a & a & b \\
+    	-d & -1+3d+2a+6b& 1-3d-2a-6b &d \\
+    	-b & -a & a & b
+    \end{pmatrix}
+    $$
+    $$
+    K_4=
+    \frac{1}{\Delta x}
+    \begin{pmatrix}
+    	\frac{a}{3} &-a&a&-\frac{a}{3}  \\
+    	-\frac{16a-1}{24}& - \frac{9-16a}{8}& \frac{9-16a}{8} &\frac{16a-1}{24} \\
+    	\frac{a}{3}  & - a& a & -\frac{a}{3} 
+    \end{pmatrix}
+    $$
+    By Letting $a=0$ and  $D_x=K_4$ and $D_y=K_4^t$ we obtain fourth-order accuracy in space. We call this scheme "non-compact $4$".
+    
+    The second scheme is obtained by letting $D_x=K_2$ and $D_y=K_2^t$ where the free-parameters  are minimized over a certain loss function.
+    
+    The first choice for the loss function is obtained by calculating the dispersion relation corresponding $K_2$ and minimization over the dispersion relation. We call this scheme 
+    $DRP(2,3)$.
+    
+      The second choice for the loss function is data-driven approach and  is obtained by
+    considering a set of analytical solutions splitted to train and test. The
+       minimization  is then performed over the $L^2$ error between the analysical solutions and the solutions obtained from the stencil. We call this scheme $AI(2,3)$.
+    
+    At the boundary points, we consider one-sided finite difference schemes of fourth order.
 		\begin{table} [h!]
 			\centering
 			\begin{tabular}{|p{0.7cm}|p{0.7cm}|p{4cm}|p{4cm}|p{4cm}|}
@@ -1534,6 +1616,7 @@ and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
 			%$$=
 			%f'(x)+\frac{1}{24}(f'(x+h)-2f'(x+h)+f'(x-h))+O(h^4)
 			%$$
+			\newpage
 			\section{}\label{appendxib}
 			In the current appendix we develop the compact numerical scheme.
 			We do so in a more general case  for which $\varepsilon$ and $\mu$ are not necessarily constants.
