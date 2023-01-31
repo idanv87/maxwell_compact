@@ -385,6 +385,22 @@ By letting  $ \tau=ct$,  $Z=\sqrt{\mu/\varepsilon}$, we look for a numerical sch
  \e(0,x,y,z)=\e_0 \\& \h(0,x,y,z)=\h_0,\\&\notag
 	\nabla\cdot \h(\tau,x,y,z) = 0.\notag
 \end{align}
+\begin{rem}\label{rem:wave_e}
+	Differentiating with respect to $\tau$, implies that $\e$ satisfies the wave equation
+	\begin{align*}
+		&
+	\frac{\partial^2 \e}{\partial \tau^2}=-Z\frac{\partial \J}{\partial \tau}-\nabla\times
+\nabla\times \e=\\&
+-Z\frac{\partial \J}{\partial \tau}-\nabla(\nabla \cdot \e)+\Delta \e=\\&
+-Z\frac{\partial \J}{\partial \tau}-\nabla(\nabla \cdot \e)+\Delta \e,
+	\end{align*}
+and 
+$$
+\frac{\partial^2 \h}{\partial \tau^2}=-\nabla \times \nabla \times\h-\nabla \times \partial_{\tau}\J=
+\Delta \h-\nabla \times \partial_{\tau}\J.
+$$
+
+\end{rem}
 
 
 
@@ -458,7 +474,7 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
 
     The dicretized functions $\e_h, \h_h$ are then defined as follows:
     $$
-    \e_h^n:=\e(n\Delta \tau,\Gwh^\e),\quad  \h_h^{n+\frac{1}{2}}:=\h\left ((n+\frac{1}{2})\Delta \tau,\Gwh^\h)\right).
+    \e_h^n:=\e(n\Delta \tau,\Gwh^\e),\quad  \h_h^{n+\frac{1}{2}}:=\h\left ((n+\frac{1}{2})\Delta \tau,\Gwh^\h\right).
     $$
 
 	With this arrangement, the boundary condition 
@@ -488,15 +504,20 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
    Next, we introduce the following notations:
 	\begin{itemize}
 		\item $r=\Delta \tau/h$.\\[1mm]
+		\item  $\partial_{\tau}:=\frac{\partial}{\partial \tau}$\\[1mm]
 		\item ${\bf x'}=(x_i',y_j',z_k')\in \Gwh^\e\cup\Gwh^\h$\\[1mm]
 		\item $\delta_{\tau} U^{n+\frac{1}{2}}:=\frac{U^{n+1}-U^{n}}{\Delta \tau}$\\[1mm]
 				\item $D_x U({\bf x'}):=\frac{U(x_i'+h/2,y_j',z_k')-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
 	\item $D_y U({\bf x'}):=\frac{U(x_i',y_j'+h/2,z_k')-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
 		\item $D_z U({\bf x'}):=\frac{U(x_i',y_j',z_k'+h/2)-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
+		\item $D_{xx}U(x'):=\frac{U(x_i'+h,y_j',z_k')-2U(x_i',y_j',z_k')+U(x_i'-h,y_j',z_k')}{h^2}$\\[1mm]
+				\item $D_{yy}U(x'):=\frac{U(x_i',y_j'+h,z_k')-2U(x_i',y_j',z_k')+U(x_i',y_j'-h,z_k')}{h^2}$\\[1mm]
+						\item $D_{zz}U(x'):=\frac{U(x_i',y_j',z_k'-h)-2U(x_i',y_j',z_k')+U(x_i',y_j',z_k'+h)}{h^2}$\\[1mm]
 		\item $\delta_x U:=a_x^{-1}\circ D_xU$\\[1mm]
 		\item $\delta_y U:=a_y^{-1}\circ D_y$\\[1mm]
 		\item 	$\delta_z U:=a_z^{-1}\circ D_z$\\[1mm]
 	\end{itemize}
+
 		Consider  the spaces 
 		$$
 		V^{\bf{E}}:=\{F \in \Gwh^{\bf{E}}:\|F\|_{\bf{E}}<\infty\}, \qquad 
@@ -603,7 +624,7 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
 	
 	Finally, we define 
 	$$
-	P({\bf J^{n+\frac{1}{2}}}):=Z\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla div({\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial t^2}\right ).
+	P({\bf J^{n+\frac{1}{2}}}):=Z\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla (\nabla \cdot{\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial \tau^2}\right ).
 	$$
    \subsection{Modified Helmholtz equation}
    In the following sections we will exploit fourth-order compact schemes for solving elliptic equations of the form $$-\Delta \phi+k^2\phi=k^2F, \ k>0$$ \cite{singer_turkel}.
@@ -626,7 +647,7 @@ Then the scheme reads as follows.
 	-\frac{h^2}{12}\Delta_h
 	\right)F_h.
 \end{align*}
-The latter scheme requires boundary operators for the inhomogeneous term $F$ and for $\phi$. 
+The latter scheme requires boundary operators for the inhomogeneous term $F$ and for $\phi$ and can be solved using conjugate gradient iterations.
 
 Next we introduce the following definition.
 	\begin{defi}
@@ -642,13 +663,13 @@ Next we introduce the following definition.
 	-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
 	\right).
 	$$	
-	
+We will omit the subscript $h$ when there is no danger of ambiguity.	
 	%		Let $$L^I:=
 	%		\left (\frac{P_1^{I}}{P_2^I}\right)+\left (\frac{P_1^I-P_2^I}{P_2^I}\right)B^I
 	%		$$
 	
 \end{defi}
-We recall the following facts ($\sigma$ refers to spectrum):
+By applying the Fourier transform on the toplitz operators above we obtain the following estimates:
 \begin{align}
 	\label{eq:spectrumP}
 	\begin{split}
@@ -742,7 +763,53 @@ $$
 
    
 	\section{The scheme}
-	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} we derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
+	\subsection{Equation based derivation}
+	We apply Taylor expansion to \eqref{eq:maxwellv}, and use Remark \ref{rem:wave_e}:
+	\begin{align*}
+	&
+	Z(\nabla \times \h^{n+1/2}-\J^{n+1/2})=	\left (  \frac{\partial \e}{\partial \tau} \right)^{n+1/2}=
+		\frac{\e^{n+1} -\e^n}{\Delta \tau}-\frac{\Delta \tau^2}{24}\frac{\partial^3 \e^{n+1/2}}{\partial \tau^3}+O(\Delta \tau^4)=\\&
+		\delta_{\tau}\e^{n+1/2}-\frac{\Delta \tau^2}{24}\partial_{\tau}
+		\left(
+		-Z\frac{\partial \J}{\partial \tau}-\nabla(\nabla \cdot \e)+\Delta \e
+		\right)+O(\Delta \tau^4)=\\&
+			\delta_{\tau}\e^{n+1/2}-\frac{\Delta \tau^2}{24}
+		\left(
+		-Z\partial_{\tau}^2\J^{n+1/2}
+		-\nabla(\nabla\cdot\partial_\tau \e)+\Delta \partial_{\tau}\e
+		\right)+O(\Delta \tau^4)=\\&
+			\delta_{\tau}\e^{n+1/2}-\frac{\Delta \tau^2}{24}
+		\left(
+		-Z\partial_{\tau}^2\J^{n+1/2}
+		+Z\nabla(\nabla\cdot\J^{n+1/2})+\Delta \partial_{\tau}\e
+		\right)+O(\Delta \tau^4).
+	\end{align*}
+Since  $\Delta \partial_{\tau}\e^{n+1/2}=\Delta_{\tau} \e^{n+1/2}+O(\Delta \tau^2) $,
+we have 
+that 
+\begin{align*}
+	&
+		Z(\nabla \times \h^{n+1/2}-\J^{n+1/2})=\\&
+	\delta_{\tau}\e^{n+1/2}-\frac{\Delta \tau^2}{24}
+\left(
+-Z\partial_{\tau}^2\J^{n+1/2}
++Z\nabla(\nabla\cdot\J^{n+1/2})+\Delta \delta_{\tau}\e
+\right)+O(\Delta \tau^4).
+\end{align*}
+Similarly, we write the equation for $\h$:
+\begin{align*}
+	& 
+	-\frac{1}{Z}\nabla \times \e^{n+1}=\frac{\partial \h^{n+1}}{\partial \tau}=\\&
+	\delta_\tau \h^{n+1}-\frac{\Delta \tau^2}{24}\partial_{\tau}\left ( 
+\Delta \h^{n+1}-\nabla \times \partial_{\tau}\J^{n+1}
+	\right)+O(\Delta \tau^4)=\\&
+		\delta_\tau \h^{n+1}-\frac{\Delta \tau^2}{24}\left ( 
+	\delta_{\tau}\Delta\h^{n+1}-\nabla \times \partial_{\tau}^2\J^{n+1}
+	\right)+O(\Delta \tau^4)
+\end{align*}
+	
+	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} 
+	we derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
 $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$
 at each time step
 (see Appendix \ref{appendxib}).
@@ -753,15 +820,72 @@ at each time step
 	$$
 		$$
 	-\Delta \delta_{\tau}\h^{n+1}+\frac{24}{\Delta \tau^2}\delta_{\tau}\h^{n+1}=
-	-\frac{1}{Z}\frac{24}{\Delta \tau^2}\nabla\times \e^{n+1}+
-	\mathrm{O(\Delta \tau^4+h^4)} \quad {\mathrm in} \quad (0,1)^3.
+	-\frac{1}{Z}\frac{24}{\Delta \tau^2}\nabla\times \e^{n+1}
+	-\nabla\times\partial_{\tau}^2\J^{n+1}+
+	\mathrm{O(\Delta \tau^4+h^4)} 
+	\quad {\mathrm in} \quad (0,1)^3.
 	$$
+   Before we introduce the scheme we examine the following expansion which will provide us boundary conditions for $\delta_\tau \h^{n+1}$:
 
+   \begin{equation}\label{eq:next_term}
+   	\delta_\tau \h^{n+1}=\frac{\h^{n+3/2}-\h^{n+\frac{1}{2} } }{\Delta \tau}=
+   	\left (\frac{\partial \h}{\partial \tau}\right)^{n+1}+
+   	\frac{\Delta \tau^2}{24}\frac{\partial^3\h}{\partial \Delta \tau^3}+
+   	O(\Delta \tau ^4)
+   \end{equation}
+A spatial fourth-order discretization to $  \left (\frac{\partial \h}{\partial \tau}\right)^{n+1}$
+is obtained by the equation $\frac{\partial \h}{\partial \tau}=-\frac{1}{Z}\nabla \times \e$ and reads as follows:
+\begin{equation}
+	B_2^{n+1}:=
+   	-\frac{1}{Z}	\begin{pmatrix}
+   		0& -\delta_z & \delta _y\\
+   		\delta_z&0&-\delta_x\\
+   		-\delta_y&\delta_x&0\\
+   	\end{pmatrix}
+   	\begin{pmatrix}
+   		E_x^{n+1}\\
+   		E_y^{n+1}\\
+   		E_z^{n+1}
+   	\end{pmatrix}.
+   \end{equation}
+A spatial fourth order discretization for $\frac{\Delta \tau^2}{24}\frac{\partial^3\h}{\partial \Delta \tau^3}$ is followed by the Maxwell equations and Remark \ref{rem:wave_e}:
+	\begin{align*}
+	&
+	\frac{\Delta \tau^2}{24}\frac{\partial^3\h}{\partial \Delta \tau^3}=
+	-\frac{1}{Z}\frac{\Delta \tau^2}{24}\frac{\partial^2}{\partial  \tau^2}\nabla \times \e^{n+1}=\\&
+	-\frac{1}{Z}\frac{\Delta \tau^2}{24}\nabla \times (-Z\partial_{\tau}\J-\nabla(\nabla \cdot \e)+\Delta \e)=\\&
+	\frac{\Delta \tau^2}{24}\nabla\times \partial_{\tau}\J
+	-\frac{1}{Z}\frac{\Delta \tau^2}{24}\nabla\times \Delta \e,
+\end{align*}
+where the last equality follows by the fact that the curl of gradient vanishes.
+Therefore, a fourth-order spatial discretization for $\frac{\Delta \tau^2}{24}\frac{\partial^3\h}{\partial \Delta \tau^3}$ reads as follows.
+\begin{align*}
+	&
+	B_4^{n+1}:=
+	-\frac{1}{Z}\frac{\Delta \tau^2}{24}
+	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+	\tilde{\Delta}_h& 0 & 0\\
+0	&\tilde{\Delta}_h&0\\
+	0&0&\tilde{\Delta}_h\\
+\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}
++\frac{\Delta \tau^2}{24}\nabla \times \partial_{\tau}\J^{n+1},
+\end{align*}
+where $\tilde{\Delta}_h$ is a second-order approximation of the Laplacian(see appendix ..).
+\subsection{The scheme}
 
-	The resulting scheme reads as follows.\\[1mm]
-	Let $\bf{E}^n_h, \bf{H}^{n+\frac{1}{2}}_h$  be given at $\Gwh^{\e}$ and $\Gwh^{\h}$ respectively. \\[2mm]
+	Let $\e^n_h, \h^{n+\frac{1}{2}}_h$  be given at $\Gwh^{\e}$ and $\Gwh^{\h}$ respectively. \\[2mm]
 	{\bf Step 1}: solve the following equations in $\intr{\Gwh^{\e}}$ with
-	 $B^{E_s^*}=0$ for $s=x,y,z$: \\[2mm]
+	 homogeneous boundary conditions on $\partial \Gwh^\e$: \\[2mm]
 	$$
 	\widetilde{\e}_h^{n+1}:=
 	\left.
@@ -790,7 +914,7 @@ at each time step
 		E_x^{*}\\
 		E_y^{*} \\
 		E_z^{*}
-	\end{pmatrix}+\underbrace{B^{n+1}}_{=0}=Z
+	\end{pmatrix}=Z
 \left [ \left.
 	\underbrace{
 	\begin{pmatrix}
@@ -815,27 +939,28 @@ to $\Gwh^\e$ using the boundary conditions $B^{n+1}=0$ and derive
 $\e_h^{n+1}$ in $\Gwh^\e$. 
 	\\[2mm]
 	{\bf Step 2}: solve $\bf{H}^{n+3/2}_h$ in $\intr\Gwh^\h$: \\[2mm]
-	Consider some  boundary conditions $B^{n+3/2}$.
-	\begin{equation}\label{eq:BH}
-	\begin{pmatrix}
-		B^{H_x}\\ B^{H_y}\\ B^{H_z}
-	\end{pmatrix}
-	=
-	-\frac{1}{Z}
-	\left[ \left.	
-	\begin{pmatrix}
-		0& -\delta_z & \delta _y\\
-		\delta_z&0&-\delta_x\\
-		-\delta_y&\delta_x&0\\
-	\end{pmatrix}
-	\begin{pmatrix}
-		E_x^{n+1}\\
-		E_y^{n+1}\\
-		E_z^{n+1}
-	\end{pmatrix}\right]\right|_{\; \partial{\Gwh^{\h}}}^{\;}
-	\end{equation}
-	(see Remark \ref{rem:expB}).
-define
+	Consider one of  boundary conditions $B_2^{n+1}$ (resp. $B_2^{n+1}+B_4^{n+1}$) on
+ $\partial \Gwh^\h$
+%	\begin{equation}\label{eq:BH}
+%	\begin{pmatrix}
+%		B^{H_x}\\ B^{H_y}\\ B^{H_z}
+%	\end{pmatrix}
+%	=
+%	-\frac{1}{Z}
+%	\left[ \left.	
+%	\begin{pmatrix}
+%		0& -\delta_z & \delta _y\\
+%		\delta_z&0&-\delta_x\\
+%		-\delta_y&\delta_x&0\\
+%	\end{pmatrix}
+%	\begin{pmatrix}
+%		E_x^{n+1}\\
+%		E_y^{n+1}\\
+%		E_z^{n+1}
+%	\end{pmatrix}\right]\right|_{\; \partial{\Gwh^{\h}}}^{\;}
+%	\end{equation}
+%	(see Remark \ref{rem:expB}).
+and define
 	$$
 	\widetilde{\h}_h^{n+3/2}:=
 	\left.
@@ -852,7 +977,8 @@ define
 	\end{pmatrix}\right|_{\; \intr{\Gwh^{\h}}}^{\;}
 	$$
 	where 
-	$$
+	\begin{align*}
+		&
 	\underbrace{
 	\begin{pmatrix}
 		P_1^{H_x}  & 0&0 \\
@@ -864,7 +990,9 @@ define
 		H_x^{*}\\
 		H_y^{*} \\
 		H_z^{*}
-	\end{pmatrix}+B^{n+3/2}=-\frac{1}{Z}
+	\end{pmatrix}+B^{n+1}
+=\\&
+-\frac{1}{Z}
 \left[ \left.
 	\underbrace{
 	\begin{pmatrix}
@@ -882,52 +1010,54 @@ define
 		E_x^{n+1}\\
 		E_y^{n+1}\\
 		E_z^{n+1}
-	\end{pmatrix}\right]\right|_{\; \intr{\Gwh^{\h}}}^{\;},
-	$$
+	\end{pmatrix}\right]	-\nabla\times\partial_{\tau}^2\J^{n+1}\right|_{\; \intr{\Gwh^{\h}}}^{\;},
+\end{align*}
 		Extend $\widetilde{\h}_h^{n+3/2}$ 
 	to $\Gwh^\h$ by defining it to be 
-	$$
-		-\frac{1}{Z}
-	\left[ 
-	\begin{pmatrix}
-		0& -\delta_z & \delta _y\\
-		\delta_z&0&-\delta_x\\
-		-\delta_y&\delta_x&0\\
-	\end{pmatrix}
-	\begin{pmatrix}
-		E_x^{n+1}\\
-		E_y^{n+1}\\
-		E_z^{n+1}
-	\end{pmatrix}\right]
-	$$
+$B_2^{n+1}$ (resp. $B_2^{n+1}+B_4^{n+1}$)
 	in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$)
-	and derive $\h_h^{n+3/2}$. 
-
-\begin{rem}\label{rem:expB}
-
-
-Consider the equation based  Taylor expansion
-	$$
-	\frac{\h^{n+3/2}-\h^{n+\frac{1}{2} } }{\Delta \tau}=
-	\frac{\partial \h}{\partial t}+O(\Delta \tau ^2)=
-	-\frac{1}{Z}	\begin{pmatrix}
-		0& -\delta_z & \delta _y\\
-		\delta_z&0&-\delta_x\\
-		-\delta_y&\delta_x&0\\
-	\end{pmatrix}
-	\begin{pmatrix}
-		E_x^{n+1}\\
-		E_y^{n+1}\\
-		E_z^{n+1}
-	\end{pmatrix}+O(\Delta \tau^2+h^4).
-	$$
-	Hence the  boundary conditions \eqref{eq:BH} are 
- indeed consistent with the Taylor expansion of the equation.
-\end{rem}
+	and derive $\h_h^{n+3/2}$. \\[2mm]
+{\bf We call the above scheme $Compact(4,2)$ (resp. $compact(4,4)$).}
+In particular, $Compact(4,2)$ is of order $\Delta \tau^2+h^4$ and 
+$compact(4,4)$ is of order $\Delta\tau^2h^2+h^4+\Delta \tau^4$.
+%\begin{rem}\label{rem:expB}
+%
+%
+%Consider the equation based  Taylor expansion
+%	\begin{equation}\label{eq:next_term}
+%	\frac{\h^{n+3/2}-\h^{n+\frac{1}{2} } }{\Delta \tau}=
+%	\left (\frac{\partial \h}{\partial \tau}\right)^{n+1}+O(\Delta \tau ^2)=
+%	-\frac{1}{Z}	\begin{pmatrix}
+%		0& -\delta_z & \delta _y\\
+%		\delta_z&0&-\delta_x\\
+%		-\delta_y&\delta_x&0\\
+%	\end{pmatrix}
+%	\begin{pmatrix}
+%		E_x^{n+1}\\
+%		E_y^{n+1}\\
+%		E_z^{n+1}
+%	\end{pmatrix}+O(\Delta \tau^2+h^4).
+%	\end{equation}
+%	Hence the  boundary conditions \eqref{eq:BH} are 
+% indeed consistent with the Taylor expansion of the equation.
+%
+%\end{rem}
    
-	\begin{rem}
-	Approximation of the boundary conditions to order $\Delta \tau ^4$ is also possible as depicted in the example in section \ref{sec:TE}. However, we choose the boundary conditions to fit the stability analysis in the subsequent sections.
-	\end{rem}
+%	\begin{rem}
+%
+%	We mention that the next term in the Taylor expansion \eqref{eq:next_term} equals by Remark \ref{rem:wave_e} to
+%	\begin{align*}
+%		&
+%		\frac{\Delta \tau^2}{24}\frac{\partial^3\h}{\partial \Delta \tau^3}=
+%			-\frac{1}{Z}\frac{\Delta \tau^2}{24}\frac{\partial^2}{\partial  \tau^2}\nabla \times \e^{n+1}=\\&
+%				-\frac{1}{Z}\frac{\Delta \tau^2}{24}\nabla \times (-Z\frac{\partial \J}{\partial \tau}-\nabla(\nabla \cdot \e)+\Delta \e)=\\&
+%					-\frac{1}{Z}\frac{\Delta \tau^2}{24}\nabla\times(-Z\frac{\partial \J}{\partial \tau})
+%						-\frac{1}{Z}\frac{\Delta \tau^2}{24}\nabla\times \Delta \e
+%					\end{align*}
+%				evaluated at $t=n+1$.
+%				By discretizing the term 
+%				 this term to the boundary conditions \eqref{eq:BH} we obtain a scheme which is of order $\Delta \tau^4+\Delta\tau^2h^2+h^4$.
+%	\end{rem}
 
 	
 
@@ -942,10 +1072,10 @@ Consider the equation based  Taylor expansion
 		r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2\cdot\min\{Z,Z^{-1}\}}
 		{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
 	$$
-	implies stability.
+	implies stability of $compact(4,2)$.
  		\end{lemma}
  
- We assume during this section without loss of generality that $Z=1$ and $J=0$.
+ We assume during the proofs without loss of generality that $Z=1$ and $J=0$.
 We use energy estimates in order to prove Lemma \ref{lem:coer}.
 
 There are two main non-trivial difficulties we have to surpass:
@@ -1059,7 +1189,7 @@ and therefore
 % Let $v_1,..,v_$Another proof can be obtained by considering  orthogonal basis for $\mathrm{ker}(a^{-1}-a^{-t})$
 \end{proof}
 
-		Next, we extend the operator $P_2$ and $P_1$ symmetrically  to $\Gwh^{\e}$ and 
+		Next, we extend the operator $P_2$ and $P_1$ symmetrically (and with the same norm)  to $\Gwh^{\e}$ and 
 $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 \begin{defi}
 
@@ -1071,15 +1201,15 @@ $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 		%	-\Delta \tau\frac{1}{2} (P_2<a^{-1}+a^{-t},\curl_h>\h_h^{n+1/2},\e_h^n)+\\&
 		(P_1\widetilde{\h}_h^{n+1/2},\widetilde{\h}_h^{n+1/2})_{\intr{\intr{\Gwh^\h}}}, \\&
 		\mathcal{E}_2^{n}:=-\frac{\Delta \tau}{2}(P_{2,ext}<a^{-1}+a^{-t}>\curl_h \e^{n},\h^{n+1/2})_{\Gwh^\h}\\&
-		\mathcal{E}_3^{n}:=(P_{2}\h^{n+1/2},\h^{n+1/2})_{\partial \Gwh^\h\cup \partial \intr{\intr{\Gwh^\h}}}\\&
+		\mathcal{E}_3^{n}:=(P_{2,ext}\h^{n+1/2},\h^{n+1/2})_{\partial \Gwh^\h\cup \partial \intr{\intr{\Gwh^\h}}}\\&
 		\mathcal{E}_4^{n}:=\mathcal{E}^n_1+\mathcal{E}^n_2-\mathcal{E}^n_3.
 	\end{align*}
 \end{defi}
 \begin{lem}\label{lem:first}
 	Assume that 
-	$$
+	\begin{equation}\label{eq:cfl}
 	r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
-	$$
+	\end{equation}
 	There there exists $C>0$ such that  
 	$\mathcal{E}_4^n\geq C(\|\e^n\|^2+\|\h^n\|^2) $.
 \end{lem}
@@ -1092,7 +1222,7 @@ By Young's inequality,
 $$
 \mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}).
 $$
-Therefore for $r$ small enough
+Therefore \eqref{eq:cfl} implies that
  $\mathcal{E}_4^n\geq\frac{24}{\Delta \tau^2} (1-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2})\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$.
 \end{proof}
 \begin{remark}
@@ -1158,7 +1288,7 @@ We have
 		-(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{h+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}=\\&
 		(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>(\h^{h+3/2}+\h^{n+1/2}),\e^{n+1})_{{{\Gw^\e}}}
 		\\&
-		-(\frac{1}{2}\Delta \tau P_{2}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}.
+		-(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}.
 	\end{align*}
 	Recall that we chose our boundary conditions such that 
 	the last term equals $$\mathcal{E}_3^{n+1}-\mathcal{E}_3^{n}+
@@ -1170,7 +1300,7 @@ We have
 		$$
 		where 
 		$$
-		\mathbf{term}\leq C \Delta \tau( \sum_{i=1}^3\mathcal{E}_i^n+
+	|	\mathbf{term}|\leq C \Delta \tau( \sum_{i=1}^3\mathcal{E}_i^n+
 		\sum_{i=1}^3\mathcal{E}_i^{n+1}).
 		$$
 \end{proof}
@@ -1180,10 +1310,91 @@ $$
 \mathcal{E}_4^{n}\leq C \mathrm{e}^{T}\mathcal{E}_4^{0},
 $$
 and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
-	
-	
+\subsection{Stability analysis of $compact(4,4)$ }
+
+Recall that at  step 2 of $compact(4,4)$ we choose boundary conditions  such that
+\begin{align*}
+	&
+	\delta_{\tau}\h_h^{n+1}=
+			-\frac{1}{Z}
+	\left[ 
+	\begin{pmatrix}
+		0& -\delta_z & \delta _y\\
+		\delta_z&0&-\delta_x\\
+		-\delta_y&\delta_x&0\\
+	\end{pmatrix}
+	\begin{pmatrix}
+		E_x^{n+1}\\
+		E_y^{n+1}\\
+		E_z^{n+1}
+	\end{pmatrix}\right]
+-\frac{1}{Z}\frac{\Delta \tau^2}{24}\tilde{\Delta}_h\acurl  \e_h^{n+1}=\\&
+-\frac{1}{Z}
+	\underbrace{\left(
+		1+\frac{\Delta \tau^2}{24}\tilde{\Delta}_h
+		\right)}_{:=\tilde{A}^{-1}}\e_h^{n+1} \acurl.\\&
+\end{align*} on $\partial\Gwh^\h\cup \partial \intr{\Gwh^\h}$.
+Here $\Delta_h$ is a second-order approximation of the Laplacian which is modified near the boundaries to a one-sided scheme.
+
+	We define the following quantities.
+\begin{defi}
+	\begin{align*}
+		&
+		\mathcal{E}_1^{n}:=
+		(P_1\widetilde{\e}_h^{n},\widetilde{\e}_h^{n})_{\intr{\Gwh^\e}}+
+		%	-\Delta \tau\frac{1}{2} (P_2<a^{-1}+a^{-t},\curl_h>\h_h^{n+1/2},\e_h^n)+\\&
+		(P_1\widetilde{\h}_h^{n+1/2},\widetilde{\h}_h^{n+1/2})_{\intr{\intr{\Gwh^\h}}}, \\&
+		\mathcal{E}_2^{n}:=-\frac{\Delta \tau}{2}(P_{2,ext}<a^{-1}+a^{-t}>\curl_h \e^{n},\h^{n+1/2})_{\Gwh^\h}\\&
+		\mathcal{E}_3^{n}:=(\frac{\tilde{A}+\tilde{A}^t}{2}P_{2,ext}\h^{n+1/2},\h^{n+1/2})_{\partial \Gwh^\h\cup \partial \intr{\intr{\Gwh^\h}}}\\&
+		\mathcal{E}_4^{n}:=\mathcal{E}^n_1+\mathcal{E}^n_2-\mathcal{E}^n_3.
+	\end{align*}
+\end{defi}
+
+
+%\begin{lem}
+%	There exists $C>0$, not depending on $h$ (but depends on $r$), such that $$\|\tilde{A}-\tilde{A}^{t}\|\leq C(r).$$
+%\end{lem}
+%\begin{proof}
+%	The rank of $\tilde{A}^{-1}-\tilde{A}^{-t}$ does not depend on $h$ and its norm depend only in $r$.
+%	By Lemma \ref{lem:antiestimates} we are done.
+%\end{proof}
+We calculate,
+\begin{align*}
+&
+*:=	-\Delta \tau( P_{2,ext}\acurl\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}=\\&
+		-\Delta \tau( \frac{1}{2}P_{2,ext}<a^{-1}+a^{-t}>\curl_h\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}+\mathrm{term}
+\end{align*}
+where $|\mathrm{term}|\leq C\Delta \tau$.
+On the other hand,
+\begin{align*}
+	&
+*=\frac{1}{2}\left( P_{2,ext}(\tilde{A}+\tilde{A}^{t})(\h^{n+3/2}-\h^{n+1/2}),
+\h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}+\\&
+\frac{1}{2}\left( P_{2,ext}(\tilde{A}-\tilde{A}^{t})(\h^{n+3/2}-\h^{n+1/2}),
+\h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}.
+\end{align*}
+\begin{cor}
+\begin{align*}
+\mathcal{E}_4^{n+1}=\mathcal{E}_4^{n}+
+\frac{1}{2}\left( P_{2,ext}(\tilde{A}-\tilde{A}^{t})(\h^{n+3/2}-\h^{n+1/2}),
+\h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}+\mathbf{term}
+\end{align*}
+\end{cor}
+where $|\mathbf{term}|\leq C\Delta \tau$.
+
+
+
+
+
+
+
+
+
+ 
 
 	
+
+	\newpage
 	\section{Example: Transverse magnetic waves  in $[0,1]^3$}\label{sec:TE}
 	\textcolor{red}{This section is not completed yet}
 	
