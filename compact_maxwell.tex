@@ -413,7 +413,6 @@ $$
 	We consider uniform discretization of $\Gw=[0,1]^3$ that is,
 	 $\Delta x=\Delta y=\Delta z=h$,
 	 $\e_h, \h_h$ correspond to discretized functions corresponding $\e,\h$.
-	 From time to time, when there is no danger of ambiguity, we omit the subscript $h$ from $\e_h,\h_h$.
 	 We consider $\Delta \tau $ as the time-step.
 	Moreover, we   introduce the following notations:
 	\begin{itemize}
@@ -432,23 +431,23 @@ $$
 	With this arrangement all space derivatives are spread over a single mesh width and the central time and space derivatives
 	are centered at the same point similar to that of the Yee scheme \cite{yee}. 
 	We define the following meshes:
-	\begin{align*}
-		&\Gwh^{E_z}:=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [N]^2 \times[N-1]\} \\
-		& \Gwh^{E_y}:=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [N]\times [N-1] \times[N] \}\\
-		& \Gwh^{E_x}:=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [N-1]\times [N]^2 \} \\
-		&\Gwh^{H_z}:=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [N-1]^2\times[N] \}\\
-		&\Gwh^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\
-		& \Gwh^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.
-	\end{align*}
+	\begin{align}\label{eq:meshes}
+		&\Gwh^{E_z}:=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [N]^2 \times[N-1]\} \\\nonumber
+		& \Gwh^{E_y}:=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [N]\times [N-1] \times[N] \}\\\nonumber
+		& \Gwh^{E_x}:=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [N-1]\times [N]^2 \} \\ \nonumber
+		&\Gwh^{H_z}:=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [N-1]^2\times[N] \}\\ \nonumber
+		&\Gwh^{H_y}:=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [N-1]\times [N] \times [N-1] \}\\ \nonumber
+		& \Gwh^{H_x}:=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [N]\times [N-1]^2\}.\nonumber
+	\end{align}
 Furthermore,
-	\begin{align*}
-	&\mathrm{int}(\Gwh^{E_z}):=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [1,N-1]^2 \times[1,N-2]\} \\
-	&\mathrm{int}( \Gwh^{E_y}):=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [1,N-1]\times [1,N-2] \times[N] \}\\
-	& \mathrm{int}(\Gwh^{E_x}):=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [1,N-2]\times [1,N-1]^2 \} \\
-	&\mathrm{int}(\Gwh^{H_z}):=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [1,N-2]^2\times[1,N-1] \}\\
-	&\mathrm{int}(\Gwh^{H_y}):=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [1,N-2]\times [1,N-1] \times [1,N-2] \}\\
-	& \mathrm{int}(\Gwh^{H_x}):=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [1,N-1]\times [1,N-2]^2\}.
-\end{align*}
+	\begin{align}\label{eq:interior_meshes}
+	&\mathrm{int}(\Gwh^{E_z}):=\{(x_i,y_j,z_{k+\frac{1}{2}}),\quad (i,j,k)\in [1,N-1]^2 \times[1,N-2]\} \\ \nonumber
+	&\mathrm{int}( \Gwh^{E_y}):=\{(x_i,y_{j+\frac{1}{2}},z_{k}), \quad (i,j,k)\in [1,N-1]\times [1,N-2] \times[N] \}\\  \nonumber
+	& \mathrm{int}(\Gwh^{E_x}):=\{ (x_{i+\frac{1}{2}},y_{j},z_{k}),\quad (i,j,k) \in [1,N-2]\times [1,N-1]^2 \} \\  \nonumber
+	&\mathrm{int}(\Gwh^{H_z}):=\{ (x_{i+\frac{1}{2}},y_{j+\frac{1}{2}},z_{k}),\quad (i,j,k)\in [1,N-2]^2\times[1,N-1] \}\\ \nonumber
+	&\mathrm{int}(\Gwh^{H_y}):=\{ (x_{i+\frac{1}{2}},y_j,z_{k+\frac{1}{2}}),\quad (i,j,k) \in [1,N-2]\times [1,N-1] \times [1,N-2] \}\\ \nonumber
+	& \mathrm{int}(\Gwh^{H_x}):=\{ (x_i,y_{j+\frac{1}{2}},z_{k+\frac{1}{2}}), \quad (i,j,k) \in [1,N-1]\times [1,N-2]^2\}. \nonumber
+\end{align}
 By convection, $x_0=y_0=z_0=0$ and $x_N=y_N=z_N=1$.
 	We denote 
 $$
@@ -491,33 +490,105 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
 	\end{align*} 
 
 	Next, we consider fourth-order approximation for first derivatives:
-	Assume that $f(x)$ is known at N points $x_0,x_1, ..,x_{N-1}$. Then,  one can  estimate  $f'(x+h/2)$ at the $N-1$ points 	$x_{\frac{1}{2}},..,x_{N-3/2}$ to fourth order.
-   That is, there exists operators $a$ satisfying $a^{-1}D_xf(x)=f'(x+h/2)+O(h^4)$
-   (see Appendix \ref{appendix}). For partial derivatives with respect to $s$ we write $a_s$ as the corresponding operator for evaluating $f_s$. 
-   More formally, let $a_{ij}^{-1}$ be the entries of a matrix $a_{ij}$ and let $U(i,j,k)$ be grid function.
-   Then 
- $$h\cdot [a_x^{-1}\circ D_xU(i,j,k)]:=\sum_{l} a_{il}^{-1}(U(l+n/2,j,k)-U(l-n/2,j,k)),$$
-  $$h\cdot [a_y^{-1}\circ D_yU(i,j,k)]:=\sum_{l} a_{jl}^{-1}(U(i,l+n/2,k)-U(i,l-n/2,k)),$$
-   $$h\cdot [a_z^{-1}\circ D_zU(i,j,k)]:=\sum_{l} a_{kl}^{-1}(U(i,j,l+n/2)-U(i,j,l-n/2)).$$
-
-   
+	Assume that $f(x)$ is known at N points $x_0,x_1, ..,x_{N-1}$. Then,  one can  estimate  $f'(x+h/2)$ at the $N-1$ points 	$x_{\frac{1}{2}},..,x_{N-3/2}$ to fourth order as follows.
+		\begin{equation}\label{eq:lhs}
+		\underbrace{
+		\frac{1}{24}
+		\begin{pmatrix}
+			26     & -5     & 4      & -1     & 0      & \dots  & 0      \\
+			1      & 22     & 1      & 0      & 0      & \dots  & 0      \\
+			0      & 1      & 22     & 1      & 0      & \dots  & 0      \\
+			\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+			0      & 0      & \dots  & 1      & 22     & 1      & 0      \\
+			0      & 0      & \dots  & 0      & 1      & 22     & 1      \\
+			0      & 0      & \dots  & -1     & 4      & -5     & 26
+		\end{pmatrix}}_{:=A}
+		\begin{pmatrix}
+			f'(x_{\frac{1}{2}}) \\
+			f'(x_{3/2}) \\
+			\cdots \\
+			\cdots\\
+			\cdots \\
+			\cdots \\
+			f'(x_{N-3/2})
+		\end{pmatrix}=
+		\frac{1}{h}
+		\begin{pmatrix}
+			f(x_{1})-f(x_0)  \\
+			\cdots \\
+			\cdots\\
+			\cdots \\
+			\cdots \\
+			\cdots \\
+			f(x_{N-1)}-f(x_{N-2})
+		\end{pmatrix}.
+	\end{equation}
+Let $I,J,K$ be index sets contained is one of the sets defined in \eqref{eq:meshes}.
+We define the following operators  on $I\times J\times K$.
+\begin{align*}
+	&
+	a_x^{-1}:=A^{-1}\otimes \mathbf{1}_J\otimes \mathbf{1}_K,\\&
+		a_y^{-1}:= \mathbf{1}_I\otimes A^{-1}\otimes \mathbf{1}_K, \\&
+			a_z^{-1}:= \mathbf{1}_I\otimes \mathbf{1}_J\otimes A^{-1}.
+\end{align*}
+For  index sets $I,J,K$  contained is one of the sets defined in \eqref{eq:interior_meshes}
+ we define the operators $D_{xx},D_{yy},D_{zz}$ on $I\times J\times K$, using the matrix 
+$$
+	\underbrace{
+	\frac{1}{h^2}
+	\begin{pmatrix}
+		-2     & 1     & 0      & 0     & 0      & \dots  & 0      \\
+		1     & -2     & 1      & 0      & 0      & \dots  & 0      \\
+		0      & 1      & -2     & 1      & 0      & \dots  & 0      \\
+		\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+		0      & 0      & \dots  & 1      & -2     & 1      & 0      \\
+		0      & 0      & \dots  & 0      & 1      & -2    & 1      \\
+		0      & 0      & \dots  & -1     & 0      & 1     & -2
+\end{pmatrix}}_{:=D},
+$$
+\begin{align*}
+	&
+	D_{xx}:=D\otimes \mathbf{1}_J\otimes \mathbf{1}_K,\\&
+D_{yy}:= \mathbf{1}_I\otimes D\otimes \mathbf{1}_K, \\&
+D_{zz}:= \mathbf{1}_I\otimes \mathbf{1}_J\otimes D.
+\end{align*}
+We define the extension of $D$ to be 
+$$
+\underbrace{
+	\frac{1}{h^2}
+	\begin{pmatrix}
+		1     & 0&\dots& 0  \\
+		0&D &&0\\
+		0&\dots&0&1
+		\end{pmatrix}}_{:=D_{ext}},
+$$
+and we define on index sets contained in \eqref{eq:meshes}
+\begin{align}\label{eq:ext}
+	&
+	D_{xx,ext}:=D_{ext}\otimes \mathbf{1}_J\otimes \mathbf{1}_K,\\& \nonumber
+D_{yy,ext}:= \mathbf{1}_I\otimes D_{ext}\otimes \mathbf{1}_K, \\& \nonumber
+D_{zz,ext}:= \mathbf{1}_I\otimes \mathbf{1}_J\otimes D_{ext}. \nonumber
+\end{align}
    Next, we introduce the following notations:
 	\begin{itemize}
 		\item $r=\Delta \tau/h$.\\[1mm]
-		\item  $\partial_{\tau}:=\frac{\partial}{\partial \tau}$\\[1mm]
+		\item  $\partial_{\tau}:=\frac{\partial}{\partial \tau}$ and $\partial_{\tau}^2:=\frac{\partial^2}{\partial^2 \tau}$\\[1mm]
 		\item ${\bf x'}=(x_i',y_j',z_k')\in \Gwh^\e\cup\Gwh^\h$\\[1mm]
 		\item $\delta_{\tau} U^{n+\frac{1}{2}}:=\frac{U^{n+1}-U^{n}}{\Delta \tau}$\\[1mm]
 				\item $D_x U({\bf x'}):=\frac{U(x_i'+h/2,y_j',z_k')-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
 	\item $D_y U({\bf x'}):=\frac{U(x_i',y_j'+h/2,z_k')-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
 		\item $D_z U({\bf x'}):=\frac{U(x_i',y_j',z_k'+h/2)-U(x_i'-h/2,y_j',z_k')}{h}$\\[1mm]
-		\item $D_{xx}U(x'):=\frac{U(x_i'+h,y_j',z_k')-2U(x_i',y_j',z_k')+U(x_i'-h,y_j',z_k')}{h^2}$\\[1mm]
-				\item $D_{yy}U(x'):=\frac{U(x_i',y_j'+h,z_k')-2U(x_i',y_j',z_k')+U(x_i',y_j'-h,z_k')}{h^2}$\\[1mm]
-						\item $D_{zz}U(x'):=\frac{U(x_i',y_j',z_k'-h)-2U(x_i',y_j',z_k')+U(x_i',y_j',z_k'+h)}{h^2}$\\[1mm]
 		\item $\delta_x U:=a_x^{-1}\circ D_xU$\\[1mm]
 		\item $\delta_y U:=a_y^{-1}\circ D_y$\\[1mm]
 		\item 	$\delta_z U:=a_z^{-1}\circ D_z$\\[1mm]
-	\end{itemize}
-
+	\end{itemize} 
+\begin{remark}
+More formally, let $a_{ij}^{-1}$ be the entries of a matrix $A_{N'\times N'}^{-1}$ and let $U(i,j,k)$ be grid function.
+Then 
+$$h\cdot [a_x^{-1}\circ D_xU](i,j,k):=\sum_{l=1}^{N'} a_{il}^{-1}(U(l+1/2,j,k)-U(l-1/2,j,k)),$$
+$$h\cdot [a_y^{-1}\circ D_yU](i,j,k):=\sum_{l=1}^{N'} a_{jl}^{-1}(U(i,l+1/2,k)-U(i,l-1/2,k)),$$
+$$h\cdot [a_z^{-1}\circ D_zU](i,j,k):=\sum_{l=1}^{N'} a_{kl}^{-1}(U(i,j,l+1/2)-U(i,j,l-1/2)).$$
+\end{remark}
 		Consider  the spaces 
 		$$
 		V^{\bf{E}}:=\{F \in \Gwh^{\bf{E}}:\|F\|_{\bf{E}}<\infty\}, \qquad 
@@ -602,7 +673,7 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
 		\end{align*}
 		We then define 
 		$$
-		<a^{-1},\curl>:=
+		<a^{-1},\curl_h>:=
 		\begin{pmatrix}
 			0& -\delta_z & \delta _y\\
 			\delta_z&0&-\delta_x\\
@@ -626,7 +697,7 @@ $\Gwh^{E_z}, \Gwh^{H_x},\Gwh^{H_y}$ projected on the $x,y$ plane.
 	$$
 	P({\bf J^{n+\frac{1}{2}}}):=Z\left ( -{\bf J}^{n+\frac{1}{2}}-\nabla (\nabla \cdot{\bf J}^{n+\frac{1}{2}})+\frac{\partial^2{\bf J}^{n+\frac{1}{2}}}{\partial \tau^2}\right ).
 	$$
-   \subsection{Modified Helmholtz equation}
+   \subsection{Modified Helmholtz equation}\label{subsec:mh}
    In the following sections we will exploit fourth-order compact schemes for solving elliptic equations of the form $$-\Delta \phi+k^2\phi=k^2F, \ k>0$$ \cite{singer_turkel}.
 %   $-\Delta (\phi-F)+k^2(\phi-F)=\Delta F $.
 Let 
@@ -669,24 +740,15 @@ We will omit the subscript $h$ when there is no danger of ambiguity.
 	%		$$
 	
 \end{defi}
-By applying the Fourier transform on the toplitz operators above we obtain the following estimates:
-\begin{align}
-	\label{eq:spectrumP}
-	\begin{split}
-		\sigma(\frac{\Delta \tau^2}{24} P_1)\in [1+\frac{2}{r^2}-4,1+\frac{2}{r^2}+12r] ,
-		\\
-		\sigma(-\frac{\Delta \tau^2}{24} P_2)\in [1+\frac{2}{r^2}-12r, 1+\frac{2}{r^2}].
-	\end{split}
-\end{align}
-By \eqref{eq:spectrumP}, if $r<\frac{1}{\sqrt[3]{6}}$
-then $-P_2, P_1$ are positive definite, and
-$$
-1<1+\frac{2}{r^2}-12r\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},
-$$
-and 
-$$
-1<1+\frac{2}{r^2}-4\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+12r.
-$$
+By  Appendix \ref{appendxib} for all $r<\frac{1}{\sqrt{2}}$
+ $-P_2, P_1$ are positive definite
+and
+\begin{align}\label{eq:P1P2estimates}
+	&
+1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
+1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
+\end{align} 
+
 
 
 
@@ -809,10 +871,9 @@ Similarly, we write the equation for $\h$:
 \end{align*}
 	
 	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} 
-	we derive the following non-homogeneous elliptic equations for (see Appendix \ref{appendxib})
+	we derive the following non-coupled  elliptic equations (modified Helmholtz) for
 $	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$
-at each time step
-(see Appendix \ref{appendxib}).
+at each time step.
 	$$
 	-\Delta\delta_{\tau} \e^{n+\frac{1}{2}}+\frac{24}{\Delta \tau^2}\delta_{\tau}\e^{n+\frac{1}{2}}=
 	Z\frac{24}{\Delta \tau^2}\nabla\times \h^{n+\frac{1}{2}}+P(\J)^{n+\frac{1}{2}}+
@@ -932,8 +993,9 @@ where $\tilde{\Delta}_h$ is a second-order approximation of the Laplacian(see ap
 		H_x^{n+\frac{1}{2}}\\
 		H_y^{n+\frac{1}{2}}\\
 		H_z^{n+\frac{1}{2}}
-	\end{pmatrix}+P({\bf J})\right]\right|_{\; \intr{\Gwh^{\h}}}^{\;}.
+	\end{pmatrix}+P({\bf J})\right]\right|_{\; \intr{\Gwh^{\h}}}^{\;}
 	$$
+	(cf. subsection \ref{subsec:mh}).
 	Extend $\widetilde{\e}_h^{n+1}$
 to $\Gwh^\e$ using the boundary conditions $B^{n+1}=0$ and derive 
 $\e_h^{n+1}$ in $\Gwh^\e$. 
@@ -941,25 +1003,6 @@ $\e_h^{n+1}$ in $\Gwh^\e$.
 	{\bf Step 2}: solve $\bf{H}^{n+3/2}_h$ in $\intr\Gwh^\h$: \\[2mm]
 	Consider one of  boundary conditions $B_2^{n+1}$ (resp. $B_2^{n+1}+B_4^{n+1}$) on
  $\partial \Gwh^\h$
-%	\begin{equation}\label{eq:BH}
-%	\begin{pmatrix}
-%		B^{H_x}\\ B^{H_y}\\ B^{H_z}
-%	\end{pmatrix}
-%	=
-%	-\frac{1}{Z}
-%	\left[ \left.	
-%	\begin{pmatrix}
-%		0& -\delta_z & \delta _y\\
-%		\delta_z&0&-\delta_x\\
-%		-\delta_y&\delta_x&0\\
-%	\end{pmatrix}
-%	\begin{pmatrix}
-%		E_x^{n+1}\\
-%		E_y^{n+1}\\
-%		E_z^{n+1}
-%	\end{pmatrix}\right]\right|_{\; \partial{\Gwh^{\h}}}^{\;}
-%	\end{equation}
-%	(see Remark \ref{rem:expB}).
 and define
 	$$
 	\widetilde{\h}_h^{n+3/2}:=
@@ -1012,6 +1055,7 @@ and define
 		E_z^{n+1}
 	\end{pmatrix}\right]	-\nabla\times\partial_{\tau}^2\J^{n+1}\right|_{\; \intr{\Gwh^{\h}}}^{\;},
 \end{align*}
+(cf. subsection \ref{subsec:mh}).
 		Extend $\widetilde{\h}_h^{n+3/2}$ 
 	to $\Gwh^\h$ by defining it to be 
 $B_2^{n+1}$ (resp. $B_2^{n+1}+B_4^{n+1}$)
@@ -1065,23 +1109,45 @@ $compact(4,4)$ is of order $\Delta\tau^2h^2+h^4+\Delta \tau^4$.
 	
 
 	\section{Energy estimates}
-	The goal of the the current section is proving the following stability result.
-	\begin{lemma}\label{lem:coer}
-		For any $Z$ and smooth function $\J$ in $[0,1]^3\times [0,\infty)$, 
-		$$
-		r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2\cdot\min\{Z,Z^{-1}\}}
-		{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
-	$$
-	implies stability of $compact(4,2)$.
- 		\end{lemma}
- 
- We assume during the proofs without loss of generality that $Z=1$ and $J=0$.
-We use energy estimates in order to prove Lemma \ref{lem:coer}.
+%
+% 
+% We assume during the proofs without loss of generality that $Z=1$ and $J=0$.
+%We use energy estimates in order to prove Lemma \ref{lem:coer}.
+%
+%There are two main non-trivial difficulties we have to surpass:
+% The first is the fact that the operators $a_s$ are not symmetric. We surpass this difficulty by showing that its corresponding  anti-symmetric parts are "small" enough (Lemma \ref{lem:antiestimates});
+% the second difficulty comes from the boundary equations we have to impose for the elliptic equations   we solve for $\h$.
+%  We will show how the fact that  we impose specific boundary conditions  in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$) enables  us to accomplish our estimates.  
 
-There are two main non-trivial difficulties we have to surpass:
- The first is the fact that the operators $a_s$ are not symmetric. We surpass this difficulty by showing that its corresponding  anti-symmetric parts are "small" enough (Lemma \ref{lem:antiestimates});
- the second difficulty comes from the boundary equations we have to impose for the elliptic equations   we solve for $\h$.
-  We will show how the fact that  we impose specific boundary conditions  in both $\partial \Gwh^\h$ and $\partial (\intr{\Gwh^{\h}}$) enables  us to accomplish our estimates.  
+ 	The goal of the the current section is proving the following stability result.
+ \begin{lemma}\label{lem:coer}
+ 	Assume that $n\Delta \tau\leq T$. Then
+ 	for any $Z$ and smooth function $\J$ in $[0,1]^3\times [0,\infty)$, 
+ 	$$
+ 	r<\min \left \{  \frac{1}{\sqrt{2}},\frac{2\cdot\min\{Z,Z^{-1}\}}
+ 	{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
+ 	$$
+ 	implies stability of $compact(4,2)$.
+ \end{lemma}
+ We demonstrate the stages for proving stability first in  a general framework.
+ Let $L:\R^N\to \R^M$ be a linear operator, depending on $h$ and $\Delta \tau$, and let $S^n$ be a finite difference operator mapping $U^0\in \R^N$ to $L^nU^0$.
+We say that the scheme is stable with respect to the norm $\|\cdot \|$ if  there exists $C(r)>0$ which do not depend on $h$ satisfying 
+ $\|U^n\|\leq CU^0$ for all time steps $n$.
+ \begin{proposition}\cite[section 5]{GKO}\label{prop:p1}
+ 	Assume that there exists a form $\mathcal{E}^n:\R^N\to \R$ satisfying the following:
+ 	\begin{enumerate}
+ 		\item There exists positive constants $C_1,C_2$ such that $C_2 \|U^n\|^2\leq \mathcal{E}^n\leq C_1 \|U^n\|^2$.
+ 		\item There exists $C>0$ such that $\mathcal{E}^{n+1}\leq \mathcal{E}^n+C\Delta \tau(\|U^n\|^2+\|U^{n+1}\|^2)$ for all $n$.
+ 	\end{enumerate}
+ Then  if $n\Delta \tau\leq T$ the scheme is stable. In particular,  there exists $C>0$ such that
+ $$
+ \|U^n\|^2\leq C\mathrm{e}^T\|U^0\|^2.
+ $$
+ \end{proposition}
+Energy estimates for finite differences methods for Maxwell  equations in staggered grid are well-known in the case where $a_s=\mathbf{1}$ \cite{sakka}.
+ In such a case one utilizes the symmetry of the curl operator to obtain even stronger estimates of the form  $\mathcal{E}^{n+1}\leq \mathcal{E}^n$. 
+In our schemes however, the operators $a_s$ are not symmetric. We surpass this difficulty by showing that its corresponding  anti-symmetric parts are "small" enough (Lemma \ref{lem:antiestimates}) to fulfill the conditions of Proposition \ref{prop:p1}.
+ 
  
 
 %	\begin{lem}[Abel transformation]
@@ -1153,43 +1219,40 @@ In the following Lemma we estimate the anti-symmetric part of the operator $a_s^
  Then $M=\mathrm{rank}(A)$.
  By anti-symmetry, for all $u,v\in \R^N $, $(Au,v)$  is determined only on $e_1,..e_M$.
  Complete to orthonormal  $e_1,...e_N$.
-By Anti-symmetry $(Ae_i,e_i)=0$ for all $i$.
+By Anti-symmetry  $(Ae_i,e_i)=0$ for all $i$.
   Let $U_{i,j,k}, V_{i,j,k}$ be grid functions satisfying for all $j,k$:
-  $U(i,j,k)=\sum_{l=1}^M \alpha_{jk}e_l$, $V(i,j,k)=\sum_{l=1}^M \beta_{jk}e_l$.
-  Then 
+  $U(i,j,k)=\sum_{l=1}^M \alpha_{jk}^{l}e_l$, $V(i,j,k)=\sum_{l=1}^M \beta_{jk}^{l}e_l$.
+Let us calculate
   \begin{align*}
   	&
- \frac{1}{h}(a_x^{-1}-a_x^{-t}U,V)=h^2 \sum_j\sum_k\sum_i\sum_l A_{il}U_{l,j,k}V_{l,j,k}=\\&
- h^2\sum_{l\neq m}^M\sum_j\sum_k\alpha_{j,k}\beta_{j,k}(Ae_m,e_l)\leq 
- M^2\|A\|h^3\sum_{i}\sum_j\sum_k |a_{jk}b_{jk}|.
+ \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)=h^2 \sum_j\sum_k\sum_i\sum_l A_{il}U_{l,j,k}V_{l,j,k}=\\&
+ h^2\sum_{l\neq m}^M\sum_j\sum_k\alpha_{j,k}^l\beta_{j,k}^l(Ae_m,e_l)\leq 
+ M^2\|A\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^lb_{jk}^l|\leq \\&
+  \frac{1}{2}M^2\|A\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^l|^2
+  +  \frac{1}{2}M^2\|A\|h^3\sum_{i}\sum_j\sum_k |\beta_{jk}^l|^2
   \end{align*}
 On the other hand 
 $$
-(U,U)=h^3\sum_j\sum_k\sum_i U_{i,j,k}U_{i,j,k}=h^3\sum_j\sum_k\sum_i a_{jk}^2,
+(U,U)=h^3\sum_j\sum_k\sum_i U_{i,j,k}U_{i,j,k}=h^3\sum_{l=1}^M\sum_j\sum_k |a_{jk}^l|^2,
 $$
 and 
 $$
-(V,V)=h^3\sum_j\sum_k\sum_i V_{i,j,k}V_{i,j,k}=h^3\sum_{l=1}^M\sum_j\sum_k\beta_{jk}^2.
+(V,V)=h^3\sum_j\sum_k\sum_i V_{i,j,k}V_{i,j,k}=h^3\sum_{l=1}^M\sum_j\sum_k|\beta_{jk}^l|^2.
 $$
-By Young's inequality
-  $$
-   \frac{1}{h}(a_x^{-1}-a_x^{-t}U,V)= h^2 \sum_j\sum_k\sum_i\sum_l A_{il}U_{l,j,k}V_{l,j,k}\leq 
- 2 M^2\|A\| \|U\|\|V\|.
-  $$
-Therefore, there exists $C>0$ which do not depend on $h$ such that
-\begin{align}
-	(<a^{-1}-a^{-t}>D_x U,V)\leq C\|U\| \|V\|,
-\end{align}
-and therefore 
+Therefore,
+$$
+| \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)|\leq M^2\|A\|\|U\|\|V\|.
+$$
+We deduce that
  there exists $C>0$ which do not depend on $h$ such that
 \begin{align}
-	(<a^{-1}-a^{-t}>\curl_h U,V)\leq C\|U\| \|V\|.
+|	(<a^{-1}-a^{-t}>\curl_h U,V)|\leq C\|U\| \|V\|.
 \end{align}
 % 
 % Let $v_1,..,v_$Another proof can be obtained by considering  orthogonal basis for $\mathrm{ker}(a^{-1}-a^{-t})$
 \end{proof}
 
-		Next, we extend the operator $P_2$ and $P_1$ symmetrically (and with the same norm)  to $\Gwh^{\e}$ and 
+		Next, we extend the operator $P_2$ and $P_1$ symmetrically (and with the same norm) using \eqref{eq:ext}  to $\Gwh^{\e}$ and 
 $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 \begin{defi}
 
@@ -1208,61 +1271,72 @@ $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 \begin{lem}\label{lem:first}
 	Assume that 
 	\begin{equation}\label{eq:cfl}
-	r<\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
+	r<\min \left \{  \frac{1}{\sqrt{2}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
 	\end{equation}
-	There there exists $C>0$ such that  
-	$\mathcal{E}_4^n\geq C(\|\e^n\|^2+\|\h^n\|^2) $.
+	There there exists $C_1,C_2>0$ which do not depend on $h$ such that  
+	$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \mathcal{E}_4^n\leq C_2(\|\e^n\|^2+\|\h^n\|^2) $.
 \end{lem}
 
 \begin{proof}
-Let $r<\frac{1}{\sqrt[3]{6}}$.
-Then $$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
+	We will prove the harder direction 
+	$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \mathcal{E}_4^n$.\\
+Let $r<\frac{1}{\sqrt{2}}$.
+By \eqref{eq:P1P2estimates}, $$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
 \frac{24}{\Delta \tau^2}\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
 By Young's inequality,
 $$
-\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}).
+\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}).
 $$
 Therefore \eqref{eq:cfl} implies that
- $\mathcal{E}_4^n\geq\frac{24}{\Delta \tau^2} (1-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2})\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$.
+ $\mathcal{E}_4^n\geq\frac{24}{\Delta \tau^2} (1-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2})\left ( \|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}\right)$.
 \end{proof}
 \begin{remark}
 	If $a$ is the identity operator, then 
-	$\min \left \{  \frac{1}{\sqrt[3]{6}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}=
+	$\min \left \{  \frac{1}{\sqrt{2}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}=
 	\frac{1}{\sqrt{3}},
 	$
 	which is the stability condition for the classical Yee scheme.
 \end{remark}
 \begin{lem}\label{lem:sec} 
 	We have
-	$$\mathcal{E}_4^n-
-\mathcal{E}_4^{n+1}=
+	$$\frac{\Delta \tau^2}{24}\mathcal{E}_4^n-
+\frac{\Delta \tau^2}{24}\mathcal{E}_4^{n+1}=
 \mathbf{term}
 $$
 where 
 $$
-|\mathbf{term}|\leq C \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n})
+|\mathbf{term}|\leq C(r) \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n})
 $$
-and $C$ does not depend on $h$.
+and $0<C(r)$ does not depend on $h$.
 \end{lem}
 \begin{proof}
 	
 	We write the following scheme equalities in the space $\intr{\intr\Gwh}$.
 	
-	\begin{align}
+	\begin{align*}
+		&
 		P_1(\widetilde{\e}_h^{n+1} -\widetilde{\e}^{n})=
-		\Delta \tau P_2 \acurl \h_h^{n+1/2} \quad \mathrm{in} \  \intr{\Gwh^\e}
-	\end{align}
-	\begin{align}
+		\Delta \tau P_2 \acurl \h_h^{n+1/2}=\\&
+		\frac{\Delta \tau}{2}P_2<a^{-1}+a^{-t},\curl_h>\h_h^{n+1/2}+
+			\underbrace{\frac{\Delta \tau}{2}P_2<a^{-1}-a^{-t},\curl_h>\h_h^{n+1/2}}_{{\bf term }}.
+%		 \quad \mathrm{in} \  \intr{\Gwh^\e}
+	\end{align*}
+	\begin{align*}
+		&
 		P_1(\widetilde{\h}_h^{n+3/2} -\widetilde{\h}^{n+1/2})
 		=
-		-\Delta \tau P_2 \acurl \e_h^{n+1}  \quad \mathrm{in} \  \intr{\intr{\Gwh^\h}}.
-	\end{align}
-{ \bf
-We restrict ourselves to $ \intr{\intr{\Gwh^\h}}$ to avoid the boundary term $B^{n+3/2}$}.
+		-\Delta \tau P_2 \acurl \e_h^{n+1}  \quad \mathrm{in} \  \intr{\intr{\Gwh^\h}}=\\&
+		-\frac{\Delta \tau}{2}P_2<a^{-1}+a^{-t},\curl_h>\e_h^{n+1}
+		\underbrace{	-\frac{\Delta \tau}{2}P_2<a^{-1}-a^{-t},\curl_h>\e_h^{n+1}}_{{\bf term  }}.
+	\end{align*}
+
+We denote by a single notations ${\bf term}$ to denote each term which include anti-symmetric parts.
+%{ \bf
+%Notice that we restrict ourselves to $ \intr{\intr{\Gwh^\h}}$ to avoid the boundary term $B^{n+1}$}.
 	
 
 	
-	Next, we take inner products of the scheme with $\widetilde{\e}_h^{n+1}+\widetilde{\e}_h^n$,
+	Next, we take inner products  with $\widetilde{\e}_h^{n+1}+\widetilde{\e}_h^n$,
 	and with 
 	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ such that 
 	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ is orthogonal to the boundary term $B^{n+3/2}$.
@@ -1293,23 +1367,26 @@ We have
 	Recall that we chose our boundary conditions such that 
 	the last term equals $$\mathcal{E}_3^{n+1}-\mathcal{E}_3^{n}+
 	\mathbf{term}$$ where $\mathbf{term}$ include the anti-symmetric part.
-	Together with Lemma \ref{lem:antiestimates} and Young's inequality we have the following:
-		$$\mathcal{E}_4^n-
-	\mathcal{E}_4^{n+1}=
+	Together with Lemma \ref{lem:antiestimates}, \eqref{eq:P1P2estimates} and Young's inequality we have the following:
+		$$\frac{\Delta \tau^2}{24}\mathcal{E}_4^n-
+\frac{\Delta \tau^2}{24}	\mathcal{E}_4^{n+1}=
 	\mathbf{term}
 		$$
 		where 
 		$$
-	|	\mathbf{term}|\leq C \Delta \tau( \sum_{i=1}^3\mathcal{E}_i^n+
-		\sum_{i=1}^3\mathcal{E}_i^{n+1}).
+	|	\mathbf{term}|\leq C \Delta \tau( \mathcal{E}_4^{n+1}+\mathcal{E}_4^{n}).
 		$$
 \end{proof}
-Lemmas \ref{lem:first}, \ref{sec:TE} imply that if $\Delta \tau n\leq T$
-then 
+\begin{proof}[proof of Lemma \ref{lem:coer}]
+Let $\mathcal{E}^n:=\frac{\Delta \tau^2}{24}\mathcal{E}_4^n$.
+By Lemma \ref{lem:sec}, $\mathcal{E}^n\leq C(r)\mathrm{e}^{n\Delta \tau}\mathcal{E}^0$.
+By Lemma \ref{lem:first} and Proposition \ref{prop:p1}, this imply that 
 $$
-\mathcal{E}_4^{n}\leq C \mathrm{e}^{T}\mathcal{E}_4^{0},
+\|\e_h^n\|+\|\h_h^{n+1/2}\|\leq C(T,r)(\|\e_h^0\|+\|\h^{1/2}\|).
 $$
-and thus Lemma \ref{lem:coer} is proved (cf. \cite[chapter 5]{GKO}).
+\end{proof}
+
+
 \subsection{Stability analysis of $compact(4,4)$ }
 
 Recall that at  step 2 of $compact(4,4)$ we choose boundary conditions  such that
@@ -1364,7 +1441,7 @@ We calculate,
 *:=	-\Delta \tau( P_{2,ext}\acurl\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}=\\&
 		-\Delta \tau( \frac{1}{2}P_{2,ext}<a^{-1}+a^{-t}>\curl_h\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}+\mathrm{term}
 \end{align*}
-where $|\mathrm{term}|\leq C\Delta \tau$.
+where $\frac{\Delta \tau^2}{24}|\mathrm{term}|\leq C\Delta \tau$.
 On the other hand,
 \begin{align*}
 	&
@@ -1380,7 +1457,66 @@ On the other hand,
 \h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}+\mathbf{term}
 \end{align*}
 \end{cor}
-where $|\mathbf{term}|\leq C\Delta \tau$.
+where $$\frac{\Delta \tau^2}{24}|\mathbf{term}|\leq 
+C\Delta \tau(\|\h^{n+3/2}\|^2+\|\h^{n+1/2}\|^2).
+$$
+\begin{proposition}
+	\begin{align*}
+&
+\frac{\Delta \tau^2}{24}\left |
+\frac{1}{2}\left( P_{2,ext}(\tilde{A}-\tilde{A}^{t})(\h^{n+3/2}-\h^{n+1/2}),
+\h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}
+\right|
+\leq \\&
+Ch(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
+\end{align*}
+\end{proposition}
+\begin{proof}
+	Using the fact that $\tilde{A}-\tilde{A}^t$ is of constant rank
+the proof then follows as before from Lemma \ref{lem:antiestimates}.
+\end{proof}
+\begin{cor}
+	Let 
+	$$
+	\mathcal{E}^n:=\frac{\Delta \tau^2}{24}r\mathcal{E}_4^n.
+	$$
+	Then 
+	$$
+	\mathcal{E}^{n+1}=	\mathcal{E}^n+\mathbf{term}
+	$$
+	where 
+	$$
+	|\mathbf{term}|\leq C(r\Delta \tau  +\underbrace{rh}_{=\Delta \tau})(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2)
+	$$
+\end{cor}
+By\eqref{eq:P1P2estimates}, 
+\begin{align}
+	&
+	1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
+	1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
+\end{align} 
+Therefore,
+\begin{align*}
+	&
+	\mathcal{E}_1^n-\mathcal{E}_3^n\geq\\&
+	\frac{24}{\Delta \tau^2}\left ((1+2/r^2-r^2/6)(\|\e^n\|^2
+	+\|\h\|_{\intr{\intr{\Gwh^\h}}})+\frac{1}{r^2}\sigma_{\max}(\tilde{A}+\tilde{A}^t)
+	\|\h\|_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}
+	\right)\geq \\&
+		\frac{24}{\Delta \tau^2}(\|\e\|^2+\|\h\|^2)\cdot 
+		\min\{1+2/r^2-r^2/6,1/r^2\}\cdot\sigma_{\max}(\tilde{A}+\tilde{A}^t)
+\end{align*}
+and therefore
+$$
+\mathcal{E}_4^n\geq 
+\frac{24}{\Delta \tau^2}
+\underbrace{
+ \left(
+	\min\{1+2/r^2-r^2/6,1/r^2\}\cdot\sigma_{\max}(\tilde{A}+\tilde{A}^t)-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2}
+\right)}_{:=C(r)}
+\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right).
+$$
+
 
 
 
@@ -1829,6 +1965,54 @@ We define the following stencils:
 			%$$
 			\newpage
 			\section{}\label{appendxib}
+			Consider the operators
+				$$
+			P_{1,h}^{I}:=-\left (\Delta_h+\frac{h^2}{6}\Delta_h^2\right)+\frac{24}{\Delta \tau^2}\left (
+			1+\frac{2}{r^2},
+			\right)
+			$$
+			$$
+			P_{2,h}^{I}:=\frac{24}{\Delta \tau^2}\left (
+			-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
+			\right).
+			$$	
+			$$
+			\sigma(h^2\Delta_h)\in[-12,0],
+			$$
+			implying that 
+			$$
+			\frac{\Delta \tau^2}{24}\sigma(-P_{2,h})\subset [1+2/r^2-1, 1+2/r^2]
+			$$
+		The operator $\frac{\Delta \tau^2}{24}\left (  -\Delta_h-\frac{h^2}{6}\Delta_h^2 \right)+1+\frac{2}{r^2}$ operates on Fourier mode as
+	\begin{align*}
+			&
+			1+\frac{2}{r^2}+\frac{r^2}{24}\underbrace{\left(
+			 6-2(\cos \theta_x+\cos \theta_y+\cos \theta_z)
+			 -\frac{4T}{6}
+			\right)}_{:=S}
+		\end{align*}
+	where $$T:=	(\cos(\theta_z)-1)(\cos(\theta_x)-1)+
+	(\cos(\theta_x)-1)(\cos(\theta_y)-1)+
+	(\cos(\theta_z)-1)(\cos(\theta_y)-1),$$
+	 and $-4\leq S\leq 12$. 
+	 Hence,
+\begin{align}
+	\begin{split}
+		\frac{\Delta \tau^2}{24}\sigma(P_{1,h})\subset [1+2/r^2-r^2/6, 1+2/r^2+r^2/2] ,
+		\\
+		\frac{\Delta \tau^2}{24}	\sigma(- P_2)\in [1+\frac{2}{r^2}-1, 1+\frac{2}{r^2}].
+	\end{split}
+\end{align}
+As a result, $r<\frac{1}{\sqrt{2}}$ implies that 
+$-P_2, P_1$ are positive definite, and 
+$$
+1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},
+$$
+and 
+$$
+1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
+$$		
+			\newpage
 			In the current appendix we develop the compact numerical scheme.
 			We do so in a more general case  for which $\varepsilon$ and $\mu$ are not necessarily constants.
 			 
