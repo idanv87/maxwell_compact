@@ -543,7 +543,7 @@ $$
 		\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
 		0      & 0      & \dots  & 1      & -2     & 1      & 0      \\
 		0      & 0      & \dots  & 0      & 1      & -2    & 1      \\
-		0      & 0      & \dots  & -1     & 0      & 1     & -2
+		0      & 0      & \dots  & 0     & 0      & 1     & -2
 \end{pmatrix}}_{:=D},
 $$
 \begin{align*}
@@ -568,6 +568,27 @@ and we define on index sets contained in \eqref{eq:meshes}
 	D_{xx,ext}:=D_{ext}\otimes \mathbf{1}_J\otimes \mathbf{1}_K,\\& \nonumber
 D_{yy,ext}:= \mathbf{1}_I\otimes D_{ext}\otimes \mathbf{1}_K, \\& \nonumber
 D_{zz,ext}:= \mathbf{1}_I\otimes \mathbf{1}_J\otimes D_{ext}. \nonumber
+\end{align}
+Next, we introduce the second-order approximation matrix of second derivative 
+$$
+\underbrace{
+	\frac{1}{h^2}
+	\begin{pmatrix}
+		2     & -5     & 4      & -1     & 0      & \dots  & 0      \\
+		1     & -2     & 1      & 0      & 0      & \dots  & 0      \\
+		0      & 1      & -2     & 1      & 0      & \dots  & 0      \\
+		\vdots & \ddots & \ddots & \ddots & \ddots & \ddots & \vdots \\
+		0      & 0      & \dots  & 1      & -2     & 1      & 0      \\
+		0      & 0      & \dots  & 0      & 1      & -2    & 1      \\
+		0      & 0      & \dots  & -1    & 4      & -5     & 2
+\end{pmatrix}}_{:=\tilde{D}},
+$$
+\begin{align}\label{eq:ext2}
+	&
+	\tilde{\Delta_h}:=
+\tilde{D}\otimes \mathbf{1}_J\otimes \mathbf{1}_K
++ \mathbf{1}_I\otimes \tilde{D}\otimes \mathbf{1}_K  
++ \mathbf{1}_I\otimes \mathbf{1}_J\otimes \tilde{D}. 
 \end{align}
    Next, we introduce the following notations:
 	\begin{itemize}
@@ -867,13 +888,9 @@ Similarly, we write the equation for $\h$:
 	\right)+O(\Delta \tau^4)=\\&
 		\delta_\tau \h^{n+1}-\frac{\Delta \tau^2}{24}\left ( 
 	\delta_{\tau}\Delta\h^{n+1}-\nabla \times \partial_{\tau}^2\J^{n+1}
-	\right)+O(\Delta \tau^4)
+	\right)+O(\Delta \tau^4).
 \end{align*}
-	
-	Using  Taylor series and the Maxwell equations \eqref{eq:maxwellv} 
-	we derive the following non-coupled  elliptic equations (modified Helmholtz) for
-$	\delta_{\tau} \bf{E}$, and $\delta_{\tau} \bf{H}$
-at each time step.
+The resulting equations are
 	$$
 	-\Delta\delta_{\tau} \e^{n+\frac{1}{2}}+\frac{24}{\Delta \tau^2}\delta_{\tau}\e^{n+\frac{1}{2}}=
 	Z\frac{24}{\Delta \tau^2}\nabla\times \h^{n+\frac{1}{2}}+P(\J)^{n+\frac{1}{2}}+
@@ -941,7 +958,7 @@ Therefore, a fourth-order spatial discretization for $\frac{\Delta \tau^2}{24}\f
 	\end{pmatrix}
 +\frac{\Delta \tau^2}{24}\nabla \times \partial_{\tau}\J^{n+1},
 \end{align*}
-where $\tilde{\Delta}_h$ is a second-order approximation of the Laplacian(see appendix ..).
+where $\tilde{\Delta}_h$ is given by \eqref{eq:ext2}.
 \subsection{The scheme}
 
 	Let $\e^n_h, \h^{n+\frac{1}{2}}_h$  be given at $\Gwh^{\e}$ and $\Gwh^{\h}$ respectively. \\[2mm]
@@ -1486,15 +1503,17 @@ the proof then follows as before from Lemma \ref{lem:antiestimates}.
 	$$
 	where 
 	$$
-	|\mathbf{term}|\leq C(r\Delta \tau  +\underbrace{rh}_{=\Delta \tau})(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2)
+	|\mathbf{term}|\leq C(r\Delta \tau  +\underbrace{rh}_{=\Delta \tau})(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
 	$$
 \end{cor}
-By\eqref{eq:P1P2estimates}, 
+To complete the stability analysis we need to fulfill (1) in Proposition \ref{prop:p1}.
+Recall that  
 \begin{align}
 	&
 	1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
-	1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
+	1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}
 \end{align} 
+(\eqref{eq:P1P2estimates}).
 Therefore,
 \begin{align*}
 	&
@@ -1516,6 +1535,12 @@ $$
 \right)}_{:=C(r)}
 \left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right).
 $$
+\begin{lem}
+	Assume that 
+	$$
+	ff
+	$$
+\end{lem}
 
 
 
