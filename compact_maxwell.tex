@@ -557,9 +557,9 @@ $$
 \underbrace{
 	\frac{1}{h^2}
 	\begin{pmatrix}
-		1     & 0&\dots& 0  \\
+		-4     & 0&\dots& 0  \\
 		0&D &&0\\
-		0&\dots&0&1
+		0&\dots&0&-4
 		\end{pmatrix}}_{:=D_{ext}},
 $$
 and we define on index sets contained in \eqref{eq:meshes}
@@ -753,6 +753,11 @@ Next we introduce the following definition.
 	$$
 	P_{2,h}^{I}:=\frac{24}{\Delta \tau^2}\left (
 	-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
+	\right)
+	$$	
+		$$
+	P_{2,ext}^{I}:=\frac{24}{\Delta \tau^2}\left (
+	-1-\frac{2}{r^2}-\frac{h^2}{12}\tilde{\Delta}_h
 	\right).
 	$$	
 We will omit the subscript $h$ when there is no danger of ambiguity.	
@@ -762,11 +767,12 @@ We will omit the subscript $h$ when there is no danger of ambiguity.
 	
 \end{defi}
 By  Appendix \ref{appendxib} for all $r<\frac{1}{\sqrt{2}}$
- $-P_2, P_1$ are positive definite
+ $-P_2,-P_{2,ext}, P_1$ are positive definite
 and
 \begin{align}\label{eq:P1P2estimates}
 	&
 1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
+1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_{2,ext}\|\leq 1+\frac{2}{r^2},\\&
 1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
 \end{align} 
 
@@ -1141,8 +1147,14 @@ $compact(4,4)$ is of order $\Delta\tau^2h^2+h^4+\Delta \tau^4$.
  	Assume that $n\Delta \tau\leq T$. Then
  	for any $Z$ and smooth function $\J$ in $[0,1]^3\times [0,\infty)$, 
  	$$
- 	r<\min \left \{  \frac{1}{\sqrt{2}},\frac{2\cdot\min\{Z,Z^{-1}\}}
- 	{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
+ 	r<\min \left \{  
+ 	\frac{1}{\sqrt{2}},\min\{Z,Z^{-1}\}\cdot
+ 	 \frac
+ 	 { 	\min\left \{    
+ 	 	1+\frac{2}{r^2}-\frac{r^2}{6},\frac{2}{r^2}
+ 	 	\right\}}
+ 	 {\left(1+\frac{2}{r^2}\right)\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2}}
+ 	 \right \}
  	$$
  	implies stability of $compact(4,2)$.
  \end{lemma}
@@ -1164,7 +1176,6 @@ We say that the scheme is stable with respect to the norm $\|\cdot \|$ if  there
 Energy estimates for finite differences methods for Maxwell  equations in staggered grid are well-known in the case where $a_s=\mathbf{1}$ \cite{sakka}.
  In such a case one utilizes the symmetry of the curl operator to obtain even stronger estimates of the form  $\mathcal{E}^{n+1}\leq \mathcal{E}^n$. 
 In our schemes however, the operators $a_s$ are not symmetric. We surpass this difficulty by showing that its corresponding  anti-symmetric parts are "small" enough (Lemma \ref{lem:antiestimates}) to fulfill the conditions of Proposition \ref{prop:p1}.
- 
  
 
 %	\begin{lem}[Abel transformation]
@@ -1208,13 +1219,16 @@ In the following Lemma we estimate the anti-symmetric part of the operator $a_s^
 	There exists $C>0$, not depending on $h$, such that $$\|<a_s^{-1}-a_s^{-t}>\curl_h\|\leq C.$$
 \end{lem}
 \begin{proof}
-	Recall that the matrix  $a_s $ in Appendix \ref{appendix} is non-singular,  $a_s^{-1}-a_s^{-t}$ is anti-symmetric, and $\|a_s\|$  is bounded from above and below for all $s=x,y,z$ uniformly in $h$. Therefore it is enough to show that $a_s^{-1}-a_s^{-t}$ is of constant rank which do not depend on $h$. This follows  first by the following  observations: 
-	$\mathrm{rank}(a_s-a_s^t)\leq 8$ (for all $N$); For any non-singular matrix $A$ and any $v\in \mathrm{ker}(A-A^t)$
+	Recall that the matrix  $A$ is non-singular,  $a_s^{-1}-a_s^{-t}$ is anti-symmetric, and $\|A\|$  is bounded from above and below  uniformly in $h$. 
+	A direct calculation shows that 
+	$\mathrm{rank}(A-A^t)\leq 8$ (for all $N$). For any $v\in \mathrm{ker}(A-A^t)$
 	$$
 	Av=A^tv \Rightarrow v=A^{-1}A^{t}v=A^{-t}A^{t}v\Rightarrow
 	\mathrm{rank}(A^{-1}-A^{-t})\leq 	\mathrm{rank}(A-A^t).
 	$$
-	Assume without loss of generality that $a_s=a_x$. 
+	Therefore $\mathrm{rank}(A^{-1}-A^{-t})\leq 8$.\\
+	Now assume without loss of generality that $a_s=a_x$ and assume that 
+	$i\in I, j\in J, k\in K$.
 %	We diagonalize the hermitian matrix $\sqrt{-1}(a^{-1}-a^{-t})$.
 %	Consider  two grid functions $U_{i,j,k}, V_{i,j,k}$ of unit norm
 %	such that for any $j,k$ $V_{,j,k}$ and $U_{+1/2,j,k},U_{-1/2,j,k}$ are orthonormal (complex) eigenvectors corresponding to  eigenvalues $\lambda^{i,j} $ and of unit norm with respect to $x$ coordinate. Then  
@@ -1232,21 +1246,20 @@ In the following Lemma we estimate the anti-symmetric part of the operator $a_s^
 % 	$$
 % Since the $\mathrm{rank}$ of $a^{-1}-a^{-t}$ does not depend on the mesh size there exists $C$ such that for all $U,V$, $$(<a_x^{-1}-a_x^{-t}>D_x U,V)_{\Gwh^\e}\leq2 C\|a^{-1}-a^{-t}\|\|U\|\|V\|.$$
 % 
- Let $e_1,..e_M$  be orthonormal basis for the image of the matrix $A$ corresponding the operator $\tilde{A}:=a_x^{-1}-a_x^{-t}$.
- Then $M=\mathrm{rank}(A)$.
- By anti-symmetry, for all $u,v\in \R^N $, $(Au,v)$  is determined only on $e_1,..e_M$.
- Complete to orthonormal  $e_1,...e_N$.
-By Anti-symmetry  $(Ae_i,e_i)=0$ for all $i$.
+ Let $e_1,..e_M$  be orthonormal basis for the image of the matrix  $\tilde{A}:=A^{-1}-A^{-t}$ in $\R^{|I|}$.
+ Then $M=\mathrm{rank}(\tilde{A})\leq 8$.
+ Complete $\{e_1,..e_M\}$ to orthonormal  basis $e_1,...e_N$ of $\R^{|I|}$.
+By Anti-symmetry  $(\tilde{A}e_i,e_i)=0$ for all $i$.
   Let $U_{i,j,k}, V_{i,j,k}$ be grid functions satisfying for all $j,k$:
   $U(i,j,k)=\sum_{l=1}^M \alpha_{jk}^{l}e_l$, $V(i,j,k)=\sum_{l=1}^M \beta_{jk}^{l}e_l$.
 Let us calculate
   \begin{align*}
   	&
- \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)=h^2 \sum_j\sum_k\sum_i\sum_l A_{il}U_{l,j,k}V_{l,j,k}=\\&
- h^2\sum_{l\neq m}^M\sum_j\sum_k\alpha_{j,k}^l\beta_{j,k}^l(Ae_m,e_l)\leq 
- M^2\|A\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^lb_{jk}^l|\leq \\&
-  \frac{1}{2}M^2\|A\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^l|^2
-  +  \frac{1}{2}M^2\|A\|h^3\sum_{i}\sum_j\sum_k |\beta_{jk}^l|^2
+ \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)=h^2 \sum_j\sum_k\sum_i\sum_l \tilde{A}_{il}U_{l,j,k}V_{l,j,k}=\\&
+ h^2\sum_{l\neq m}^M\sum_j\sum_k\alpha_{j,k}^l\beta_{j,k}^l(\tilde{A}e_m,e_l)\leq 
+ M^2\|\tilde{A}\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^lb_{jk}^l|\leq \\&
+  \frac{1}{2}M^2\|\tilde{A}\|h^3\sum_{i}\sum_j\sum_k |a_{jk}^l|^2
+  +  \frac{1}{2}M^2\|\tilde{A}\|h^3\sum_{i}\sum_j\sum_k |\beta_{jk}^l|^2
   \end{align*}
 On the other hand 
 $$
@@ -1258,9 +1271,12 @@ $$
 $$
 Therefore,
 $$
-| \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)|\leq M^2\|A\|\|U\|\|V\|.
+| \frac{1}{h}((a_x^{-1}-a_x^{-t})U,V)|\leq M^2\|\tilde{A}\|\|U\|\|V\|.
 $$
-We deduce that
+Moreover, $\frac{26}{24}\leq \|A\|\leq 40$
+implying that  there exists $C$ not depending on $h$ such that $\|A^{-1}\|\leq C$.
+Repeating the proof for $x,z$
+implies that
  there exists $C>0$ which do not depend on $h$ such that
 \begin{align}
 |	(<a^{-1}-a^{-t}>\curl_h U,V)|\leq C\|U\| \|V\|.
@@ -1268,7 +1284,11 @@ We deduce that
 % 
 % Let $v_1,..,v_$Another proof can be obtained by considering  orthogonal basis for $\mathrm{ker}(a^{-1}-a^{-t})$
 \end{proof}
-
+The same proof with the matrix $\tilde{D}$  imply the following corollary 
+\begin{cor}\label{cor:Dtilde}
+	There exists $C>0$ not depending on $h$ such that 
+$$|	((\tilde{\Delta}_h-\tilde{\Delta}_h^t)U,V)_{\Gwh}|\leq \frac{r^2}{24}Ch \|U\|_{\Gwh}\|V\|_{\Gwh}.$$
+\end{cor}
 		Next, we extend the operator $P_2$ and $P_1$ symmetrically (and with the same norm) using \eqref{eq:ext}  to $\Gwh^{\e}$ and 
 $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 \begin{defi}
@@ -1290,45 +1310,61 @@ $\Gwh^{\h}$ and denote them $P_{1,ext}$, $P_{2,ext}$.
 	\begin{equation}\label{eq:cfl}
 	r<\min \left \{  \frac{1}{\sqrt{2}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}
 	\end{equation}
-	There there exists $C_1,C_2>0$ which do not depend on $h$ such that  
-	$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \mathcal{E}_4^n\leq C_2(\|\e^n\|^2+\|\h^n\|^2) $.
+	There there exists $C_1(r),C_2(r)>0$ which do not depend on $h$ such that  
+$$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \frac{\Delta \tau^2}{24}\mathcal{E}_4^n\leq C_2(\|\e^n\|^2+\|\h^n\|^2) $$.
 \end{lem}
 
 \begin{proof}
-	We will prove the harder direction 
-	$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \mathcal{E}_4^n$.\\
+	The inequality $\frac{\Delta \tau^2}{24}\mathcal{E}_4^n\leq C_2(\|\e^n\|^2+\|\h^n\|^2) $ is true regardless to the assumption $\eqref{eq:cfl}$ and follows by Cauchy-Schwartz inequality,  Lemma \ref{lem:sym} and \eqref{eq:P1P2estimates})
+	Next, we  prove the direction 
+	$ C_1(\|\e^n\|^2+\|\h^n\|^2)\leq \frac{\Delta \tau^2}{24}\mathcal{E}_4^n$.\\
 Let $r<\frac{1}{\sqrt{2}}$.
-By \eqref{eq:P1P2estimates}, $$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
-\frac{24}{\Delta \tau^2}\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
+\begin{align}
+	&
+	1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
+	1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}.
+\end{align} 
+By \eqref{eq:P1P2estimates}, 
+
+
+$$\mathcal{E}_1^n-\mathcal{E}_3^n\geq
+\frac{24}{\Delta \tau^2}
+\min\left \{    
+1+\frac{2}{r^2}-\frac{r^2}{6},\frac{2}{r^2}
+\right\}
+\left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right)$$
 By Young's inequality,
 $$
-\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}).
+\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}
+\left(1+\frac{2}{r^2}\right)
+\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}).
 $$
 Therefore \eqref{eq:cfl} implies that
- $\mathcal{E}_4^n\geq\frac{24}{\Delta \tau^2} (1-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2})\left ( \|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}\right)$.
+ $$\mathcal{E}_4^n\geq
+ \frac{24}{\Delta \tau^2} 
+ \left(
+ \min\left \{    
+ 1+\frac{2}{r^2}-\frac{r^2}{6},\frac{2}{r^2}
+ \right\}-r\left(1+\frac{2}{r^2}\right)\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2}
+ \right)
+ \left ( \|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}\right)$$.
 \end{proof}
-\begin{remark}
-	If $a$ is the identity operator, then 
-	$\min \left \{  \frac{1}{\sqrt{2}},\frac{2}{\|a^{-1}+a^{-t}\|\sqrt{3}}  \right \}=
-	\frac{1}{\sqrt{3}},
-	$
-	which is the stability condition for the classical Yee scheme.
-\end{remark}
+
 \begin{lem}\label{lem:sec} 
 	We have
-	$$\frac{\Delta \tau^2}{24}\mathcal{E}_4^n-
-\frac{\Delta \tau^2}{24}\mathcal{E}_4^{n+1}=
+	$$\mathcal{E}_4^n-
+\mathcal{E}_4^{n+1}=
 \mathbf{term}
 $$
 where 
 $$
-|\mathbf{term}|\leq C(r) \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n})
+\mathbf{term}|\leq \frac{24}{\Delta \tau^2}C(r) \Delta \tau(\mathcal{E}_4^{n+1}+\mathcal{E}_4^{n})
 $$
 and $0<C(r)$ does not depend on $h$.
 \end{lem}
 \begin{proof}
 	
-	We write the following scheme equalities in the space $\intr{\intr\Gwh}$.
+	We decompose $<a^{-1},\curl-h>$ to its symmetric and anti symmetric parts and write the scheme equations in $\intr{\Gwh}$.
 	
 	\begin{align*}
 		&
@@ -1340,37 +1376,53 @@ and $0<C(r)$ does not depend on $h$.
 	\end{align*}
 	\begin{align*}
 		&
-		P_1(\widetilde{\h}_h^{n+3/2} -\widetilde{\h}^{n+1/2})
+		P_1(\widetilde{\h}_h^{n+3/2} -\widetilde{\h}^{n+1/2})+B^{n+1}
 		=
-		-\Delta \tau P_2 \acurl \e_h^{n+1}  \quad \mathrm{in} \  \intr{\intr{\Gwh^\h}}=\\&
+		-\Delta \tau P_2 \acurl \e_h^{n+1}  =\\&
 		-\frac{\Delta \tau}{2}P_2<a^{-1}+a^{-t},\curl_h>\e_h^{n+1}
 		\underbrace{	-\frac{\Delta \tau}{2}P_2<a^{-1}-a^{-t},\curl_h>\e_h^{n+1}}_{{\bf term  }}.
 	\end{align*}
+We denoted by a single notations ${\bf term}$ to denote each term which include anti-symmetric parts.
 
-We denote by a single notations ${\bf term}$ to denote each term which include anti-symmetric parts.
+That is 
+\begin{equation}\label{eq:term1}
+		P_1(\widetilde{\e}_h^{n+1} -\widetilde{\e}^{n})=
+	\frac{\Delta \tau}{2}P_2<a^{-1}+a^{-t},\curl_h>\h_h^{n+1/2}
++{\bf term}
+\end{equation}
+and
+	\begin{equation}\label{eq:term2}
+		P_1(\widetilde{\h}_h^{n+3/2} -\widetilde{\h}^{n+1/2})+B^{n+1}
+	=
+		-\frac{\Delta \tau}{2}P_2<a^{-1}+a^{-t},\curl_h>\e_h^{n+1}
++{\bf term}.
+	\end{equation}
 %{ \bf
 %Notice that we restrict ourselves to $ \intr{\intr{\Gwh^\h}}$ to avoid the boundary term $B^{n+1}$}.
-	
-
-	
-	Next, we take inner products  with $\widetilde{\e}_h^{n+1}+\widetilde{\e}_h^n$,
-	and with 
-	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ such that 
-	$\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}$ is orthogonal to the boundary term $B^{n+3/2}$.
-We have
+	Next, we take inner product of \eqref{eq:term1} with $\widetilde{\e_h}^{n+1}+\widetilde{\e_h}^n$ in $\intr{\Gwh^\e}$,
+	and inner product of \eqref{eq:term2} with the functions 
+	$$
+	f^n:=
+	\begin{cases}
+		\widetilde{\h}_h^{n+3/2}+\widetilde{\h}_h^{n+1/2}, & B^{n+1}=0\\
+		0,& else
+	\end{cases}
+	$$
+In particular, $f^n$ vanishes on $\partial({\intr{\Gwh^\h}})$.
+Taking the inner products of the left hand sides of $\eqref{eq:term1},\eqref{eq:term1}$ and summing the results imply
 	\begin{align*}
 		&
 		(P_1(\widetilde{\e}^{n+1}_h-\widetilde{\e}^{n}_h),\widetilde{\e}^{n+1}_h+\widetilde{\e}^{n}_h)_{\intr{\Gwh^\e}}+
 		(P_1(\widetilde{\h}^{n+3/2}_h-\widetilde{\h}^{n+1/2}_h),\widetilde{\h}^{n+3/2}_h+\widetilde{\h}^{n+1/2}_h)_{\intr{\intr{\Gwh^\h}}}=\\&
 		=\mathcal{E}_1^{n+1}-\mathcal{E}_1^{n}.
 	\end{align*}
-	Next we estimate
+	Next we estimate the inner product with the  right hand side of \eqref{eq:term1} (neglecting {\bf term}):
 	\begin{align*}
 		&
 		(\frac{1}{2}\Delta \tau P_2<a^{-1}+a^{-t},\curl_h>\h^{n+1/2},\widetilde{\e}^{n+1}+\widetilde{\e}^{n})_{ \intr{\Gwh^\e}}=\\&
 		(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>(\e^{n+1}+\e^{n}),\h^{n+1/2})_{ {\Gwh^\e}}
 	\end{align*}
-	Similarly,
+	Similarly the inner product with the  right hand side of \eqref{eq:term2} imply
 	\begin{align*}
 		&
 		(\frac{1}{2}\Delta \tau P_2<a^{-1}+a^{-t},\curl_h>\e^{n+1},\widetilde{\h}^{h+3/2}+\widetilde{\h}^{n+1/2})_{\intr{\intr{\Gwh^\h}}}=\\&
@@ -1381,7 +1433,7 @@ We have
 		\\&
 		-(\frac{1}{2}\Delta \tau P_{2,ext}<a^{-1}+a^{-t},\curl_h>\e^{n+1},\h^{n+3/2}+\h^{n+1/2})_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}.
 	\end{align*}
-	Recall that we chose our boundary conditions such that 
+	Recall that we chose our boundary conditions in {\bf step 2} exactly  such that 
 	the last term equals $$\mathcal{E}_3^{n+1}-\mathcal{E}_3^{n}+
 	\mathbf{term}$$ where $\mathbf{term}$ include the anti-symmetric part.
 	Together with Lemma \ref{lem:antiestimates}, \eqref{eq:P1P2estimates} and Young's inequality we have the following:
@@ -1405,32 +1457,44 @@ $$
 
 
 \subsection{Stability analysis of $compact(4,4)$ }
-
+\begin{defi}
+	Let $$
+	\mathrm{diag}(\tilde{\Delta_h}):=
+	\begin{pmatrix}
+	\tilde{\Delta_h} &0 &0 \\
+	0& \tilde{\Delta_h}&0\\
+	0&0&\tilde{\Delta_h}
+	\end{pmatrix}.
+	$$
+\end{defi}
+\begin{lem}[Qualitative stability condition]\label{lem:stab_44}
+There exists $r_0$ such that for all $r<r_0$ the scheme $compact(4,4)$ is stable, and
+$r_0$ depend on the norms of the matrices $A,D,\tilde{D}$.
+\end{lem}
 Recall that at  step 2 of $compact(4,4)$ we choose boundary conditions  such that
 \begin{align*}
 	&
 	\delta_{\tau}\h_h^{n+1}=
-			-\frac{1}{Z}
-	\left[ 
-	\begin{pmatrix}
-		0& -\delta_z & \delta _y\\
-		\delta_z&0&-\delta_x\\
-		-\delta_y&\delta_x&0\\
-	\end{pmatrix}
-	\begin{pmatrix}
-		E_x^{n+1}\\
-		E_y^{n+1}\\
-		E_z^{n+1}
-	\end{pmatrix}\right]
--\frac{1}{Z}\frac{\Delta \tau^2}{24}\tilde{\Delta}_h\acurl  \e_h^{n+1}=\\&
 -\frac{1}{Z}
 	\underbrace{\left(
-		1+\frac{\Delta \tau^2}{24}\tilde{\Delta}_h
-		\right)}_{:=\tilde{A}^{-1}}\e_h^{n+1} \acurl.\\&
+		1+\frac{\Delta \tau^2}{24}\mathrm{diag}(\tilde{\Delta}_h)
+		\right)}_{:=\tilde{A}^{-1}}	\left[ 
+	\begin{pmatrix}
+	0& -\delta_z & \delta _y\\
+	\delta_z&0&-\delta_x\\
+	-\delta_y&\delta_x&0\\
+\end{pmatrix}
+\begin{pmatrix}
+E_x^{n+1}\\
+E_y^{n+1}\\
+E_z^{n+1}
+\end{pmatrix}\right] .\\&
 \end{align*} on $\partial\Gwh^\h\cup \partial \intr{\Gwh^\h}$.
-Here $\Delta_h$ is a second-order approximation of the Laplacian which is modified near the boundaries to a one-sided scheme.
-
-	We define the following quantities.
+For $r$ small enough the eigenvalues of $\tilde{A}^{-1}$ are positive and it is indeed well defined as inverse matrix of the matrix 
+$$
+\tilde{A}:=\left (  1+\frac{\Delta \tau^2}{24}\mathrm{diag}(\tilde{\Delta}_h) \right)^{-1}.
+$$
+	We define the following quantities
 \begin{defi}
 	\begin{align*}
 		&
@@ -1485,32 +1549,31 @@ $$
 \h^{n+3/2}+\h^{n+1/2}\right)_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}
 \right|
 \leq \\&
-Ch(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
+r^2Ch(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
 \end{align*}
 \end{proposition}
 \begin{proof}
-	Using the fact that $\tilde{A}-\tilde{A}^t$ is of constant rank
-the proof then follows as before from Lemma \ref{lem:antiestimates}.
+Follows by \eqref{eq:P1P2estimates} and Corollary \ref{cor:Dtilde}.
 \end{proof}
 \begin{cor}
 	Let 
 	$$
-	\mathcal{E}^n:=\frac{\Delta \tau^2}{24}r\mathcal{E}_4^n.
+	\mathcal{E}^n:=\frac{\Delta \tau^2}{24}\mathcal{E}_4^n.
 	$$
 	Then 
 	$$
 	\mathcal{E}^{n+1}=	\mathcal{E}^n+\mathbf{term}
 	$$
 	where 
-	$$
-	|\mathbf{term}|\leq C(r\Delta \tau  +\underbrace{rh}_{=\Delta \tau})(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
-	$$
+	\begin{equation}\label{eq:cond1}
+	|\mathbf{term}|\leq C(\Delta \tau  +\underbrace{r^2h}_{=r\Delta \tau})(\| \h_h^{n+3/2}\|^2+\|\h_h^{n+1/2}\|^2).
+	\end{equation}
 \end{cor}
 To complete the stability analysis we need to fulfill (1) in Proposition \ref{prop:p1}.
 Recall that  
 \begin{align}
 	&
-	1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},\\&
+	1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_{2,ext}\|\leq 1+\frac{2}{r^2},\\&
 	1<1+\frac{2}{r^2}-\frac{r^2}{6}\leq\|\frac{\Delta \tau^2}{24}P_1\|\leq 1+\frac{2}{r^2}+\frac{r^2}{2}
 \end{align} 
 (\eqref{eq:P1P2estimates}).
@@ -1518,29 +1581,49 @@ Therefore,
 \begin{align*}
 	&
 	\mathcal{E}_1^n-\mathcal{E}_3^n\geq\\&
-	\frac{24}{\Delta \tau^2}\left ((1+2/r^2-r^2/6)(\|\e^n\|^2
-	+\|\h\|_{\intr{\intr{\Gwh^\h}}})+\frac{1}{r^2}\sigma_{\max}(\tilde{A}+\tilde{A}^t)
-	\|\h\|_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}
+	\frac{24}{\Delta \tau^2}\left ((1+2/r^2-r^2/6)(\|\e^n\|_{\Gwh^\e}^2
+	+\|\h\|^2_{\intr{\intr{\Gwh^\h}}})+\frac{1}{r^2} \sigma_{\min}(\tilde{A}+\tilde{A}^t)
+	\|\h\|^2_{\partial{\Gwh^\h}\cup \partial \intr{\Gwh^\h}}
 	\right)\geq \\&
-		\frac{24}{\Delta \tau^2}(\|\e\|^2+\|\h\|^2)\cdot 
-		\min\{1+2/r^2-r^2/6,1/r^2\}\cdot\sigma_{\max}(\tilde{A}+\tilde{A}^t)
+		\frac{24}{\Delta \tau^2}(\|\e\|^2_{\Gwh^\e}+\|\h\|_{\Gwh^\h}^2)\cdot 
+		\min\left \{1+2/r^2-r^2/6,\frac{\sigma_{\min}(\tilde{A}+\tilde{A}^t)}{r^2}\right \}
 \end{align*}
-and therefore
+By Young's inequality,
 $$
+\mathcal{E}_2^n\leq \frac{24}{\Delta \tau^2}
+\left(1+\frac{2}{r^2}\right)
+\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|(\|\e_h^n\|^2_{\Gwh^\e}+\|\h_h^{n+1/2}\|^2_{\Gwh^\h}).
+$$
+Hence
+\begin{equation}\label{eq:cond2}
 \mathcal{E}_4^n\geq 
 \frac{24}{\Delta \tau^2}
-\underbrace{
- \left(
-	\min\{1+2/r^2-r^2/6,1/r^2\}\cdot\sigma_{\max}(\tilde{A}+\tilde{A}^t)-r\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2}
-\right)}_{:=C(r)}
+\left(
+		\min\left \{1+2/r^2-r^2/6,\frac{\sigma_{\min}(\tilde{A}+\tilde{A}^t)}{r^2}\right \}-\left(1+\frac{2}{r^2}\right)
+		\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|
+	\right)
 \left ( \|\e_h^n\|_{\Gwh^\e}+\|\h_h^{n+1/2}\|_{\Gwh^\h}\right).
+\end{equation}
+
+\begin{proof}[proof of Lemma \ref{lem:stab_44}]
+Let 
+ 	$$
+r<r_0:=\min \left \{  
+\frac{1}{\sqrt{2}},\min\{Z,Z^{-1}\}\cdot
+\frac
+{ 	\min\left \{    
+	1+\frac{2}{r^2}-\frac{r^2}{6},\frac{\sigma_{\min}(\tilde{A}+\tilde{A}^t)}{r^2}
+	\right\}}
+{\left(1+\frac{2}{r^2}\right)\frac{\|a^{-1}+a^{-t}\|\sqrt{3}}{2}}
+\right \}.
 $$
-\begin{lem}
-	Assume that 
-	$$
-	ff
-	$$
-\end{lem}
+Then
+$$
+	\min\left \{1+2/r^2-r^2/6,\frac{\sigma_{\min}(\tilde{A}+\tilde{A}^t)}{r^2}\right \}-\left(1+\frac{2}{r^2}\right)
+\frac{r\sqrt{3}}{2}\|a^{-1}+a^{-t}\|>0.
+$$
+Therefore \eqref{eq:cond1},\eqref{eq:cond2} imply that the conditions of Proposition \ref{prop:p1} are satisfied.
+\end{proof}
 
 
 
@@ -1999,14 +2082,25 @@ We define the following stencils:
 			$$
 			P_{2,h}^{I}:=\frac{24}{\Delta \tau^2}\left (
 			-1-\frac{2}{r^2}-\frac{h^2}{12}\Delta_h
-			\right).
+			\right),
 			$$	
+			and 
 			$$
-			\sigma(h^2\Delta_h)\in[-12,0],
+						P_{2,ext}^{I}:=\frac{24}{\Delta \tau^2}\left (
+			-1-\frac{2}{r^2}-\frac{h^2}{12}\tilde{\Delta}_h
+			\right),
+			$$
+			The inclusions
+			$$
+			\sigma(h^2\Delta_h)\subset[-12,0], \quad 	\sigma(h^2\tilde{\Delta}_h)\subset[-12,0]
 			$$
 			implying that 
 			$$
 			\frac{\Delta \tau^2}{24}\sigma(-P_{2,h})\subset [1+2/r^2-1, 1+2/r^2]
+			$$
+			and 
+						$$
+			\frac{\Delta \tau^2}{24}\sigma(-P_{2,ext})\subset [1+2/r^2-1, 1+2/r^2].
 			$$
 		The operator $\frac{\Delta \tau^2}{24}\left (  -\Delta_h-\frac{h^2}{6}\Delta_h^2 \right)+1+\frac{2}{r^2}$ operates on Fourier mode as
 	\begin{align*}
@@ -2029,9 +2123,12 @@ We define the following stencils:
 	\end{split}
 \end{align}
 As a result, $r<\frac{1}{\sqrt{2}}$ implies that 
-$-P_2, P_1$ are positive definite, and 
+$-P_{2,ext},-P_2, P_1$ are positive definite, and 
 $$
-1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_2\|\leq 1+\frac{2}{r^2},
+1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_{2}\|\leq 1+\frac{2}{r^2},
+$$
+$$
+1<\frac{2}{r^2}\leq \|\frac{\Delta \tau^2}{24}P_{2,ext}\|\leq 1+\frac{2}{r^2},
 $$
 and 
 $$
