@@ -55,50 +55,63 @@ def max_solver(fourth, omega,kx,ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyH
 
 
 def run_scheme(C):
-
-
-    kx = C.kx
-    ky = C.ky
-    omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
-    
-
+    kx=C.kx
+    ky=C.ky
+    T=C.T
+    cfl=C.cfl
+    n=C.ns
     fourth=C.fourth_order
- 
-
-
-    data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[]}
-
-    for T in C.T:
-     for cfl in C.cfl:
-      for i, n in enumerate(C.ns):
-        print(n)
- 
-
-        x = np.linspace(0, 1, n + 1)
-        y = np.linspace(0, 1, n + 1)
-        h = x[1] - x[0]
-        dt=h*cfl
-        time_steps =  int(T/dt)
+    # data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[],'conv_rates':[],'kx':[],'ky':[]}
+  
+    # for kx in C.kx:
         
+    #       for T in C.T:
+    #        for cfl in C.cfl:
+    #          for i, n in enumerate(C.ns):
+    ky=kx
+    omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
+    print(n)
 
-        DxE, DyE = create_Ds2(x, y)
-        DxHx, DyHx = create_Ds2(x, y[1:])
-        DxHy, DyHy = create_Ds2(x[1:], y)
-        start = timeit.default_timer()
-        AE = DxE + DyE + ((h ** 2) / 6) * DxE @ DyE
 
-        AHx = DxHx + DyHx + ((h ** 2) / 6) * DxHx @ DyHx
-        AHy = DxHy + DyHy + ((h ** 2) / 6) * DxHy @ DyHy
-        data['T'].append(T)
-        data['cfl'].append(cfl)
-        data['N'].append(n)
-        res=max_solver(fourth, omega,kx,ky,  dt, x, y, h, time_steps, DxE, DyE,
-                            DxHx, DyHx, DxHy, DyHy,
-                            AE, AHx, AHy)
-        data['err'].append(res[0])
-        data['err(time)'].append(res[1])                    
-    return data    
+    x = np.linspace(0, 1, n + 1)
+    y = np.linspace(0, 1, n + 1)
+    h = x[1] - x[0]
+    dt=h*cfl
+    time_steps =  int(T/dt)
 
+    DxE, DyE = create_Ds2(x, y)
+    DxHx, DyHx = create_Ds2(x, y[1:])
+    DxHy, DyHy = create_Ds2(x[1:], y)
+    start = timeit.default_timer()
+    AE = DxE + DyE + ((h ** 2) / 6) * DxE @ DyE
+
+    AHx = DxHx + DyHx + ((h ** 2) / 6) * DxHx @ DyHx
+    AHy = DxHy + DyHy + ((h ** 2) / 6) * DxHy @ DyHy
+
+    res=max_solver(fourth, omega,kx,ky,  dt, x, y, h, time_steps, DxE, DyE,
+                        DxHx, DyHx, DxHy, DyHy,
+                        AE, AHx, AHy)
+    # data['T'].append(T)
+    # data['cfl'].append(cfl)
+    # data['N'].append(n)
+
+    # data['err'].append(res[0])
+    # data['err(time)'].append(res[1])      
+    # data['kx'].append(kx)
+    # data['ky'].append(ky)
+            # x = np.log(1 / np.array(C.ns))
+            # y = np.log(np.array(data['err']))
+    
+            # log_err=np.diff(y) / np.diff(x)
+
+            # log_err=['%.2f' % log_err[i] for i in range(len(log_err))]   
+            # print(log_err)
+              
+    return res    
+
+
+def run_comp_schemes(C):
+    pass
     #
     # x = np.log(1 / np.array(ns))
     # y = np.log(np.array(err))
