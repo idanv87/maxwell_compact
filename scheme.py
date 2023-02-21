@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from tqdm import tqdm
+
 import matplotlib.patches as mpatches
 from auxilary import Hy_step, E_step, mod_helmholtz, Hx_step, create_Ds2,f_Hy,f_E,f_Hx
 import multiprocessing as mp
@@ -11,6 +13,8 @@ from scipy.sparse import csc_matrix
 import timeit
 import pickle
 from decimal import Decimal
+from DRP_multiple_networks.utils import amper, faraday
+from DRP_multiple_networks.constants import Constants
 
 
 
@@ -34,7 +38,7 @@ def max_solver(fourth, omega,kx,ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyH
     E0 = f_E(omega, kx, ky, x, y, 0)
     Hx0 = f_Hx(omega, kx, ky, x, y, 0, dt, h)
     Hy0 = f_Hy(omega, kx, ky, x, y, 0, dt, h)
-    for i,t in enumerate(range(time_steps - 1)):
+    for i,t in enumerate(tqdm(range(time_steps - 1))):
         errE.append(np.mean(abs(E0[1:-1, 1:-1] - f_E(omega, kx, ky, x, y, i*dt)[1:-1, 1:-1])))
         errHx.append(np.mean(abs(Hx0[1:-1, :] -f_Hx(omega, kx, ky, x, y, i*dt, dt, h)[1:-1, :])))
         errHy.append(np.mean(abs(Hy0[:, 1:-1] - f_Hy(omega, kx, ky, x, y, i*dt, dt, h)[:, 1:-1])))
@@ -70,9 +74,6 @@ def run_scheme(C):
     #          for i, n in enumerate(C.ns):
     ky=kx
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
-    print(n)
-
-
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
     h = x[1] - x[0]
@@ -110,29 +111,39 @@ def run_scheme(C):
     return res    
 
 
-def run_comp_schemes(C):
-    pass
-    #
-    # x = np.log(1 / np.array(ns))
-    # y = np.log(np.array(err))
-    # 
-    # log_err=np.diff(y) / np.diff(x)
-    # err=np.array(err)
-    # err=['%.2E' % Decimal(err[i]) for i in range(len(err))]
-    # log_err=['%.2f' % log_err[i] for i in range(len(log_err))]
+def yee_solver(beta,delta,gamma, omega,kx,ky, dt, x, y, h, time_steps, cfl,n,t):
+    C=Constants(n+1, 1,t , cfl, kx, ky)
+    
+    errE=[]
+    errHx=[]
+    errHy=[]
 
-    # path=C.path
-    # figure=C.figure
 
-    # with open(path+ figure+'err.txt', 'w') as fp:
-    #     for i,item in enumerate(err):
-    #         # write each item on a new line
-    #         fp.write(str(ns[i])+' & '+ item+ ' \\\\ '+"\n")
+    E = f_E(omega, kx, ky, x, y, 0)
+    Hx = f_Hx(omega, kx, ky, x, y, 0, dt, h)[1:-1, :]
+    Hy = f_Hy(omega, kx, ky, x, y, 0, dt, h)[:, 1:-1]
 
-    # with open(path+figure+'log_err.txt', 'w') as fp:
-    #     for i,item in enumerate(log_err):
-    #         # write each item on a new line
-    #         fp.write(str(ns[i+1])+' & '+ item+ ' \\\\ '+"\n")
+    E0 = np.expand_dims(E, axis=(0, -1))
+    Hx0 = np.expand_dims(Hx, axis=(0, -1))
+    Hy0 = np.expand_dims(Hy, axis=(0, -1))
 
-# plt.plot(ns, err)
-# plt.show()
+
+
+
+    for i,t in enumerate(tqdm(range(time_steps - 1))):
+      
+        errE.append(np.mean(abs(E0[0,1:-1, 1:-1,0] - f_E(omega, kx, ky, x, y, (i)*dt)[1:-1, 1:-1])))
+        errHx.append(np.mean(abs(Hx0[0,:, :,0] -f_Hx(omega, kx, ky, x, y, (i)*dt, dt, h)[1:-1, :])))
+        errHy.append(np.mean(abs(Hy0[0,:, :,0] - f_Hy(omega, kx, ky, x, y, (i)*dt, dt, h)[:, 1:-1])))
+
+        E0 = amper(E0, Hx0, Hy0, beta, delta, gamma, C)
+        Hx0, Hy0 = faraday(E0, Hx0, Hy0, beta, delta, gamma, C)
+    
+    
+
+      
+
+    errE=np.array(errE)
+    errHx=np.array(errHx)
+    errHy=np.array(errHy)
+    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, [errE, errHx, errHy])
