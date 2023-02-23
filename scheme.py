@@ -55,7 +55,7 @@ def max_solver(fourth, omega,kx,ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyH
     errE=np.array(errE)
     errHx=np.array(errHx)
     errHy=np.array(errHy)
-    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, [errE, errHx, errHy])
+    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, errE+errHx+errHy)
 
 
 def run_scheme(C):
@@ -130,7 +130,7 @@ def yee_solver(beta,delta,gamma, omega,kx,ky, dt, x, y, h, time_steps, cfl,n,t):
 
 
 
-    for i,t in enumerate(tqdm(range(time_steps - 1))):
+    for i,t in enumerate(range(time_steps - 1)):
       
         errE.append(np.mean(abs(E0[0,1:-1, 1:-1,0] - f_E(omega, kx, ky, x, y, (i)*dt)[1:-1, 1:-1])))
         errHx.append(np.mean(abs(Hx0[0,:, :,0] -f_Hx(omega, kx, ky, x, y, (i)*dt, dt, h)[1:-1, :])))
@@ -146,4 +146,4 @@ def yee_solver(beta,delta,gamma, omega,kx,ky, dt, x, y, h, time_steps, cfl,n,t):
     errE=np.array(errE)
     errHx=np.array(errHx)
     errHy=np.array(errHy)
-    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, [errE, errHx, errHy])
+    return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, errE+errHx+errHy)

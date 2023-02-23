@@ -303,7 +303,14 @@ def f_Hy(omega, kx, ky, x, y, t, dt, h):
     return  (np.sin(omega * (t + dt / 2)) * np.cos(math.pi * kx * (X + h / 2)) * np.sin(
         math.pi * ky * Y) * math.pi * kx / omega)[:-1,:]
 
+def conv_rate(N,err):
+        x = np.log(1 / np.array(N))
+        y = np.log(np.array(err))
 
+        log_err=np.diff(y) / np.diff(x)
+
+        log_err=['%.2f' % log_err[i] for i in range(len(log_err))]   
+        return(log_err)
 
 
 

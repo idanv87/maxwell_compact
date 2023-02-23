@@ -10,11 +10,13 @@ from datetime import datetime
 import numpy as np
 import math
 import multiprocessing
+from multiprocessing import pool
+import timeit
+import datetime
+import matplotlib.patches as mpatches
 
 
-
-
-from auxilary import create_A_2
+from auxilary import create_A_2, conv_rate
 from  scheme import run_scheme, yee_solver
 from DRP_multiple_networks.evaluate import error_print
 
@@ -24,8 +26,8 @@ from DRP_multiple_networks.evaluate import error_print
 
 
 
-
-legend_name={'C4':'C4','C2':'C2','NC':'NC','AI':'AI','DRP':'DRP'}
+AI_h={'1':[-0.01031967, -0.08788657,  0.00514533], '4':[-0.00699426, -0.04867933, -0.00697986],'5':[ 0.00725373,-0.05299953,0.00756048]}
+legend_name={'C4':'C4','C2':'C2','NC':'NC','AI':r'$AI^h$','AILH':r'$AI^l$'}
 fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 
 class constants:
@@ -58,24 +60,29 @@ def solveYee4(n,cfl,T,kx,ky):
     time_steps =  int(T/dt)
     return yee_solver(0,-1/24,0, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
 
-def solveAI(n,cfl,T,kx,ky):
-    omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
-    x = np.linspace(0, 1, n + 1)
-    y = np.linspace(0, 1, n + 1)
-    h = x[1] - x[0]
-    dt=h*cfl
-    time_steps =  int(T/dt)
-    return yee_solver(-0.00841542, -0.09234213,  0.01128501, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
+def solveAI_h(n,cfl,T,kx,ky):
 
-def solveAI_lh(n,cfl,T,kx,ky):
+    beta=AI_h['1'][0]
+    delta=AI_h['1'][1]
+    gamma=AI_h['1'][2]
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
     h = x[1] - x[0]
     dt=h*cfl
     time_steps =  int(T/dt)
-    return yee_solver(0.00349403, -0.08069799, -0.01218202 , omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
-    # [ 0.00349403 -0.08069799 -0.01218202]  low+high trained
+    # return yee_solver(0.022726564064250554, -0.05452655828983806,  -0.004294779176336773, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
+    return yee_solver(beta, delta,  gamma, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
+
+def solveAI_l(n,cfl,T,kx,ky):
+    omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
+    x = np.linspace(0, 1, n + 1)
+    y = np.linspace(0, 1, n + 1)
+    h = x[1] - x[0]
+    dt=h*cfl
+    time_steps =  int(T/dt)
+    # return yee_solver(0.018264537956920218, -0.05244206290558081, -0.0026566385573771087 , omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
+    return yee_solver(0.010770443840020762, -0.05404731781456237, -0.015260532660881681 , omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
 
 def solveDRP(n,cfl,T,kx,ky):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
@@ -89,21 +96,20 @@ def solveDRP(n,cfl,T,kx,ky):
   
 
 
-def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table2down/'):
+def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1down/'):
 
-    cfltest=[3/6/(2**0.5)]
-    T_test=[1,10,100]
-    N_test=[16,32,64,128,256]
-    kx_test=[8, 16,32,64,128]
-    ky_test=[1]
+    cfltest=[1/6/(2**0.5)]
+    T_test=[1]
+    N_test=[64]
+    kx_test=[71]
+    ky_test=[71]
 
     data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[],'conv_rates':[],'kx':[],'ky':[]}
-    for kx in kx_test:
+    for kx, ky in zip(kx_test, ky_test):
           for T in T_test:
             for cfl in cfltest:
-              for i, n in enumerate(N_test):
-                ky=kx
-                if int(n)/int(kx)==2:
+              for i, n in enumerate(tqdm(N_test)):
+                if True:
                     res=f(n,cfl,T,kx,ky)
                     data['T'].append(T)
                     data['cfl'].append(cfl)
@@ -121,112 +127,193 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
     return 1
 
 
-functions=[solveC2, solveC4, solveYee4, solveAI,solveAI_lh]
-names=['C2.pkl','C4.pkl', 'NC.pkl', 'AI.pkl', 'AILH.pkl']
+# functions=[solveC2 ,solveC4, solveYee4
+# , solveAI_h,solveAI_l
+# ]
+# names=['C2.pkl','C4.pkl', 'NC.pkl'
+# , 'AI.pkl', 'AILH.pkl'
+# ]
 
-# namedrp='DRP.pkl'
+functions=[solveC4, solveC2
+, solveAI_h
+]
+names=['C4.pkl', 'C2.pkl'
+, 'AI.pkl'
+]
+# [comparison(functions[i],names[i]) for i in range(len(functions))]
+if 1:
 
-if __name__ == '__main__':
-    jobs = []
-    for f, name in  zip(functions, names):
-        p = multiprocessing.Process(target=comparison, args=(f,name))
-        jobs.append(p)
-        p.start()
+    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
+    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
 
-    result = []
-    for proc in jobs:
-        proc.join()
-
-
-# d4=comparison(solveC4)    
-# pickle.dump(d4, open(path + name4, "wb"))     
-# d2=comparison(solveC2)
-# pickle.dump(d2, open(path + name2, "wb"))
-# dyee=comparison(solveYee4)
-# pickle.dump(dyee, open(path + namey4, "wb"))
-# dai=comparison(solveAI) 
-# pickle.dump(dai, open(path + nameai, "wb"))
-# dailh=comparison(solveAI_lh) 
-# pickle.dump(dailh, open(path + nameailh, "wb"))
-# ddrp=comparison(solveDRP) 
-# print(ddrp['kx'])
-# pickle.dump(ddrp, open(path + namedrp, "wb"))
-
-
-
-if False:
-    path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6/'
-    path2 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6_64/'
     fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 
     fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
 
-    for r, d, f in os.walk(path1):
-      for file in f:
-        if file.endswith(".pkl"):
-          name=os.path.splitext(file)[0]
-          with open(path1 + file, 'rb') as file:
+    for i,path in enumerate([path3,path4]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
                X=pickle.load(file)
-               print(X['kx'])
-          if True:
-             key, *val = name[0:4].split()
-             ax1[0].plot(X['kx'][0::2],X['err'][0::2], label=legend_name[key])  
-             
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
 
-   
-    # for r, d, f in os.walk(path2):
-    #   for file in f:
-    #     if file.endswith(".pkl"):
-    #       name=os.path.splitext(file)[0]
-    #       with open(path1 + file, 'rb') as file:
-    #            X=pickle.load(file)
-    #            print(X['kx'])
-    #       if True:      
-    #          key, *val = name[0:4].split()
-             
-    #          ax1[1].plot(X['kx'][0::2],X['err'][0::2], label=legend_name[key])  
-
+           ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+              
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    plt.xlabel('Time steps')
+    plt.ylabel('error')
     plt.savefig(fig_path + 'table6.eps', format='eps',bbox_inches='tight')
-    ax1[0].legend()
-    ax1[1].legend()
-    plt.xlabel(r'$k$')
-    plt.ylabel('error')
-    plt.show()  
 
-if False:
-    path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table5up/'
-    path2 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table5down/'
+    plt.show()
+
+if 0:
+
+    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
+    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
+
     fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 
     fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
 
-    for r, d, f in os.walk(path1):
-      for file in f:
-        if file.endswith(".pkl"):
-          name=os.path.splitext(file)[0]
-          with open(path1 + file, 'rb') as file:
+    for i,path in enumerate([path3,path4]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
                X=pickle.load(file)
-          if name[0:3]!='AI': 
-             key, *val = name[0:3].split()
-             ax1[0].plot(X['T'],X['err'], label=legend_name[key])  
-
-   
-    for r, d, f in os.walk(path2):
-      for file in f:
-        if file.endswith(".pkl"):
-          name=os.path.splitext(file)[0]
-          with open(path1 + file, 'rb') as file:
-               X=pickle.load(file)
-          if name[0:3] not in ['NC','AI']:      
-             key, *val = name[0:3].split()
-             ax1[1].plot(X['T'],X['err'], label=legend_name[key])  
-
-    plt.savefig(fig_path + 'table5.eps', format='eps',bbox_inches='tight')
-    ax1[0].legend()
-    ax1[1].legend()
-    plt.xlabel(r'$T$')
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
+           if name in ['C2', 'C4']: 
+              print(X['cfl'])
+              ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+              
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    plt.xlabel('Time steps')
     plt.ylabel('error')
+    plt.savefig(fig_path + 'table8.eps', format='eps',bbox_inches='tight')
+
+    plt.show() 
+
+
+
+if 0:
+    path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1up/'
+    path2 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1down/'
+    fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+
+ 
+
+    for i,path in enumerate([path1,path2]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+               print(name)
+               print(conv_rate(X['N'],X['err']))
+               
+if 0:
+    path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7up/'
+    path2 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7down/'
+
+    fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+
+    fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+
+    for i,path in enumerate([path1,path2]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
+   
+           ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+              
+
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    plt.xlabel('Time steps')
+    plt.ylabel('error')
+    plt.savefig(fig_path + 'table7.eps', format='eps',bbox_inches='tight')
+
     plt.show()  
+
+if 0:
+    path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7up/'
+    path2 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7down/'
+
+    fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+
+    fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+
+    for i,path in enumerate([path1,path2]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
+           if name in ['C2', 'C4', 'NC']: 
+              ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+              
+
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    plt.xlabel('Time steps')
+    plt.ylabel('error')
+    plt.savefig(fig_path + 'table9.eps', format='eps',bbox_inches='tight')
+
+    plt.show()  
+
+if 0:
+
+    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1up/'
+    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1down/'
+
+    fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+
+    fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+
+    for i,path in enumerate([path3,path4]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
+           if name in ['C2', 'C4', 'AI']: 
+              print(X['cfl'])
+              ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+              
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    plt.xlabel('Time steps')
+    plt.ylabel('error')
+    plt.savefig(fig_path + 'table10.eps', format='eps',bbox_inches='tight')
+
+    plt.show() 
+
+ 
+
 
 if False:
     path1 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table4up/'
@@ -367,7 +454,75 @@ if False:
     plt.xlabel(r'$k$')
     plt.ylabel('error')
     plt.show()    
+if 0:
+    n=5
+    h=1/n
+    x = np.linspace(0, 1, n + 1)
+    y = np.linspace(0, 1, n + 1)
 
+    x1 = np.linspace(0, 1, n + 1)
+    y1 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+
+    x2 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+    y2 = np.linspace(0, 1, n + 1)
+    f=plt.figure()
+    fig, ax1 = plt.subplots(1, sharex=False, sharey=False)
+
+
+
+
+    for i in range(len(x)):
+      for j in range(len(y)):
+        # ax1.scatter(x[i],y[j],color='black',s=5)
+        ax1.scatter(x[i], y[j], color='black', s=100, marker='x')
+        # ax1.scatter(x[0], y[j], color='black', s=100, marker='s')
+        # ax1.scatter(x[-1], y[j], color='black', s=100, marker='s')
+        # ax1.scatter(x[i], y[0], color='black', s=100, marker='s')
+        # ax1.scatter(x[i], y[-1], color='black', s=100, marker='s')
+
+    for i in range(len(x1)):
+      for j in range(len(y1)):
+        ax1.scatter(x1[i], y1[j], color='blue', s=100,marker='8')
+        # ax1.scatter(x1[0], y1[j], color='blue', s=5, marker='s')
+
+        # ax1.scatter(x1[i], y1[j], color='blue', s=100,marker='x')
+        # ax1.scatter(x1[0], y1[j], color='blue', s=100, marker='s')
+        # ax1.scatter(x1[-1], y1[j], color='blue', s=100, marker='s')
+        # ax1.scatter(x1[i], y1[0], color='blue', s=100, marker='s')
+        # ax1.scatter(x1[i], y1[-1], color='blue', s=100, marker='s')
+
+    for i in range(len(x2)):
+      for j in range(len(y2)):
+        ax1.scatter(x2[i], y2[j], color='red', s=100, marker='*')
+
+    #       ax1.scatter(x2[i], y2[j], color='red', s=100,marker='x')
+    #       ax1.scatter(x2[0], y2[j], color='red', s=100, marker='s')
+    #       ax1.scatter(x2[-1], y2[j], color='red', s=100, marker='s')
+    #       ax1.scatter(x2[i], y2[0], color='red', s=100, marker='s')
+    #       ax1.scatter(x2[i], y2[-1], color='red', s=100, marker='s')
+
+
+    black_patch = mpatches.Patch(color='black', label='E_3')
+    blue_patch = mpatches.Patch(color='blue', label='H_1')
+    red_patch = mpatches.Patch(color='red', label='H_2')
+
+
+    ax1.legend(loc='upper center',bbox_to_anchor=(0.5, -0.05),
+            fancybox=True, shadow=True, ncol=5,
+            handles=[black_patch,blue_patch,red_patch])
+
+    box = ax1.get_position()
+    # ax1.title.set_text('')
+    ax1.set_position([box.x0, box.y0 + box.height * 0.1,
+                    box.width, box.height * 1])
+    ax1.grid()
+    # Put a legend below current axis
+    # plt.grid()
+    PATH = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+    # plt.savefig(PATH + 'omega.eps' , format='eps',
+    #            bbox_inches='tight')
+
+    plt.show()
 
 
 # print(X['N'])
