@@ -45,7 +45,7 @@ def create_A_2(n):
 
 
 def E_step(dt, x, y, h, E, Hx, Hy, Dx, Dy, A):
-    start = timeit.default_timer()
+    # start = timeit.default_timer()
     assert E.shape[0] == E.shape[1]
 
     Uy = Hy[1:, 1:-1] - Hy[:-1, 1:-1]
@@ -68,77 +68,21 @@ def E_step(dt, x, y, h, E, Hx, Hy, Dx, Dy, A):
     BF = k * (dHy_dx_minus_dHx_dy)
     F = BF[1:-1, 1:-1].flatten()
     BE = np.zeros((E.shape[0], E.shape[1]))
-    # stop = timeit.default_timer()
-    # print('E_step Time: ', stop - start)
-    # start = timeit.default_timer()
+
+
 
     E_next = mod_helmholtz(x, y, BE.copy(), -F, -BF, k, Dx, Dy, A, True)
+
     # print(stop-start)
     # print(q)
 
     return E + dt * E_next
 
 
-def Hy_step(dt, x, y, h, E, Hy, Dx, Dy, A, fourth=True):
-    BHy = None
-    assert E.shape[0] == E.shape[1]
-
-    # Your statements here
-
-    Ex = E[1:, :] - E[:-1, :]
-
-    dE_dx = spsolve(create_A_2(Hy.shape[0]) ,Ex / h)
-
-    # dE_dx = (scipy.sparse.linalg.inv(create_A_2(Hy.shape[0])) @ Ex / h)
-    k = (24 / (dt ** 2))
-    BF = k * dE_dx
-    F = BF[1:-1, 1:-1].flatten()
-
-    # BHy = (E[1:, :] - E[:-1, :]) / h
-    BHy = dE_dx
-    if fourth==True:
-       lapx1 = (dE_dx[0, 2:] + dE_dx[0, 0:-2] - 2 * dE_dx[0, 1:-1]) / h ** 2
-       lapx2 = (dE_dx[-1, 2:] + dE_dx[-1, :-2] - 2 * dE_dx[-1, 1:-1]) / h ** 2
-       lapy1 = (2 * dE_dx[0, 1:-1] - 5 * dE_dx[1, 1:-1] + 4 * dE_dx[2, 1:-1] - dE_dx[3, 1:-1]) / h ** 2
-       lapy2 = (2 * dE_dx[-1, 1:-1] - 5 * dE_dx[-2, 1:-1] + 4 * dE_dx[-3, 1:-1] - dE_dx[-4, 1:-1]) / h ** 2
-       BHy[0, 1:-1] += (dt ** 2 / 24) * (lapx1 + lapy1)
-       BHy[-1, 1:-1] += (dt ** 2 / 24) * (lapx2 + lapy2)
-    BHy[:, 0] = 0
-    BHy[:, -1] = 0
-
-    Hy_next = mod_helmholtz(x[1:], y, BHy.copy(), -F, -BF, k, Dx, Dy, A, fourth)
-
-    return Hy + dt * Hy_next
 
 
-def Hx_step(dt, x, y, h, E, Hx, Dx, Dy, A, fourth=True):
-    BHx = None
-    assert E.shape[0] == E.shape[1]
-    # A = np.linalg.inv(create_A_2(Hx.shape[1]))
-
-    Ey = E[:, 1:] - E[:, :-1]
-    dE_dy = np.transpose(spsolve(create_A_2(Hx.shape[1]),np.transpose(Ey) / h))
 
 
-    # dE_dy = np.transpose((scipy.sparse.linalg.inv(create_A_2(Hx.shape[1])) @ np.transpose(Ey) / h))
-
-    k = 24 / (dt ** 2)
-    BF = -k * dE_dy
-    F = BF[1:-1, 1:-1].flatten()
-    BHx = -dE_dy
-    if fourth==True:
-       lapx1 = -(dE_dy[2:, 0] + dE_dy[0:-2, 0] - 2 * dE_dy[1:-1, 0]) / h ** 2
-       lapx2 = -(dE_dy[2:, -1] + dE_dy[:-2, -1] - 2 * dE_dy[1:-1, -1]) / h ** 2
-       lapy1 = -(2 * dE_dy[1:-1, 0] - 5 * dE_dy[1:-1, 1] + 4 * dE_dy[1:-1, 2] - dE_dy[1:-1, 3]) / h ** 2
-       lapy2 = -(2 * dE_dy[1:-1, -1] - 5 * dE_dy[1:-1, -2] + 4 * dE_dy[1:-1, -3] - dE_dy[1:-1, -4]) / h ** 2
-       BHx[1:-1, 0] += ((dt ** 2) / 24) * (lapx1 + lapy1)
-       BHx[1:-1, -1] += ((dt ** 2) / 24) * (lapx2 + lapy2)
-    BHx[0, :] = 0
-    BHx[-1, :] = 0
-
-    Hx_next = mod_helmholtz(x, y[1:], BHx.copy(), -F, -BF, k, Dx, Dy, A, fourth)
-
-    return Hx + dt * Hx_next
 
 
 def blocks(A, n):
@@ -209,55 +153,10 @@ def mod_helmholtz( x, y, B, F, BF, k, Dx, Dy, C, fourth=True):
     return B1
 
 
-def create_Ds(x, y):
-    pass
-    # start = timeit.default_timer()
-    # dx = x[1] - x[0]
-    # dy = y[1] - y[0]
-    # Nx = len(x) - 2
-    # Ny = len(y) - 2
-    #
-    # N = Nx * Ny
-    #
-    # kernely = np.zeros((Ny, 1))
-    # kernely[-1] = 1
-    # kernely[0] = -2
-    # kernely[1] = 1
-    #
-    # Dy = circulant(kernely)
-    # Dy[-1, 0] = 0
-    # Dy[0, -1] = 0
-    # Dy = blocks(csr_matrix(Dy), Nx) / (dy ** 2)
-    #
-    # kernelx1 = np.zeros((Nx * Ny, 1))
-    # kernelx1[0] = -2
-    # kernelx1[-Ny] = 1
-    # Dx1 = csr_matrix(circulant(kernelx1)[0:Ny])
-    #
-    # kernelx2 = np.zeros((Nx * Ny, 1))
-    # kernelx2[Ny] = 1
-    # kernelx2[0] = -2
-    # Dx2 = csr_matrix(circulant(kernelx2)[-Ny:])
-    #
-    # kernelx3 = np.zeros((Nx * Ny, 1))
-    # kernelx3[0] = 1
-    # kernelx3[Ny] = -2
-    # kernelx3[2 * Ny] = 1
-    # Dx3 = csr_matrix(circulant(kernelx3)[2 * Ny:])
-    # # Dx = np.concatenate([Dx1, Dx3, Dx2]) / (dx ** 2)
-    # Dx = vstack([Dx1, Dx3, Dx2]) / (dx ** 2)
 
 
 
 
-# def create_fd(ns, path):
-#     for i, n in enumerate(ns):
-#         x = np.linspace(0, 1, n + 1)
-#         y = np.linspace(0, 1, n + 1)
-#         DxE, DyE = create_Ds(x, y)
-#         DxHx, DyHx = create_Ds(x, y[1:])
-#         DxHy, DyHy = create_Ds(x[1:], y)
-#         pickle.dump([DxE,DyE,DxHx,DyHx,DxHy,DyHy], open(path + 'fd_matrices/' + str(n) + '.pkl', "wb"))
 
 def create_D2(x):
     Nx=len(x[1:-1])
@@ -269,12 +168,24 @@ def create_D2(x):
     D2 = circulant(kernel)
     D2[0,-1]=0
     D2[-1,0]=0
-    D2=csr_matrix(D2)
+    
     return D2/dx/dx
 
+def create_second(x):
+    Nx=len(x)
+    dx = x[1] - x[0]
+    kernel = np.zeros((Nx, 1))
+    kernel[-1] = 1
+    kernel[0] = -2
+    kernel[1] = 1
+    D2 = circulant(kernel)
+    D2[0,-1]=0
+    D2[-1,0]=0
+    
+    return D2/dx/dx
 
 def create_Ds2(x,y):
-    return kron(create_D2(x), identity(len(y)-2) ), kron( identity(len(x)-2),create_D2(y))
+    return csr_matrix(kron(create_D2(x), identity(len(y)-2) )), csr_matrix(kron( identity(len(x)-2),create_D2(y)))
 
 
 def create_D1(x):
@@ -328,5 +239,243 @@ def conv_rate(N,err):
 #
 #   a = sparse.diags(dupvals, dupoffsets, shape=(N, N))
 #   return a
+def create_P2(x,y,h,dt,x_or_y):
+    # r=dt/h
+    # k=24/dt**2
+
+    # Dxx=create_second(x)
+    # Dyy=create_second(y)
+
+    # Dyy[0,0]=2/h**2
+    # Dyy[0,1]=-5/h**2
+    # Dyy[0,2]=4/h**2
+    # Dyy[0,3]=-1/h**2
+
+    # Dyy[-1,-1]=2/h**2
+    # Dyy[-1,-2]=-5/h**2
+    # Dyy[-1,-3]=4/h**2
+    # Dyy[-1,-4]=-1/h**2
+    
+    # Dxx[0,0]=2/h**2
+    # Dxx[0,1]=-5/h**2
+    # Dxx[0,2]=4/h**2
+    # Dxx[0,3]=-1/h**2
+
+    # Dxx[-1,-1]=2/h**2
+    # Dxx[-1,-2]=-5/h**2
+    # Dxx[-1,-3]=4/h**2
+    # Dxx[-1,-4]=-1/h**2
+
+    
+    # Dxx=csr_matrix(kron(Dxx, np.eye(len(y)) ))
+    # Dyy=  csr_matrix(kron( np.eye(len(x)),Dyy) )
+
+    r=dt/h
+    k=24/dt**2
+    Dxx=create_second(x)
+    Dyy=create_second(y)
 
 
+    if x_or_y=='x': #for Hx
+       assert (len(y)-len(x))==1
+       Dyy[0,0]=Dyy[0,0]/2
+       Dyy[-1,-1]=Dyy[-1,-1]/2
+    else:   
+       Dxx[0,0]=Dxx[0,0]/2
+       Dxx[-1,-1]=Dxx[-1,-1]/2
+
+    
+    Dxx = csr_matrix(kron(Dxx, np.eye(len(y)) ))
+    Dyy = csr_matrix(kron( np.eye(len(x)),Dyy) )
+  
+
+   
+    p2=k*(1+k*h**2/12)*csr_matrix(kron(np.eye(len(x)), np.eye(len(y)) ))+k*h**2/12*(Dxx+Dyy)
+   
+ 
+    return  p2
+
+def create_P1(x,y,h,dt,x_or_y):
+    r=dt/h
+    k=24/dt**2
+    Dxx=create_second(x)
+    Dyy=create_second(y)
+
+
+    if x_or_y=='x': #for Hx
+       assert (len(y)-len(x))==1
+       Dyy[0,0]=Dyy[0,0]/2
+       Dyy[-1,-1]=Dyy[-1,-1]/2
+    else:   
+       Dxx[0,0]=Dxx[0,0]/2
+       Dxx[-1,-1]=Dxx[-1,-1]/2
+
+    
+    Dxx = csr_matrix(kron(Dxx, np.eye(len(y)) ))
+    Dyy = csr_matrix(kron( np.eye(len(x)),Dyy) )
+
+  
+
+  
+    p1=-(Dxx+Dyy+(h**2/6)*Dxx@Dyy)+k*(1+k*h**2/12)*csr_matrix(kron(np.eye(len(x)), np.eye(len(y)) ))
+    # p2=-k*(1+2/r**2)*csr_matrix(kron(np.eye(len(x)), np.eye(len(y)) ))-k*h**2/12*(Dxx+Dyy)
+    
+ 
+    return p1
+
+def mod_helmholtz_2(x,y, h,dt, x_or_y,F):
+     
+     
+     if x_or_y=='x':
+        
+        p1=create_P1(x[1:-1],x[1:],h,dt,'x')
+        p2=create_P2(x[1:-1],x[1:],h,dt,'x')
+        
+        v=p2@F
+        A=p1
+        sol, exit_code = cg(A, v, tol=1e-09)
+        sol=sol.reshape(len(x)-2,len(x)-1)
+        B=np.zeros((len(x),len(x)-1))
+        B[1:-1,:]=sol
+     else:  
+        p1=create_P1(x[1:],x[1:-1],h,dt,'y')
+        p2=create_P2(x[1:],x[1:-1],h,dt,'y')
+
+        v=p2@F
+        A=p1
+    
+
+        sol, exit_code = cg(A, v, tol=1e-09)
+        
+
+        sol=sol.reshape(len(x)-1,len(x)-2)
+        
+        B=np.zeros((len(x)-1,len(x)))
+        B[:,1:-1]=sol
+
+     return B
+
+# def mod_helmholtz_2(x,y, h,dt, x_or_y,F):
+
+
+# x=np.linspace(0,1,400)
+# h=x[1]-x[0]
+# X,Y=np.meshgrid(x,x[:-1]+h/2,indexing='ij')
+
+# u=np.sin(math.pi*X)*np.cos(math.pi*Y)
+# F=(u*(1+2*math.pi**2))[1:-1,:]
+# g=mod_helmholtz_2(x,x, h, 100, 'x',F.flatten())
+# print(np.mean(abs(u-g)) )
+
+    
+def Hy_step2(dt, x, y, h, E, Hy):
+ 
+    assert E.shape[0] == E.shape[1]
+
+    Ex = E[1:, :] - E[:-1, :]
+   
+    dE_dx = spsolve(create_A_2(Hy.shape[0]) ,Ex / h)
+
+    F = dE_dx[:, 1:-1].flatten()
+
+    Hy_next = mod_helmholtz_2(x,y, h,dt, 'y',F)
+
+    return Hy + dt * Hy_next     
+    
+
+def Hx_step2(dt, x, y, h, E, Hx):
+    assert E.shape[0] == E.shape[1]
+    # A = np.linalg.inv(create_A_2(Hx.shape[1]))
+
+    Ey = E[:, 1:] - E[:, :-1]
+    dE_dy = np.transpose(spsolve(create_A_2(Hx.shape[1]),np.transpose(Ey) / h))
+
+
+    # dE_dy = np.transpose((scipy.sparse.linalg.inv(create_A_2(Hx.shape[1])) @ np.transpose(Ey) / h))
+
+    F = -dE_dy[1:-1, :].flatten()
+    Hx_next = mod_helmholtz_2(x,y, h,dt, 'x',F)
+
+    return Hx + dt * Hx_next    
+ 
+# x=np.linspace(0,1,10)
+# y=x
+# h=x[2]-x[1]
+# dt=0.1
+# x_or_y='y'
+# E=np.random.rand(len(x),len(x))
+# Hy=np.random.rand(len(x)-1,len(x))
+# Hx=np.random.rand(len(x),len(x)-1)
+# B=E_step(dt, x, y, h, E, Hx)
+
+
+# p1,p2=create_P1(x[1:-1],y[1:],h,dt,x_or_y)
+
+
+
+def Hy_step(dt, x, y, h, E, Hy, Dx, Dy, A, fourth=True):
+    BHy = None
+    assert E.shape[0] == E.shape[1]
+
+    # Your statements here
+
+    Ex = E[1:, :] - E[:-1, :]
+
+    dE_dx = spsolve(create_A_2(Hy.shape[0]) ,Ex / h)
+
+    # dE_dx = (scipy.sparse.linalg.inv(create_A_2(Hy.shape[0])) @ Ex / h)
+    k = (24 / (dt ** 2))
+    BF = k * dE_dx
+    F = BF[1:-1, 1:-1].flatten()
+
+    # BHy = (E[1:, :] - E[:-1, :]) / h
+    BHy = dE_dx
+    if fourth==True:
+       lapx1 = (dE_dx[0, 2:] + dE_dx[0, 0:-2] - 2 * dE_dx[0, 1:-1]) / h ** 2
+       lapx2 = (dE_dx[-1, 2:] + dE_dx[-1, :-2] - 2 * dE_dx[-1, 1:-1]) / h ** 2
+       lapy1 = (2 * dE_dx[0, 1:-1] - 5 * dE_dx[1, 1:-1] + 4 * dE_dx[2, 1:-1] - dE_dx[3, 1:-1]) / h ** 2
+       lapy2 = (2 * dE_dx[-1, 1:-1] - 5 * dE_dx[-2, 1:-1] + 4 * dE_dx[-3, 1:-1] - dE_dx[-4, 1:-1]) / h ** 2
+       BHy[0, 1:-1] += (dt ** 2 / 24) * (lapx1 + lapy1)
+       BHy[-1, 1:-1] += (dt ** 2 / 24) * (lapx2 + lapy2)
+    BHy[:, 0] = 0
+    BHy[:, -1] = 0
+
+    Hy_next = mod_helmholtz(x[1:], y, BHy.copy(), -F, -BF, k, Dx, Dy, A, fourth)
+
+    return Hy + dt * Hy_next
+
+
+def Hx_step(dt, x, y, h, E, Hx, Dx, Dy, A, fourth=True):
+    BHx = None
+    assert E.shape[0] == E.shape[1]
+    # A = np.linalg.inv(create_A_2(Hx.shape[1]))
+
+    Ey = E[:, 1:] - E[:, :-1]
+    dE_dy = np.transpose(spsolve(create_A_2(Hx.shape[1]),np.transpose(Ey) / h))
+
+
+    # dE_dy = np.transpose((scipy.sparse.linalg.inv(create_A_2(Hx.shape[1])) @ np.transpose(Ey) / h))
+
+    k = 24 / (dt ** 2)
+    BF = -k * dE_dy
+    F = BF[1:-1, 1:-1].flatten()
+    BHx = -dE_dy
+    if fourth==True:
+       lapx1 = -(dE_dy[2:, 0] + dE_dy[0:-2, 0] - 2 * dE_dy[1:-1, 0]) / h ** 2
+       lapx2 = -(dE_dy[2:, -1] + dE_dy[:-2, -1] - 2 * dE_dy[1:-1, -1]) / h ** 2
+       lapy1 = -(2 * dE_dy[1:-1, 0] - 5 * dE_dy[1:-1, 1] + 4 * dE_dy[1:-1, 2] - dE_dy[1:-1, 3]) / h ** 2
+       lapy2 = -(2 * dE_dy[1:-1, -1] - 5 * dE_dy[1:-1, -2] + 4 * dE_dy[1:-1, -3] - dE_dy[1:-1, -4]) / h ** 2
+       BHx[1:-1, 0] += ((dt ** 2) / 24) * (lapx1 + lapy1)
+       BHx[1:-1, -1] += ((dt ** 2) / 24) * (lapx2 + lapy2)
+    BHx[0, :] = 0
+    BHx[-1, :] = 0
+
+    Hx_next = mod_helmholtz(x, y[1:], BHx.copy(), -F, -BF, k, Dx, Dy, A, fourth)
+
+    return Hx + dt * Hx_next
+# x=np.linspace(0,1,100)
+# X,Y=np.meshgrid(x,x,indexing='ij')
+# p2=create_P2(x,x,x[1]-x[0],1)
+# f=X**3+Y**2
+# f_tag=6*X+2
+# print(np.mean(abs(((p2@(f.flatten())-f_tag.flatten())))))

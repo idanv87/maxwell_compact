@@ -48,10 +48,13 @@ class constants:
 def solveC4(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,True,'44'))
 
-solveC4(10,0.1,1,1,1)
+
 
 def solveC2(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,False,'42'))
+
+def solveN(N_test,cfltest,T_test,kx,ky):
+    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'))
 
 def solveYee4(n,cfl,T,kx,ky):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
@@ -98,13 +101,13 @@ def solveDRP(n,cfl,T,kx,ky):
   
 
 
-def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table1down/'):
+def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'):
 
-    cfltest=[1/6/(2**0.5)]
+    cfltest=[3/6/(2**0.5)]
     T_test=[1]
-    N_test=[64]
-    kx_test=[71]
-    ky_test=[71]
+    N_test=[16,32,64,128]
+    kx_test=[2]
+    ky_test=[1]
 
     data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[],'conv_rates':[],'kx':[],'ky':[]}
     for kx, ky in zip(kx_test, ky_test):
@@ -136,13 +139,19 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
 # , 'AI.pkl', 'AILH.pkl'
 # ]
 
-functions=[solveC4, solveC2
-, solveAI_h
-]
-names=['C4.pkl', 'C2.pkl'
-, 'AI.pkl'
-]
-# [comparison(functions[i],names[i]) for i in range(len(functions))]
+functions=[solveN]
+names=['N.pkl']
+[comparison(functions[i],names[i]) for i in range(len(functions))]
+path='/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
+for i,path in enumerate([path]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+               print(name)
+               print(conv_rate(X['N'],X['err']))
 if 0:
 
     path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'

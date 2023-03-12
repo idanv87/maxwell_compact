@@ -4,7 +4,7 @@ import math
 from tqdm import tqdm
 
 import matplotlib.patches as mpatches
-from auxilary import Hy_step, E_step, mod_helmholtz, Hx_step, create_Ds2,f_Hy,f_E,f_Hx
+from auxilary import Hy_step2, E_step, Hx_step2, create_Ds2,f_Hy,f_E,f_Hx, Hx_step, Hy_step
 import multiprocessing as mp
 from joblib import Parallel, delayed
 from concurrent.futures import ThreadPoolExecutor
@@ -38,14 +38,21 @@ def max_solver(fourth, omega,kx,ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyH
     E0 = f_E(omega, kx, ky, x, y, 0)
     Hx0 = f_Hx(omega, kx, ky, x, y, 0, dt, h)
     Hy0 = f_Hy(omega, kx, ky, x, y, 0, dt, h)
-    for i,t in enumerate(tqdm(range(time_steps - 1))):
+    for i,t in enumerate(tqdm(range(time_steps - 1))):   
         errE.append(np.mean(abs(E0[1:-1, 1:-1] - f_E(omega, kx, ky, x, y, i*dt)[1:-1, 1:-1])))
         errHx.append(np.mean(abs(Hx0[1:-1, :] -f_Hx(omega, kx, ky, x, y, i*dt, dt, h)[1:-1, :])))
         errHy.append(np.mean(abs(Hy0[:, 1:-1] - f_Hy(omega, kx, ky, x, y, i*dt, dt, h)[:, 1:-1])))
 
         E0 = E_step(dt, x, y, h, E0.copy(), Hx0.copy(), Hy0.copy(), DxE, DyE, AE)
-        Hx0 = Hx_step(dt, x, y, h, E0.copy(), Hx0.copy(), DxHx, DyHx, AHx, fourth)
-        Hy0 = Hy_step(dt, x, y, h, E0.copy(), Hy0.copy(), DxHy, DyHy, AHy, fourth)
+        
+        if fourth=='N':
+          
+          Hx0 = Hx_step2(dt, x, y, h, E0.copy(), Hx0.copy())
+          Hy0 = Hy_step2(dt, x, y, h, E0.copy(), Hy0.copy())
+        else:
+
+          Hx0 = Hx_step(dt, x, y, h, E0.copy(), Hx0.copy(), DxHx, DyHx, AHx, fourth)
+          Hy0 = Hy_step(dt, x, y, h, E0.copy(), Hy0.copy(), DxHy, DyHy, AHy, fourth)
       
 
     # errE = np.array([np.mean(abs(E_tot[i][1:-1, 1:-1] - E_a[i][1:-1, 1:-1])) for i in range(len(E_tot))])
@@ -55,6 +62,7 @@ def max_solver(fourth, omega,kx,ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyH
     errE=np.array(errE)
     errHx=np.array(errHx)
     errHy=np.array(errHy)
+    # print(abs(errE))
     return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, errE+errHx+errHy)
 
 
@@ -76,6 +84,7 @@ def run_scheme(C):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
+
 
     h = x[1] - x[0]
     dt=h*cfl
@@ -149,3 +158,4 @@ def yee_solver(beta,delta,gamma, omega,kx,ky, dt, x, y, h, time_steps, cfl,n,t):
     errHx=np.array(errHx)
     errHy=np.array(errHy)
     return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, errE+errHx+errHy)
+
