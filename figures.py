@@ -48,6 +48,8 @@ class constants:
 def solveC4(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,True,'44'))
 
+solveC4(10,0.1,1,1,1)
+
 def solveC2(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,False,'42'))
 
@@ -141,7 +143,7 @@ names=['C4.pkl', 'C2.pkl'
 , 'AI.pkl'
 ]
 # [comparison(functions[i],names[i]) for i in range(len(functions))]
-if 1:
+if 0:
 
     path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
     path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
@@ -420,20 +422,6 @@ if False:
 
 
 
-#
-# dr_calculator(names, save=(True,'fig0001'))
-# print(q)
-
-    
-    # return run_scheme(constants(N_test,cfltest,T_test,kx,ky,True,'44'))
-# d44=run_scheme(constants(N_test,cfltest,T_test,kx,ky,True,'44'))
-# pickle.dump(d44, open(path + name44, "wb"))
-# d42=run_scheme(constants(N_test,cfltest,T_test,kx,ky,False,'42'))
-# pickle.dump(d42, open(path + name42, "wb"))
-# print('')
-# print(d42['err'])    
-# print('')
-# print(d44['err'])  
 if False:
     path = '/Users/idanversano/Documents/papers/compact_maxwell/data/'
     fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'

@@ -76,11 +76,13 @@ def run_scheme(C):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
+
     h = x[1] - x[0]
     dt=h*cfl
     time_steps =  int(T/dt)
 
     DxE, DyE = create_Ds2(x, y)
+
     DxHx, DyHx = create_Ds2(x, y[1:])
     DxHy, DyHy = create_Ds2(x[1:], y)
     start = timeit.default_timer()
