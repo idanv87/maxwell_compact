@@ -105,7 +105,7 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
 
     cfltest=[3/6/(2**0.5)]
     T_test=[1]
-    N_test=[16,32,64,128]
+    N_test=[16,32,64,128,256]
     kx_test=[2]
     ky_test=[1]
 
