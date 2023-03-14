@@ -9,8 +9,7 @@ import  matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
 import math
-import multiprocessing
-from multiprocessing import pool
+
 import timeit
 import datetime
 import matplotlib.patches as mpatches
@@ -105,7 +104,7 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
 
     cfltest=[3/6/(2**0.5)]
     T_test=[1]
-    N_test=[16,32,64,128,256]
+    N_test=[256]
     kx_test=[2]
     ky_test=[1]
 
@@ -141,7 +140,8 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
 
 functions=[solveN]
 names=['N.pkl']
-[comparison(functions[i],names[i]) for i in range(len(functions))]
+if __name__ == '__main__':
+  [comparison(functions[i],names[i]) for i in range(len(functions))]
 path='/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
 for i,path in enumerate([path]):
      for r, d, f in os.walk(path):
