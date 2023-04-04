@@ -3,6 +3,7 @@ now = datetime.now() # current date and time
 date_time=datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
 from tqdm import tqdm
 
+from latex_hacks import tex_table
 import os
 import pickle
 import  matplotlib.pyplot as plt
@@ -19,15 +20,15 @@ from auxilary import create_A_2, conv_rate
 from  scheme import run_scheme, yee_solver
 from DRP_multiple_networks.evaluate import error_print
 
-
-
-
-
-
-
+print(os.getcwd())
+# x=np.linspace(0,1/2**0.5,20)
+# plt.plot(np.cos(math.pi*2**0.5*2*x))
+# plt.show()
 AI_h={'1':[-0.01031967, -0.08788657,  0.00514533], '4':[-0.00699426, -0.04867933, -0.00697986],'5':[ 0.00725373,-0.05299953,0.00756048]}
-legend_name={'C4':'C4','C2':'C2','NC':'NC','AI':r'$AI^h$','AILH':r'$AI^l$'}
+legend_name={'C4':'C4','NC':'NC','AI':r'$AI^h$'}
+line_s={'C4':'solid','NC':'solid','AI':'solid'}
 fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+tex_path='/Users/idanversano/Documents/papers/compact_maxwell/'
 
 class constants:
     path = '/Users/idanversano/Documents/papers/compact_maxwell/data/'
@@ -40,17 +41,6 @@ class constants:
         self.fourth_order=fourth_order
         self.figure=figure
 
-
-
-
-
-def solveC4(N_test,cfltest,T_test,kx,ky):
-    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,True,'44'))
-
-
-
-def solveC2(N_test,cfltest,T_test,kx,ky):
-    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,False,'42'))
 
 def solveN(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'))
@@ -66,9 +56,9 @@ def solveYee4(n,cfl,T,kx,ky):
 
 def solveAI_h(n,cfl,T,kx,ky):
 
-    beta=AI_h['1'][0]
-    delta=AI_h['1'][1]
-    gamma=AI_h['1'][2]
+    beta=AI_h['5'][0]
+    delta=AI_h['5'][1]
+    gamma=AI_h['5'][2]
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
@@ -88,25 +78,13 @@ def solveAI_l(n,cfl,T,kx,ky):
     # return yee_solver(0.018264537956920218, -0.05244206290558081, -0.0026566385573771087 , omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
     return yee_solver(0.010770443840020762, -0.05404731781456237, -0.015260532660881681 , omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
 
-def solveDRP(n,cfl,T,kx,ky):
-    omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
-    x = np.linspace(0, 1, n + 1)
-    y = np.linspace(0, 1, n + 1)
-    h = x[1] - x[0]
-    dt=h*cfl
-    time_steps =  int(T/dt)
-    return yee_solver(0., -0.06772109,  0., omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
-
-  
 
 
-def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'):
 
-    cfltest=[3/6/(2**0.5)]
-    T_test=[1]
-    N_test=[256]
-    kx_test=[2]
-    ky_test=[1]
+
+def comparison(f,name, path, cfltest, T_test, N_test, kx_test, ky_test ):
+    # cfltest,T_test,N_test,kx_test,ky_test
+
 
     data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[],'conv_rates':[],'kx':[],'ky':[]}
     for kx, ky in zip(kx_test, ky_test):
@@ -130,37 +108,71 @@ def comparison(f,name, path = '/Users/idanversano/Documents/papers/compact_maxwe
 
     return 1
 
+functions=[solveN
+             ,solveAI_h, solveYee4]
 
-# functions=[solveC2 ,solveC4, solveYee4
-# , solveAI_h,solveAI_l
-# ]
-# names=['C2.pkl','C4.pkl', 'NC.pkl'
-# , 'AI.pkl', 'AILH.pkl'
-# ]
+names=['C4.pkl'
+         ,'AI.pkl', 'NC.pkl']
 
-functions=[solveN]
-names=['N.pkl']
-if __name__ == '__main__':
-  [comparison(functions[i],names[i]) for i in range(len(functions))]
-path='/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
-for i,path in enumerate([path]):
-     for r, d, f in os.walk(path):
-       for file in f:
-         if file.endswith(".pkl"):
-           name=os.path.splitext(file)[0]
-           with open(path + file, 'rb') as file:
-               X=pickle.load(file)
-               print(name)
-               print(conv_rate(X['N'],X['err']))
+# if __name__ == '__main__':
+#     path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
+#     # [comparison(functions[i],names[i], path) for i in range(len(functions))]
+
+# path='/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
+
+              #  print(X['cfl'])
+              #  print(X['err'])
+
+def exp1(solve=True):
+  path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
+  kwargs={'cfltest':[1/2**0.5/5], 'T_test':[1],'N_test':[16,32,64],'kx_test':[1],
+            'ky_test':[1] }
+  
+  parameters={'h':[32,64]}
+  name='exp1.tex'
+  if solve:
+    [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
+    data=[]
+    headers=[]
+    for i,path in enumerate([path]):
+       for r, d, f in os.walk(path):
+         for file in f:
+           if file.endswith(".pkl"):
+             name=os.path.splitext(file)[0]
+             with open(path + file, 'rb') as file:
+              if name in list(legend_name):
+                 X=pickle.load(file)
+                 headers.append(name)
+                 data.append(conv_rate(X['N'],X['err']))
+              #  print(name)
+              #  print(conv_rate(X['N'],X['err']))
+               
+    
+    par_data=[parameters[name] for name in list(parameters)]
+    data=par_data+data
+    data=np.array(data).T.tolist()
+    print(data)
+    headers=list(parameters)+headers
+    tex_table(tex_path, headers,data, name)
+    
+    
+
+
+
+# headers=['h']+list(names)
+exp1()
+                                 
 if 0:
 
-    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
-    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
+    # path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
+    # path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
+    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7up/'
+    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table7down/'
 
     fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 
     fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
-    color={'C4':'r','C2':'g','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+    color={'C4':'r','NC':'orange', 'AI':'purple', 'AILH':'blue'}
 
     for i,path in enumerate([path3,path4]):
      for r, d, f in os.walk(path):
@@ -171,21 +183,29 @@ if 0:
                X=pickle.load(file)
            key, *val = name[0:4].split()
             #  print(X['err(time)'][0].shape)
-
-           ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
+           if name in list(legend_name):
+             ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name], linestyle=line_s[name]) 
+             ax1[i].set_title('kx=ky='+str(X['kx'][0]))    
               
     ax1[0].legend(loc="upper left")
     ax1[1].legend(loc="upper left")
+    fig.tight_layout(pad=1.0)
     plt.xlabel('Time steps')
     plt.ylabel('error')
-    plt.savefig(fig_path + 'table6.eps', format='eps',bbox_inches='tight')
-
+    # plt.savefig(fig_path + 'table6.eps', format='eps',bbox_inches='tight')
+    # plt.savefig(fig_path + 'table7.eps', format='eps',bbox_inches='tight')
+    # plt.show(block=False)
+    # plt.pause(3)
+    # plt.close()
     plt.show()
+    
 
 if 0:
 
-    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6up/'
-    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table6down/'
+    # path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table8up/'
+    # path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table8down/'
+    path3 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table9up/'
+    path4 = '/Users/idanversano/Documents/papers/compact_maxwell/data/table9down/'
 
     fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 
@@ -201,17 +221,24 @@ if 0:
                X=pickle.load(file)
            key, *val = name[0:4].split()
             #  print(X['err(time)'][0].shape)
-           if name in ['C2', 'C4']: 
+           if name in list(legend_name): 
+          #  if (i==1 and name in list(legend_name)) or ((i==0) and (name in list(legend_name) and name not in ['AI'])): 
               print(X['cfl'])
-              ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name])     
-              
+              ax1[i].plot(X['err(time)'][0], label=legend_name[key],c=color[name], linestyle=line_s[name])     
+              ax1[i].set_title('kx=ky='+str(X['kx'][0])) 
+
     ax1[0].legend(loc="upper left")
     ax1[1].legend(loc="upper left")
+    fig.tight_layout(pad=1.0)
     plt.xlabel('Time steps')
     plt.ylabel('error')
-    plt.savefig(fig_path + 'table8.eps', format='eps',bbox_inches='tight')
+    # plt.savefig(fig_path + 'table9.eps', format='eps',bbox_inches='tight')
+    # plt.savefig(fig_path + 'table8.eps', format='eps',bbox_inches='tight')
 
-    plt.show() 
+    # plt.show(block=False)
+    # plt.pause(3)
+    # plt.close()
+    plt.show()
 
 
 
@@ -452,6 +479,11 @@ if False:
     plt.ylabel('error')
     plt.show()    
 if 0:
+    from matplotlib.legend_handler import HandlerBase
+
+    list_color  = ["black", "blue", "red"]
+    list_mak    = ["x","8","*"]
+    list_lab    = ['E_3','H_1','H_2']
     n=5
     h=1/n
     x = np.linspace(0, 1, n + 1)
@@ -487,10 +519,10 @@ if 0:
         # ax1.scatter(x1[-1], y1[j], color='blue', s=100, marker='s')
         # ax1.scatter(x1[i], y1[0], color='blue', s=100, marker='s')
         # ax1.scatter(x1[i], y1[-1], color='blue', s=100, marker='s')
-
+    s=70
     for i in range(len(x2)):
       for j in range(len(y2)):
-        ax1.scatter(x2[i], y2[j], color='red', s=100, marker='*')
+        ax1.scatter(x2[i], y2[j], color='red', s=s, marker='*')
 
     #       ax1.scatter(x2[i], y2[j], color='red', s=100,marker='x')
     #       ax1.scatter(x2[0], y2[j], color='red', s=100, marker='s')
@@ -499,26 +531,135 @@ if 0:
     #       ax1.scatter(x2[i], y2[-1], color='red', s=100, marker='s')
 
 
-    black_patch = mpatches.Patch(color='black', label='E_3')
-    blue_patch = mpatches.Patch(color='blue', label='H_1')
-    red_patch = mpatches.Patch(color='red', label='H_2')
+    class MarkerHandler(HandlerBase):
+        def create_artists(self, legend, tup,xdescent, ydescent,
+                            width, height, fontsize,trans):
+            return [plt.Line2D([width/2], [height/2.],ls="",
+                          marker=tup[1],color=tup[0], transform=trans)]
 
 
-    ax1.legend(loc='upper center',bbox_to_anchor=(0.5, -0.05),
-            fancybox=True, shadow=True, ncol=5,
-            handles=[black_patch,blue_patch,red_patch])
 
-    box = ax1.get_position()
-    # ax1.title.set_text('')
-    ax1.set_position([box.x0, box.y0 + box.height * 0.1,
-                    box.width, box.height * 1])
+   
+    ax1.legend(list(zip(list_color,list_mak)), list_lab, 
+              handler_map={tuple:MarkerHandler()}, loc='upper center', bbox_to_anchor=(0.5, -0.05),
+          fancybox=True, shadow=True, ncol=5) 
     ax1.grid()
+    # ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+    #       fancybox=True, shadow=True, ncol=5)
     # Put a legend below current axis
     # plt.grid()
     PATH = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
     # plt.savefig(PATH + 'omega.eps' , format='eps',
     #            bbox_inches='tight')
 
+    plt.show()
+
+if 0:
+    n = 5
+    h = 1/n
+    x = np.linspace(0, 1, n + 1)
+    y = np.linspace(0, 1, n + 1)
+
+    x1 = np.linspace(0, 1, n + 1)
+    y1 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+
+    x2 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+    y2 = np.linspace(0, 1, n + 1)
+    f = plt.figure()
+    fig, (ax1,ax2) = plt.subplots(1,2, sharex=True, sharey=True)
+  
+    style='dashed'
+    ax1.plot(x,x*0,color='black', linestyle=style)
+    ax1.plot(x,x*0+1,color='black', linestyle=style)
+    ax1.plot(x*0,x,color='black', linestyle=style)
+    ax1.plot(x*0+1,x,color='black', linestyle=style)
+    s1=100
+    s2=100
+    for i in range(len(x1)):
+      for j in range(len(y1)):
+        ax1.scatter(x1[i], y1[j], color='blue', s=s1, marker='o')
+
+    ax1.scatter(x1[1:-1], x1[1:-1]*0-h/2, color='blue', s=s1, marker='o', facecolors='none')
+    ax1.scatter(x1[1:-1], x1[1:-1]*0+1+h/2, color='blue', s=s1, marker='o', facecolors='none')
+    ax1.axis('off')
+    ax1.set_aspect(1)
+
+
+    x1 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+    y1 = np.linspace(0, 1, n + 1)
+    
+    style='dashed'
+    ax2.plot(x,x*0,color='black', linestyle=style)
+    ax2.plot(x,x*0+1,color='black', linestyle=style)
+    ax2.plot(x*0,x,color='black', linestyle=style)
+    ax2.plot(x*0+1,x,color='black', linestyle=style)
+    for i in range(len(x1)):
+      for j in range(len(y1)):
+         ax2.scatter(x1[i], y1[j], color='red', s=s2, marker='*')
+
+    ax2.scatter( y1[1:-1]*0-h/2,y1[1:-1], color='red', s=s2, marker='*',facecolors='none')
+    ax2.scatter(y1[1:-1]*0+1+h/2,y1[1:-1] , color='red', s=s2, marker='*', facecolors='none')
+    ax2.axis('off')
+
+    # ax1.set_ylim(-h/2,1+h/2)
+    # ax1.set_xlim(0,1)  
+    ax2.set_aspect(1)
+    PATH = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+    size=10
+    ax1.text(0.5, 1, 'Neumann', dict(size=size))
+    ax1.text(0.5, -0.05, 'Neumann', dict(size=size))
+    ax1.text(-0.15, 0.6, 'Dir.', dict(size=size))
+    ax1.text(1.05, 0.6, 'Dir.', dict(size=size))
+    ax2.text(0.5, 1.05, 'Dir', dict(size=size))
+    ax2.text(0.5, -0.1, 'Dir', dict(size=size))
+    ax2.text(-0.1, 0.5, 'Neumann.', dict(size=size))
+    ax2.text(0.9, 0.5, 'Neumann', dict(size=size))
+    plt.savefig(PATH + 'omega4.eps' , format='eps',
+               bbox_inches='tight')
+    plt.show()
+
+
+   
+
+if 0:
+    n = 5
+    h = 1/n
+    x = np.linspace(0, 1, n + 1)
+    y = np.linspace(0, 1, n + 1)
+
+
+    x1 = np.linspace(h/2, 1+h/2, n + 1)[:-1]
+    y1 = np.linspace(0, 1, n + 1)
+    f = plt.figure()
+    fig, ax1 = plt.subplots(1, sharex=False, sharey=False)
+    style='dashed'
+    ax1.plot(x,x*0,color='black', linestyle=style)
+    ax1.plot(x,x*0+1,color='black', linestyle=style)
+    ax1.plot(x*0,x,color='black', linestyle=style)
+    ax1.plot(x*0+1,x,color='black', linestyle=style)
+    s=70
+    for i in range(len(x1)):
+      for j in range(len(y1)):
+
+        # ax1.scatter(x[i],y[j],color='black',s=5)
+        ax1.scatter(x1[i], y1[j], color='red', s=100, marker='*')
+
+    ax1.scatter( y1[1:-1]*0-h/2,y1[1:-1], color='red', s=100, marker='*',facecolors='none')
+    ax1.scatter(y1[1:-1]*0+1+h/2,y1[1:-1] , color='red', s=100, marker='*', facecolors='none')
+    ax1.axis('off')
+
+    # ax1.set_ylim(-h/2,1+h/2)
+    # ax1.set_xlim(0,1)  
+    ax1.set_aspect('equal', adjustable='box')
+    PATH = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
+
+    size=10
+    plt.text(0.5, 1.05, 'Dir', dict(size=size))
+    plt.text(0.5, -0.1, 'Dir', dict(size=size))
+    plt.text(-0.1, 0.5, 'Neumann.', dict(size=size))
+    plt.text(0.9, 0.5, 'Neumann', dict(size=size))
+    plt.savefig(PATH + 'omega_3.eps' , format='eps',
+               bbox_inches='tight')
     plt.show()
 
 

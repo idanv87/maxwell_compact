@@ -4,7 +4,7 @@ import math
 from tqdm import tqdm
 
 import matplotlib.patches as mpatches
-from auxilary import Hy_step2, E_step, Hx_step2, create_Ds2, f_Hy, f_E, f_Hx, Hx_step, Hy_step, create_P1, create_P2, E_step2
+from auxilary import Hy_step2, Hx_step2, create_Ds2, f_Hy, f_E, f_Hx, create_P1, create_P2, E_step2
 import multiprocessing as mp
 from joblib import Parallel, delayed
 from concurrent.futures import ThreadPoolExecutor
@@ -27,7 +27,9 @@ def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, D
     E0 = f_E(omega, kx, ky, x, y, 0)
     LE0 = -math.pi**2*(kx**2+ky**2)*E0
     Hx0 = f_Hx(omega, kx, ky, x, y, 0, dt, h)
+    LHx0=-math.pi**2*(kx**2+ky**2)*Hx0
     Hy0 = f_Hy(omega, kx, ky, x, y, 0, dt, h)
+    LHy0=-math.pi**2*(kx**2+ky**2)*Hy0
 
     p1x = create_P1(x[1:-1], x[1:], h, dt, 'x')
     p2x = create_P2(x[1:-1], x[1:], h, dt, 'x')
@@ -44,27 +46,15 @@ def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, D
         errHy.append(
             np.mean(abs(Hy0[:, 1:-1] - f_Hy(omega, kx, ky, x, y, i*dt, dt, h)[:, 1:-1])))
 
-        if fourth == 'N':
 
-            LE0, E0 = E_step2(dt, x, y, h, E0.copy(), LE0.copy(),
-                              Hx0.copy(), Hy0.copy(), p1e, p2e)
-            Hx0 = Hx_step2(dt, x, y, h, E0.copy(),
-                           LE0.copy(), Hx0.copy(), p1x, p2x)
-            Hy0 = Hy_step2(dt, x, y, h, E0.copy(),
-                           LE0.copy(), Hy0.copy(), p1y, p2y)
+        LE0, E0 = E_step2(dt, x, y, h, E0.copy(), LE0.copy(),
+                            Hx0.copy(), Hy0.copy(), p1e, p2e)
+        Hx0 = Hx_step2(dt, x, y, h, E0.copy(),
+                        LE0.copy(), Hx0.copy(), p1x, p2x)
+        Hy0 = Hy_step2(dt, x, y, h, E0.copy(),
+                        LE0.copy(), Hy0.copy(), p1y, p2y)
 
-        else:
-            E0 = E_step(dt, x, y, h, E0.copy(), Hx0.copy(),
-                        Hy0.copy(), DxE, DyE, AE)
-            Hx0 = Hx_step(dt, x, y, h, E0.copy(), Hx0.copy(),
-                          DxHx, DyHx, AHx, fourth)
-            Hy0 = Hy_step(dt, x, y, h, E0.copy(), Hy0.copy(),
-                          DxHy, DyHy, AHy, fourth)
 
-    # errE = np.array([np.mean(abs(E_tot[i][1:-1, 1:-1] - E_a[i][1:-1, 1:-1])) for i in range(len(E_tot))])
-    # errE = np.array([np.mean(abs(E_tot[i][1:-1, 1:-1] - f_E(omega, kx, ky, x, y, i*dt)[1:-1, 1:-1])) for i in range(len(E_tot))])
-    # errHx = np.array([np.mean(abs(Hx_tot[i][1:-1, :] - f_Hx(omega, kx, ky, x, y, i*dt, dt, h)[1:-1, :])) for i in range(len(Hx_tot))])
-    # errHy = np.array([np.mean(abs(Hy_tot[i][:, 1:-1] - f_Hy(omega, kx, ky, x, y, i*dt, dt, h)[:, 1:-1])) for i in range(len(Hy_tot))])
     errE = np.array(errE)
     errHx = np.array(errHx)
     errHy = np.array(errHy)
@@ -79,13 +69,6 @@ def run_scheme(C):
     cfl = C.cfl
     n = C.ns
     fourth = C.fourth_order
-    # data = {'T':[],'cfl':[],'N':[],'err':[],'err(time)':[],'conv_rates':[],'kx':[],'ky':[]}
-
-    # for kx in C.kx:
-
-    #       for T in C.T:
-    #        for cfl in C.cfl:
-    #          for i, n in enumerate(C.ns):
     ky = kx
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
@@ -99,7 +82,7 @@ def run_scheme(C):
 
     DxHx, DyHx = create_Ds2(x, y[1:])
     DxHy, DyHy = create_Ds2(x[1:], y)
-    start = timeit.default_timer()
+    # start = timeit.default_timer()
     AE = DxE + DyE + ((h ** 2) / 6) * DxE @ DyE
 
     AHx = DxHx + DyHx + ((h ** 2) / 6) * DxHx @ DyHx
@@ -108,21 +91,6 @@ def run_scheme(C):
     res = max_solver(fourth, omega, kx, ky,  dt, x, y, h, time_steps, DxE, DyE,
                      DxHx, DyHx, DxHy, DyHy,
                      AE, AHx, AHy)
-    # data['T'].append(T)
-    # data['cfl'].append(cfl)
-    # data['N'].append(n)
-
-    # data['err'].append(res[0])
-    # data['err(time)'].append(res[1])
-    # data['kx'].append(kx)
-    # data['ky'].append(ky)
-    # x = np.log(1 / np.array(C.ns))
-    # y = np.log(np.array(data['err']))
-
-    # log_err=np.diff(y) / np.diff(x)
-
-    # log_err=['%.2f' % log_err[i] for i in range(len(log_err))]
-    # print(log_err)
 
     return res
 
