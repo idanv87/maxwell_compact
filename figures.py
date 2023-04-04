@@ -2,6 +2,7 @@ from datetime import datetime
 now = datetime.now() # current date and time
 date_time=datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")
 from tqdm import tqdm
+from decimal import Decimal
 
 from latex_hacks import tex_table
 import os
@@ -24,11 +25,47 @@ print(os.getcwd())
 # x=np.linspace(0,1/2**0.5,20)
 # plt.plot(np.cos(math.pi*2**0.5*2*x))
 # plt.show()
-AI_h={'1':[-0.01031967, -0.08788657,  0.00514533], '4':[-0.00699426, -0.04867933, -0.00697986],'5':[ 0.00725373,-0.05299953,0.00756048]}
+AI_h={'1':[-0.01031967, -0.08788657,  0.00514533],
+      '2':[0.030110106445778904,-0.19134659869216905,0.05624205921198148],
+      '3':[0.016091811496056083, -0.14807714640318745, 0.045012759482413504],
+       '4':[-0.00699426, -0.04867933, -0.00697986],'5':[ 0.00725373,-0.05299953,0.00756048]}
+       
 legend_name={'C4':'C4','NC':'NC','AI':r'$AI^h$'}
 line_s={'C4':'solid','NC':'solid','AI':'solid'}
 fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 tex_path='/Users/idanversano/Documents/papers/compact_maxwell/'
+data_path='/Users/idanversano/Documents/papers/compact_maxwell/data/'
+
+def plot_table(x_name,y_name,data_path1,data_path2, fig_save, title):
+    fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
+    color={'C4':'r','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+
+    for i,path in enumerate([data_path1,data_path2]):
+     for r, d, f in os.walk(path):
+       for file in f:
+         if file.endswith(".pkl"):
+           name=os.path.splitext(file)[0]
+           with open(path + file, 'rb') as file:
+               X=pickle.load(file)
+           key, *val = name[0:4].split()
+            #  print(X['err(time)'][0].shape)
+           if name in list(legend_name):
+             ax1[i].plot(X[x_name], X[y_name], label=legend_name[key],c=color[name], linestyle=line_s[name]) 
+             ax1[i].set_xlabel(x_name)
+             ax1[i].set_ylabel(y_name)
+             ax1[i].set_title(title[i])    
+              
+    ax1[0].legend(loc="upper left")
+    ax1[1].legend(loc="upper left")
+    fig.tight_layout(pad=1.0)
+    # plt.xlabel(x_name)
+    # plt.ylabel(y_name)
+    plt.savefig(fig_save, format='eps',bbox_inches='tight')
+    # plt.savefig(fig_path + 'table7.eps', format='eps',bbox_inches='tight')
+    # plt.show(block=False)
+    # plt.pause(3)
+    # plt.close()
+    plt.show()
 
 class constants:
     path = '/Users/idanversano/Documents/papers/compact_maxwell/data/'
@@ -55,10 +92,12 @@ def solveYee4(n,cfl,T,kx,ky):
     return yee_solver(0,-1/24,0, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
 
 def solveAI_h(n,cfl,T,kx,ky):
+    num=str(int(cfl*6*2**0.5))
 
-    beta=AI_h['5'][0]
-    delta=AI_h['5'][1]
-    gamma=AI_h['5'][2]
+
+    beta=AI_h[num][0]
+    delta=AI_h[num][1]
+    gamma=AI_h[num][2]
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
     x = np.linspace(0, 1, n + 1)
     y = np.linspace(0, 1, n + 1)
@@ -114,23 +153,11 @@ functions=[solveN
 names=['C4.pkl'
          ,'AI.pkl', 'NC.pkl']
 
-# if __name__ == '__main__':
-#     path = '/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
-#     # [comparison(functions[i],names[i], path) for i in range(len(functions))]
 
-# path='/Users/idanversano/Documents/papers/compact_maxwell/data/table_N2/'
-
-              #  print(X['cfl'])
-              #  print(X['err'])
-
-def exp1(solve=True):
+def exp_conv_rates( kwargs, table_name):
   path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
-  kwargs={'cfltest':[1/2**0.5/5], 'T_test':[1],'N_test':[16,32,64],'kx_test':[1],
-            'ky_test':[1] }
-  
-  parameters={'h':[32,64]}
-  name='exp1.tex'
-  if solve:
+  parameters={'h': kwargs['N_test'][1:]}
+  if True:
     [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
     data=[]
     headers=[]
@@ -146,21 +173,96 @@ def exp1(solve=True):
                  data.append(conv_rate(X['N'],X['err']))
               #  print(name)
               #  print(conv_rate(X['N'],X['err']))
-               
-    
     par_data=[parameters[name] for name in list(parameters)]
     data=par_data+data
     data=np.array(data).T.tolist()
     print(data)
     headers=list(parameters)+headers
-    tex_table(tex_path, headers,data, name)
+    tex_table(tex_path, headers,data, table_name)
     
     
 
 
+def exp_cfl( kwargs, table_name):
+  path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
+  parameters={'cfl':kwargs['cfltest']}
+  # parameters={'cfl':[r'$1$',r'$1$']}
+  if True:
+    [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
+    data=[]
+    headers=[]
+    for i,path in enumerate([path]):
+       for r, d, f in os.walk(path):
+         for file in f:
+           if file.endswith(".pkl"):
+             name=os.path.splitext(file)[0]
+             with open(path + file, 'rb') as file:
+              if name in list(legend_name):
+                 X=pickle.load(file)
+                 headers.append(name)
+                 data.append([f"{Decimal(x):.2e}" for x in X['err']])
+                 
+    par_data=[parameters[name] for name in list(parameters)]
+    data=par_data+data
+    data=np.array(data).T.tolist()
+    headers=list(parameters)+headers
+    tex_table(tex_path, headers,data, table_name)
 
-# headers=['h']+list(names)
-exp1()
+
+
+def exp_erros( kwargs, table_name, path):
+  parameters={'k':kwargs['kx_test']}
+  # parameters={'cfl':[r'$1$',r'$1$']}
+  if True:
+    [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
+    data=[]
+    headers=[]
+    for i,path in enumerate([path]):
+       for r, d, f in os.walk(path):
+         for file in f:
+           if file.endswith(".pkl"):
+             name=os.path.splitext(file)[0]
+             with open(path + file, 'rb') as file:
+              if name in list(legend_name):
+                 X=pickle.load(file)
+                 headers.append(name)
+                 data.append(X['err'])           
+    par_data=[parameters[name] for name in list(parameters)]
+    data=par_data+data
+    print(data)
+    data=np.array(data).T.tolist()
+    headers=list(parameters)+headers
+    tex_table(tex_path, headers,data, table_name)
+
+T_test=2/2**0.5
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[2],
+            'ky_test':[2] }, table_name='conv_rates_low.tex')
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
+            'ky_test':[21] }, table_name='conv_rates_high.tex')
+
+exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[2],
+            'ky_test':[2] }, table_name='cfl_high.tex')
+exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
+            'ky_test':[21] }, table_name='cfl_low.tex')
+
+exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
+            'ky_test':[i for i in range(50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')
+
+# exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
+#             'ky_test':[i for i in range(50)] }, table_name='error(k)_high1.tex', path=
+#               data_path+'high1/')
+
+# exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16],'kx_test':[1,2,3],
+#             'ky_test':[1,2,3] }, table_name='error(k)_low2.tex', path= data_path+'low2/')
+
+exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
+            'ky_test':[i for i in range(50)]}, table_name='error(k)5.tex', path=data_path+'cfl5/')
+
+plot_table('kx','err',data_path+'cfl1/',data_path+'cfl5/', fig_path+'error(k).eps',
+           title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
+# plot_table('kx','err',data_path+'low2/',data_path+'high2/', fig_path+'error(k)2.eps',
+#             title='CFL='+r'$\frac{5}{6\sqrt{2}}$') 
+
                                  
 if 0:
 
