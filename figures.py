@@ -155,19 +155,20 @@ names=['C4.pkl'
          ,'AI.pkl', 'NC.pkl']
 
 
-def exp_conv_rates( kwargs, table_name):
-  path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
+def exp_conv_rates( kwargs, table_name, T_name):
+  path = data_path+T_name
   parameters={'h': kwargs['N_test'][1:]}
+ 
   if True:
     [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
     data=[]
     headers=[]
-    for i,path in enumerate([path]):
-       for r, d, f in os.walk(path):
+    for i,p in enumerate([path]):
+       for r, d, f in os.walk(p):
          for file in f:
            if file.endswith(".pkl"):
              name=os.path.splitext(file)[0]
-             with open(path + file, 'rb') as file:
+             with open(p + file, 'rb') as file:
               if name in list(legend_name):
                  X=pickle.load(file)
                  headers.append(name)
@@ -179,29 +180,30 @@ def exp_conv_rates( kwargs, table_name):
     data=np.array(data).T.tolist()
   
     headers=list(parameters)+headers
-    tex_table(table_path, headers,data, table_name)
+    tex_table(table_path, headers,data, table_name,0)
     
     
 
 
-def exp_cfl( kwargs, table_name):
+def exp_cfl( kwargs, table_name, path):
   path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
-  parameters={'cfl':kwargs['cfltest']}
-  # parameters={'cfl':[r'$1$',r'$1$']}
+  # parameters={'cfl':kwargs['cfltest']}
+  parameters={'cfl':[r'$\frac{1}{6\sqrt{2}}$',r'$\frac{2}{6\sqrt{2}}$',r'$\frac{3}{6\sqrt{2}}$'
+                     r'$\frac{4}{6\sqrt{2}}$',r'$\frac{5}{6\sqrt{2}}$']}
   if True:
     [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
     data=[]
     headers=[]
-    for i,path in enumerate([path]):
-       for r, d, f in os.walk(path):
+    for i,p in enumerate([path]):
+       for r, d, f in os.walk(p):
          for file in f:
            if file.endswith(".pkl"):
              name=os.path.splitext(file)[0]
-             with open(path + file, 'rb') as file:
+             with open(p + file, 'rb') as file:
               if name in list(legend_name):
                  X=pickle.load(file)
                  headers.append(name)
-                 data.append([f"{Decimal(x):.2e}" for x in X['err']])
+                 data.append(X['err'])
                  
     par_data=[parameters[name] for name in list(parameters)]
     data=par_data+data
@@ -230,16 +232,16 @@ def exp_erros( kwargs, table_name, path):
                  data.append(X['err'])           
     par_data=[parameters[name] for name in list(parameters)]
     data=par_data+data
-    print(data)
+    
     data=np.array(data).T.tolist()
     headers=list(parameters)+headers
     tex_table(table_path, headers,data, table_name)
 
-T_test=2*2**0.5
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[1],
-            'ky_test':[1] }, table_name='conv_rates_low.tex')
+T_test=2**0.5
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32],'kx_test':[1],
+            'ky_test':[1] }, table_name='conv_rates_low.tex', T_name='conv_rate_low/')
 exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
-            'ky_test':[21] }, table_name='conv_rates_high.tex')
+            'ky_test':[21] }, table_name='conv_rates_high.tex', T_name='conv_rate_high/')
 
 exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[1],
             'ky_test':[1] }, table_name='cfl_high.tex')
