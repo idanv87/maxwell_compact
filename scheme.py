@@ -18,7 +18,7 @@ from DRP_multiple_networks.constants import Constants
 
 
 def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyHx, DxHy, DyHy, AE, AHx, AHy):
-
+    print(time_steps)
     errE = []
     errHx = []
     errHy = []

@@ -114,6 +114,8 @@ def f_E(omega, kx, ky, x, y, t):
 
 def f_Hx(omega, kx, ky, x, y, t, dt, h):
     X, Y = np.meshgrid(x, y, indexing='ij')
+    -(np.sin(omega * (t + dt / 2)) * np.sin(math.pi * kx * X) * np.cos(
+        math.pi * ky * (Y + h / 2)) * math.pi * ky / omega)[:, :-1]
     return -(np.sin(omega * (t + dt / 2)) * np.sin(math.pi * kx * X) * np.cos(
         math.pi * ky * (Y + h / 2)) * math.pi * ky / omega)[:, :-1]
 

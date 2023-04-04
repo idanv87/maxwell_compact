@@ -34,6 +34,7 @@ legend_name={'C4':'C4','NC':'NC','AI':r'$AI^h$'}
 line_s={'C4':'solid','NC':'solid','AI':'solid'}
 fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 tex_path='/Users/idanversano/Documents/papers/compact_maxwell/'
+table_path='/Users/idanversano/Documents/papers/compact_maxwell/tables/'
 data_path='/Users/idanversano/Documents/papers/compact_maxwell/data/'
 
 def plot_table(x_name,y_name,data_path1,data_path2, fig_save, title):
@@ -176,9 +177,9 @@ def exp_conv_rates( kwargs, table_name):
     par_data=[parameters[name] for name in list(parameters)]
     data=par_data+data
     data=np.array(data).T.tolist()
-    print(data)
+  
     headers=list(parameters)+headers
-    tex_table(tex_path, headers,data, table_name)
+    tex_table(table_path, headers,data, table_name)
     
     
 
@@ -206,7 +207,7 @@ def exp_cfl( kwargs, table_name):
     data=par_data+data
     data=np.array(data).T.tolist()
     headers=list(parameters)+headers
-    tex_table(tex_path, headers,data, table_name)
+    tex_table(table_path, headers,data, table_name)
 
 
 
@@ -232,21 +233,35 @@ def exp_erros( kwargs, table_name, path):
     print(data)
     data=np.array(data).T.tolist()
     headers=list(parameters)+headers
-    tex_table(tex_path, headers,data, table_name)
+    tex_table(table_path, headers,data, table_name)
 
-T_test=2/2**0.5
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[2],
-            'ky_test':[2] }, table_name='conv_rates_low.tex')
+T_test=2*2**0.5
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[1],
+            'ky_test':[1] }, table_name='conv_rates_low.tex')
 exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
             'ky_test':[21] }, table_name='conv_rates_high.tex')
 
-exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[2],
-            'ky_test':[2] }, table_name='cfl_high.tex')
+exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[1],
+            'ky_test':[1] }, table_name='cfl_high.tex')
 exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
             'ky_test':[21] }, table_name='cfl_low.tex')
 
-exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
-            'ky_test':[i for i in range(50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')
+exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(1,50)],
+            'ky_test':[i for i in range(1,50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')
+exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(1,50)],
+            'ky_test':[i for i in range(50)]}, table_name='error(k)5.tex', path=data_path+'cfl5/')
+
+plot_table('kx','err',data_path+'cfl1/',data_path+'cfl5/', fig_path+'error(k).eps',
+           title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
+
+
+
+
+
+
+
+# plot_table('kx','err',data_path+'low2/',data_path+'high2/', fig_path+'error(k)2.eps',
+#             title='CFL='+r'$\frac{5}{6\sqrt{2}}$') 
 
 # exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
 #             'ky_test':[i for i in range(50)] }, table_name='error(k)_high1.tex', path=
@@ -254,15 +269,6 @@ exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i 
 
 # exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16],'kx_test':[1,2,3],
 #             'ky_test':[1,2,3] }, table_name='error(k)_low2.tex', path= data_path+'low2/')
-
-exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(50)],
-            'ky_test':[i for i in range(50)]}, table_name='error(k)5.tex', path=data_path+'cfl5/')
-
-plot_table('kx','err',data_path+'cfl1/',data_path+'cfl5/', fig_path+'error(k).eps',
-           title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
-# plot_table('kx','err',data_path+'low2/',data_path+'high2/', fig_path+'error(k)2.eps',
-#             title='CFL='+r'$\frac{5}{6\sqrt{2}}$') 
-
                                  
 if 0:
 
