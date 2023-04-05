@@ -185,8 +185,8 @@ def exp_conv_rates( kwargs, table_name, T_name):
     
 
 
-def exp_cfl( kwargs, table_name, path):
-  path = '/Users/idanversano/Documents/papers/compact_maxwell/data/temp/'
+def exp_cfl( kwargs, table_name, T_name):
+  path = data_path+T_name
   # parameters={'cfl':kwargs['cfltest']}
   parameters={'cfl':[r'$\frac{1}{6\sqrt{2}}$',r'$\frac{2}{6\sqrt{2}}$',r'$\frac{3}{6\sqrt{2}}$'
                      r'$\frac{4}{6\sqrt{2}}$',r'$\frac{5}{6\sqrt{2}}$']}
@@ -238,15 +238,15 @@ def exp_erros( kwargs, table_name, path):
     tex_table(table_path, headers,data, table_name)
 
 T_test=2**0.5
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32],'kx_test':[1],
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512, 1024],'kx_test':[1],
             'ky_test':[1] }, table_name='conv_rates_low.tex', T_name='conv_rate_low/')
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
+exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512, 1024],'kx_test':[21],
             'ky_test':[21] }, table_name='conv_rates_high.tex', T_name='conv_rate_high/')
 
 exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[1],
-            'ky_test':[1] }, table_name='cfl_high.tex')
+            'ky_test':[1] }, table_name='cfl_low.tex', T_name='cflteslow/')
 exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
-            'ky_test':[21] }, table_name='cfl_low.tex')
+            'ky_test':[21] }, table_name='cfl_high.tex', T_name='cflteshigh/')
 
 exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(1,50)],
             'ky_test':[i for i in range(1,50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')

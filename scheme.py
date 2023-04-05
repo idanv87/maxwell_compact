@@ -110,7 +110,7 @@ def yee_solver(beta, delta, gamma, omega, kx, ky, dt, x, y, h, time_steps, cfl, 
     Hx0 = np.expand_dims(Hx, axis=(0, -1))
     Hy0 = np.expand_dims(Hy, axis=(0, -1))
 
-    for i, t in enumerate(range(time_steps - 1)):
+    for i, t in enumerate(tqdm(range(time_steps - 1))):
 
         errE.append(np.mean(
             abs(E0[0, 1:-1, 1:-1, 0] - f_E(omega, kx, ky, x, y, (i)*dt)[1:-1, 1:-1])))
