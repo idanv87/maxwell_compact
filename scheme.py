@@ -4,7 +4,7 @@ import math
 from tqdm import tqdm
 
 import matplotlib.patches as mpatches
-from auxilary import Hy_step2, Hx_step2, create_Ds2, f_Hy, f_E, f_Hx, create_P1, create_P2, E_step2
+from auxilary import Hy_step2, Hx_step2, create_Ds2, f_Hy, f_E, f_Hx, create_P1, create_P2, E_step2, create_lap
 import multiprocessing as mp
 from joblib import Parallel, delayed
 from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +17,7 @@ from DRP_multiple_networks.utils import amper, faraday
 from DRP_multiple_networks.constants import Constants
 
 
-def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyHx, DxHy, DyHy, AE, AHx, AHy):
+def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, DyHx, DxHy, DyHy, AE, AHx, AHy, usual):
     print(time_steps)
     errE = []
     errHx = []
@@ -37,6 +37,7 @@ def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, D
     p2y = create_P2(x[1:], x[1:-1], h, dt, 'y')
     p1e = create_P1(x[1:-1], x[1:-1], h, dt, 'e')
     p2e = create_P2(x[1:-1], x[1:-1], h, dt, 'e')
+    plap=create_lap(x[1:-1], x[1:-1])
 
     for i, t in enumerate(tqdm(range(time_steps - 1))):
         errE.append(
@@ -48,7 +49,7 @@ def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, D
 
 
         LE0, E0 = E_step2(dt, x, y, h, E0.copy(), LE0.copy(),
-                            Hx0.copy(), Hy0.copy(), p1e, p2e)
+                            Hx0.copy(), Hy0.copy(), p1e, p2e, plap, usual)
         Hx0 = Hx_step2(dt, x, y, h, E0.copy(),
                         LE0.copy(), Hx0.copy(), p1x, p2x)
         Hy0 = Hy_step2(dt, x, y, h, E0.copy(),
@@ -62,7 +63,7 @@ def max_solver(fourth, omega, kx, ky, dt, x, y, h, time_steps, DxE, DyE, DxHx, D
     return ((np.mean(errE) + np.mean(errHx) + np.mean(errHy)) / 3, errE+errHx+errHy)
 
 
-def run_scheme(C):
+def run_scheme(C, usual):
     kx = C.kx
     ky = C.ky
     T = C.T
@@ -90,7 +91,7 @@ def run_scheme(C):
 
     res = max_solver(fourth, omega, kx, ky,  dt, x, y, h, time_steps, DxE, DyE,
                      DxHx, DyHx, DxHy, DyHy,
-                     AE, AHx, AHy)
+                     AE, AHx, AHy, usual)
 
     return res
 

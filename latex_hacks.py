@@ -14,11 +14,14 @@ import pickle
 
 
 
-def tex_table(tex_path, headers,data, name,dt=1):
+def tex_table(tex_path, headers,data, name, caption, dt=1):
+    
     rows=[]
     rows.append(headers)
     for dat in data:
         rows.append(dat)
+
+    
     table = Texttable(0)
     if dt:
         table.set_precision(2)
@@ -34,8 +37,9 @@ def tex_table(tex_path, headers,data, name,dt=1):
     table.set_cols_align(["c"] * len(headers))
     table.set_deco(Texttable.HEADER | Texttable.VLINES )
     table.add_rows(rows)  
+    print(caption)
     with open(tex_path+name, 'w') as f:
-      f.write(latextable.draw_latex(table, caption=""))
+      f.write(latextable.draw_latex(table, caption=caption))
     print(table.draw())
     
     

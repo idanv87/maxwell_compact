@@ -30,8 +30,8 @@ AI_h={'1':[-0.01031967, -0.08788657,  0.00514533],
       '3':[0.016091811496056083, -0.14807714640318745, 0.045012759482413504],
        '4':[-0.00699426, -0.04867933, -0.00697986],'5':[ 0.00725373,-0.05299953,0.00756048]}
        
-legend_name={'C4':'C4','NC':'NC','AI':r'$AI^h$'}
-line_s={'C4':'solid','NC':'solid','AI':'solid'}
+legend_name={'C4':'C4','NC':'NC','AI':r'$AI^h$', 'C4b':'C4b'}
+line_s={'C4':'solid','NC':'solid','AI':'solid', 'C4b':'solid'}
 fig_path = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
 tex_path='/Users/idanversano/Documents/papers/compact_maxwell/'
 table_path='/Users/idanversano/Documents/papers/compact_maxwell/tables/'
@@ -39,7 +39,7 @@ data_path='/Users/idanversano/Documents/papers/compact_maxwell/data/'
 
 def plot_table(x_name,y_name,data_path1,data_path2, fig_save, title):
     fig, ax1 = plt.subplots(2, sharex=False, sharey=False)
-    color={'C4':'r','NC':'orange', 'AI':'purple', 'AILH':'blue'}
+    color={'C4':'r','NC':'orange', 'AI':'purple', 'C4b':'blue'}
 
     for i,path in enumerate([data_path1,data_path2]):
      for r, d, f in os.walk(path):
@@ -81,7 +81,10 @@ class constants:
 
 
 def solveN(N_test,cfltest,T_test,kx,ky):
-    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'))
+    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'), True)
+
+def solveN_not_usual(N_test,cfltest,T_test,kx,ky):
+    return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'), False)
 
 def solveYee4(n,cfl,T,kx,ky):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
@@ -93,7 +96,7 @@ def solveYee4(n,cfl,T,kx,ky):
     return yee_solver(0,-1/24,0, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
 
 def solveAI_h(n,cfl,T,kx,ky):
-    num=str(int(cfl*6*2**0.5))
+    num=str(min(int(cfl*6*2**0.5),5))
 
 
     beta=AI_h[num][0]
@@ -180,7 +183,7 @@ def exp_conv_rates( kwargs, table_name, T_name):
     data=np.array(data).T.tolist()
   
     headers=list(parameters)+headers
-    tex_table(table_path, headers,data, table_name,0)
+    tex_table(table_path, headers,data, table_name,caption='conv_rates'+str(X['cfl'][0]),dt=0)
     
     
 
@@ -188,8 +191,44 @@ def exp_conv_rates( kwargs, table_name, T_name):
 def exp_cfl( kwargs, table_name, T_name):
   path = data_path+T_name
   # parameters={'cfl':kwargs['cfltest']}
-  parameters={'cfl':[r'$\frac{1}{6\sqrt{2}}$',r'$\frac{2}{6\sqrt{2}}$',r'$\frac{3}{6\sqrt{2}}$'
+  parameters={'cfl':[r'$\frac{1}{6\sqrt{2}}$',r'$\frac{2}{6\sqrt{2}}$',r'$\frac{3}{6\sqrt{2}}$',
                      r'$\frac{4}{6\sqrt{2}}$',r'$\frac{5}{6\sqrt{2}}$']}
+  if True:
+    [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
+    data=[]
+    headers=[]
+    for i,p in enumerate([path]):
+       for r, d, f in os.walk(p):
+         for file in f:
+           if file.endswith(".pkl"):
+             name=os.path.splitext(file)[0]
+             with open(p + file, 'rb') as file:
+               if name in list(legend_name):
+            
+                 X=pickle.load(file)
+                 headers.append(name)
+                 data.append(X['err'])
+                 
+                 
+                 
+
+                 
+    
+    par_data=[parameters[name] for name in list(parameters)]
+    data=par_data+data
+
+    data=np.array(data).T.tolist()
+
+    headers=list(parameters)+headers
+
+
+    tex_table(table_path, headers,data, table_name, caption=str(X['kx'][0]), dt=1)
+
+
+
+def exp_erros( kwargs, table_name, path):
+  parameters={'k':kwargs['kx_test']}
+  # parameters={'cfl':[r'$1$',r'$1$']}
   if True:
     [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
     data=[]
@@ -203,60 +242,44 @@ def exp_cfl( kwargs, table_name, T_name):
               if name in list(legend_name):
                  X=pickle.load(file)
                  headers.append(name)
-                 data.append(X['err'])
-                 
-    par_data=[parameters[name] for name in list(parameters)]
-    data=par_data+data
-    data=np.array(data).T.tolist()
-    headers=list(parameters)+headers
-    tex_table(table_path, headers,data, table_name)
-
-
-
-def exp_erros( kwargs, table_name, path):
-  parameters={'k':kwargs['kx_test']}
-  # parameters={'cfl':[r'$1$',r'$1$']}
-  if True:
-    [comparison(functions[i],names[i], path, **kwargs) for i in range(len(functions))]
-    data=[]
-    headers=[]
-    for i,path in enumerate([path]):
-       for r, d, f in os.walk(path):
-         for file in f:
-           if file.endswith(".pkl"):
-             name=os.path.splitext(file)[0]
-             with open(path + file, 'rb') as file:
-              if name in list(legend_name):
-                 X=pickle.load(file)
-                 headers.append(name)
                  data.append(X['err'])           
     par_data=[parameters[name] for name in list(parameters)]
     data=par_data+data
-    
     data=np.array(data).T.tolist()
     headers=list(parameters)+headers
-    tex_table(table_path, headers,data, table_name)
+    tex_table(table_path, headers,data, table_name, caption=" ")
 
-T_test=2**0.5
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512, 1024],'kx_test':[1],
-            'ky_test':[1] }, table_name='conv_rates_low.tex', T_name='conv_rate_low/')
-exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512, 1024],'kx_test':[21],
-            'ky_test':[21] }, table_name='conv_rates_high.tex', T_name='conv_rate_high/')
+T_test=4/2**0.5
+# exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[2],
+#             'ky_test':[2] }, table_name='conv_rates_low.tex', T_name='conv_rate_low/')
+# exp_conv_rates({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
+#             'ky_test':[21] }, table_name='conv_rates_high.tex', T_name='conv_rate_high/')
 
-exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[1],
-            'ky_test':[1] }, table_name='cfl_low.tex', T_name='cflteslow/')
-exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
-            'ky_test':[21] }, table_name='cfl_high.tex', T_name='cflteshigh/')
+# exp_conv_rates({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[2],
+            # 'ky_test':[2] }, table_name='conv_rates_low_1.tex', T_name='conv_rate_low_1/')
+# exp_conv_rates({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
+#             'ky_test':[21] }, table_name='conv_rates_high_1.tex', T_name='conv_rate_high_1/')
 
-exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(1,50)],
-            'ky_test':[i for i in range(1,50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')
-exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(1,50)],
-            'ky_test':[i for i in range(50)]}, table_name='error(k)5.tex', path=data_path+'cfl5/')
+exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[2],
+            'ky_test':[2] }, table_name='cfl_low.tex', T_name='cfltestlow/')
+# exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
+#             'ky_test':[21] }, table_name='cfl_high.tex', T_name='cfltesthigh/')
 
-plot_table('kx','err',data_path+'cfl1/',data_path+'cfl5/', fig_path+'error(k).eps',
-           title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
+# exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(2,50)],
+#             'ky_test':[i for i in range(2,50)] }, table_name='error(k)1.tex', path= data_path+'cfl1/')
+# exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[i for i in range(2,50)],
+#             'ky_test':[i for i in range(2,50)]}, table_name='error(k)5.tex', path=data_path+'cfl5/')
 
+# exp_erros({'cfltest':[1/6/2**0.5], 'T_test':[4/2**0.5],'N_test':[64],'kx_test':[i for i in range(2,50)],
+#             'ky_test':[i for i in range(2,50)] }, table_name='error(k)1_b.tex', path= data_path+'cfl1_b/')
+# exp_erros({'cfltest':[5/6/2**0.5], 'T_test':[4/2**0.5],'N_test':[64],'kx_test':[i for i in range(2,50)],
+#             'ky_test':[i for i in range(2,50)]}, table_name='error(k)5_b.tex', path=data_path+'cfl5_b/')
 
+# # plot_table('kx','err',data_path+'cfl1/',data_path+'cfl5/', fig_path+'error(k).eps',
+# #            title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
+
+# plot_table('kx','err',data_path+'cfl1_b/',data_path+'cfl5_b/', fig_path+'error(k)_b.eps',
+#            title=['CFL='+r'$\frac{1}{6\sqrt{2}}$', 'CFL='+r'$\frac{5}{6\sqrt{2}}$']) 
 
 
 

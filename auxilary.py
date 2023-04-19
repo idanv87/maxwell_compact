@@ -29,7 +29,8 @@ import matplotlib.pyplot as plt
 
 
 def solve_cg(A, B):
-    x, e = scipy.sparse.linalg.cg(A, B, tol=1e-9)
+    x, e = scipy.sparse.linalg.cg(A, B, tol=1e-13, atol=1e-13)
+    
     return np.array(x)
 
 
@@ -135,6 +136,12 @@ def conv_rate(N, err):
     log_err = ['%.2f' % log_err[i] for i in range(len(log_err))]
     return(log_err)
 
+def create_lap(x,y):
+    Dxx = create_second(x)
+    Dyy = create_second(y)
+    Dxx = csr_matrix(kron(Dxx, np.eye(len(y))))
+    Dyy = csr_matrix(kron(np.eye(len(x)), Dyy))
+    return Dxx+Dyy
 
 # def create_circulant():
 #   N = 7
@@ -297,7 +304,8 @@ def Hx_step2(dt, x, y, h, E, LE, Hx, p1, p2):
     return Hx + dt * Hx_next
 
 
-def E_step2(dt, x, y, h, E, le, Hx, Hy, p1, p2):
+def E_step2(dt, x, y, h, E, le, Hx, Hy, p1, p2, plap,usual):
+    
     k = 24/dt**2
     Uy = Hy[1:, 1:-1] - Hy[:-1, 1:-1]
     Ux = Hx[1:-1, 1:] - Hx[1:-1, :-1]
@@ -309,11 +317,19 @@ def E_step2(dt, x, y, h, E, le, Hx, Hy, p1, p2):
 
     F = (dHy_dx - dHx_dy).ravel()
     E_next = E+dt*mod_helmholtz_2(x, y, h, dt, 'e', F, le, p1, p2)
-    LE = E_next*0
-    LE[1:-1, 1:-1] = dt*k*(dHy_dx - dHx_dy)-k * \
-        (E_next[1:-1, 1:-1]-E[1:-1, 1:-1])-le[1:-1, 1:-1]
 
-    return -LE.copy(), E_next
+    # here we claculate the laplacian of E_n+1
+    LE = E_next*0
+    # change this line to switch to usual 2 order laplacian:
+    if usual:
+        LE[1:-1, 1:-1] =-( dt*k*(dHy_dx - dHx_dy)-k * \
+        (E_next[1:-1, 1:-1]-E[1:-1, 1:-1])-le[1:-1, 1:-1])
+    else:
+        LE[1:-1,1:-1]=(plap@(E_next[1:-1,1:-1].ravel())).reshape(len(x)-2,len(x)-2)
+
+
+
+    return LE.copy(), E_next
 
 
 
