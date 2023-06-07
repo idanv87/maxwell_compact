@@ -10,6 +10,8 @@ import timeit
 import datetime
 import os
 
+import random
+from random import gauss
 import scipy
 from scipy.sparse import csr_matrix, kron, identity
 from scipy.linalg import circulant
@@ -27,10 +29,22 @@ import ray
 from scipy import signal
 import matplotlib.pyplot as plt
 
+class counter:
+    x=1
 
-def solve_cg(A, B):
-    x, e = scipy.sparse.linalg.cg(A, B, tol=1e-13, atol=1e-13)
-    
+
+def nonlocal_iterate(arr):
+    counter.x+=1
+
+
+
+def solve_cg(A, B, r):
+    # vals, vecs = scipy.sparse.linalg.eigs(r*A, k=3)
+    # print(vals)
+    print(r)
+    counter.x=0
+    x, e = scipy.sparse.linalg.cg(r*A, r*B, tol=1e-13, atol=1e-13, callback=nonlocal_iterate)
+    # print(counter.x)
     return np.array(x)
 
 
@@ -230,7 +244,7 @@ def mod_helmholtz_2(x, y, h, dt, x_or_y, F, LF, p1, p2):
         v = p2@F + \
             k*h**2/12*LF
         A = p1
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
         sol = sol.reshape(len(x)-2, len(x)-1)
         B = np.zeros((len(x), len(x)-1))
         B[1:-1, :] = sol
@@ -244,7 +258,7 @@ def mod_helmholtz_2(x, y, h, dt, x_or_y, F, LF, p1, p2):
             k*h**2/12*LF
         A = p1
 
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
 
         sol = sol.reshape(len(x)-1, len(x)-2)
 
@@ -258,7 +272,7 @@ def mod_helmholtz_2(x, y, h, dt, x_or_y, F, LF, p1, p2):
         v = p2@F
         A = p1
 
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
 
         sol = sol.reshape(len(x)-2, len(x)-2)
 
@@ -350,7 +364,7 @@ def mod_helmholtz_3(x, y, h, dt, x_or_y, F, LF, p1, p2):
         v = p2@F + \
             k*h**2/12*LF
         A = p1
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
         sol = sol.reshape(len(x)-2, len(x)-1)
         B = np.zeros((len(x), len(x)-1))
         B[1:-1, :] = sol
@@ -364,7 +378,7 @@ def mod_helmholtz_3(x, y, h, dt, x_or_y, F, LF, p1, p2):
             k*h**2/12*LF
         A = p1
 
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
 
         sol = sol.reshape(len(x)-1, len(x)-2)
 
@@ -379,7 +393,7 @@ def mod_helmholtz_3(x, y, h, dt, x_or_y, F, LF, p1, p2):
             k*h**2/12*LF
         A = p1
 
-        sol = solve_cg(A, v)
+        sol = solve_cg(A, v, dt**2)
 
         sol = sol.reshape(len(x)-2, len(x)-2)
 
@@ -391,3 +405,14 @@ def mod_helmholtz_3(x, y, h, dt, x_or_y, F, LF, p1, p2):
 
 
 
+# x=np.linspace(0,1,32+2)
+# dx=x[1]-x[0]
+# D=-create_D2(x)*dx**2+5*csr_matrix(np.eye(len(x)-2))
+# random.seed(0)
+# b=np.array([gauss(0,1) for i in range(D.shape[0])])
+# vals, vecs = scipy.sparse.linalg.eigs(D, k=6)
+# r=1e-9
+# solve_cg(r*D,r*b)
+# print(np.linalg.matrix_rank(D))
+r=create_A_2(10)
+print(r.shape)

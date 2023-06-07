@@ -83,8 +83,12 @@ class constants:
 def solveN(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'), True)
 
+
+
 def solveN_not_usual(N_test,cfltest,T_test,kx,ky):
     return run_scheme(constants(N_test,cfltest,T_test,kx,ky,'N','N'), False)
+
+solveN(32,4/6/2**0.5,1,2,3)
 
 def solveYee4(n,cfl,T,kx,ky):
     omega = math.pi * np.sqrt(kx ** 2 + ky ** 2)
@@ -94,6 +98,7 @@ def solveYee4(n,cfl,T,kx,ky):
     dt=h*cfl
     time_steps =  int(T/dt)
     return yee_solver(0,-1/24,0, omega,kx,ky, dt, x, y, h, time_steps, cfl,n, T)
+
 
 def solveAI_h(n,cfl,T,kx,ky):
     num=str(min(int(cfl*6*2**0.5),5))
@@ -260,8 +265,8 @@ T_test=4/2**0.5
 # exp_conv_rates({'cfltest':[1/6/2**0.5], 'T_test':[T_test],'N_test':[16,32,64,128,256,512],'kx_test':[21],
 #             'ky_test':[21] }, table_name='conv_rates_high_1.tex', T_name='conv_rate_high_1/')
 
-exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[2],
-            'ky_test':[2] }, table_name='cfl_low.tex', T_name='cfltestlow/')
+# exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[2],
+#             'ky_test':[2] }, table_name='cfl_low.tex', T_name='cfltestlow/')
 # exp_cfl({'cfltest':[1/6/2**0.5,2/6/2**0.5,3/6/2**0.5,4/6/2**0.5,5/6/2**0.5], 'T_test':[T_test],'N_test':[64],'kx_test':[21],
 #             'ky_test':[21] }, table_name='cfl_high.tex', T_name='cfltesthigh/')
 
@@ -616,7 +621,8 @@ if 0:
 
     list_color  = ["black", "blue", "red"]
     list_mak    = ["x","8","*"]
-    list_lab    = ['E_3','H_1','H_2']
+    list_lab    = [r'$E_z$',r'$H_x$',r'$H_y$']
+
     n=5
     h=1/n
     x = np.linspace(0, 1, n + 1)
@@ -682,8 +688,8 @@ if 0:
     # Put a legend below current axis
     # plt.grid()
     PATH = '/Users/idanversano/Documents/papers/compact_maxwell/figures/'
-    # plt.savefig(PATH + 'omega.eps' , format='eps',
-    #            bbox_inches='tight')
+    plt.savefig(PATH + 'omega5.eps' , format='eps',
+               bbox_inches='tight')
 
     plt.show()
 
